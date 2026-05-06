@@ -15,7 +15,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-
+        db.Conexion.conectar();
         scene = new Scene(loadFXML("login"), 600, 500);
 
         stage.setTitle("Sistema Vista Verde");
