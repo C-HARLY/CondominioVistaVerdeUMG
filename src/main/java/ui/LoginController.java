@@ -31,7 +31,7 @@ public class LoginController {
     private Button btnLogin;
     
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        
     }
     @FXML
     private TextField txtUsuario;
