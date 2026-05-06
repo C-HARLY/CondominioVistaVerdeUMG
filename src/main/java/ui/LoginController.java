@@ -4,6 +4,7 @@
  */
 package ui;
 
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,21 +16,48 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author carlo
- */
-public class LoginController implements Initializable {
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+
+public class LoginController {
+
 
     /**
      * Initializes the controller class.
      */
     @FXML
     private Button btnLogin;
-    @Override
+    
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+    }
+    @FXML
+    private TextField txtUsuario;
+
+    @FXML
+    private PasswordField txtPassword;
+
+    @FXML
+    private Label lblMensaje;
+
+    private final String USER = "iusr_vistaverde";
+    private final String PASS = "R3sidencial2026%";
+
+    @FXML
+    private void handleLogin() {
+
+        String usuario = txtUsuario.getText();
+        String password = txtPassword.getText();
+
+        if (usuario.equals(USER) && password.equals(PASS)) {
+            lblMensaje.setStyle("-fx-text-fill: green;");
+            lblMensaje.setText("Acceso correcto");
+        } else {
+            lblMensaje.setStyle("-fx-text-fill: red;");
+            lblMensaje.setText("Usuario o contraseña incorrectos");
+        }
     }    
     
     //METODO PARA MOSTRAR OTRA PANTALLA
