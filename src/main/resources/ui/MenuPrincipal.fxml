@@ -9,17 +9,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
-   <left>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MenuPrincipalController">   <left>
       <VBox prefHeight="400.0" prefWidth="236.0" style="-fx-background-color: #80b33d;" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onMouseClicked="#Inicio" prefHeight="36.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Inicio" textFill="WHITE">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-            <Button mnemonicParsing="false" onMouseClicked="#Login" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Login del administrador" textFill="WHITE">
+            <Button mnemonicParsing="false" onMouseClicked="#cerrarSesion" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Cerrar Sesion" textFill="WHITE">
                <font>
                   <Font size="15.0" />
                </font>
