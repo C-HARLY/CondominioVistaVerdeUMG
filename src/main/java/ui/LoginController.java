@@ -60,6 +60,23 @@ public class LoginController {
         }
     }    
     
+    private void abrirMenuPrincipal() {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MenuPrincipal.fxml"));
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root);
+        Stage stage = (Stage) btnLogin.getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle("Menú Principal");
+        stage.show();
+
+    } catch (IOException e) {
+        System.err.println("Error al cargar MenuPrincipal: " + e.getMessage());
+    }
+}
+    
+    
     //METODO PARA MOSTRAR OTRA PANTALLA
     @FXML // IMPORTANTE: Agrega @FXML para que Scene Builder vea el método
     public void login() {
