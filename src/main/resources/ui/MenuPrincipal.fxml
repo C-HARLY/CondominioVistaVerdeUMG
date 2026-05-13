@@ -22,7 +22,7 @@
                   <Font size="15.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Registro de pago de cuota" textFill="WHITE">
+            <Button mnemonicParsing="false" onMouseClicked="#abrirPagos" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Registro de pago de cuota" textFill="WHITE">
                <font>
                   <Font size="15.0" />
                </font>
@@ -32,12 +32,12 @@
                   <Font size="15.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Estado de cuenta por casa" textFill="WHITE">
+            <Button mnemonicParsing="false" onMouseClicked="#abrirEstadoCuenta" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Estado de cuenta por casa" textFill="WHITE">
                <font>
                   <Font size="15.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Reporte General" textFill="WHITE">
+            <Button mnemonicParsing="false" onMouseClicked="#abrirReporteGeneral" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Reporte General" textFill="WHITE">
                <font>
                   <Font size="15.0" />
                </font>
