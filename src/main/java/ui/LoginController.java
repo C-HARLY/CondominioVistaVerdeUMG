@@ -70,7 +70,7 @@ public class LoginController {
         Scene scene = new Scene(root);
         Stage stage = (Stage) btnLogin.getScene().getWindow();
         stage.setScene(scene);
-        stage.setTitle("Menú Principal");
+        stage.setTitle("Menú - Sistema Administrativo");
         stage.show();
 
     } catch (IOException e) {
