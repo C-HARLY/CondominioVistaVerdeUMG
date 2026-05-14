@@ -3,13 +3,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
 package ui;
+import java.io.IOException;
 import model.Configuracion;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -49,4 +56,30 @@ public class PagoController implements Initializable {
         cbYear.getSelectionModel().selectFirst();
         }    
     
+    //----METODO REGRESAR AL MENU PRINCIPAL
+    @FXML
+    private void volverAlMenu(ActionEvent event) {
+        try {
+            // 1. Cargar el archivo FXML del Menú Principal
+            // Asegúrate de que el nombre del archivo sea exactamente igual a como está en tu proyecto
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MenuPrincipal.fxml")); 
+            Parent root = loader.load();
+
+            // 2. Obtener la ventana (Stage) actual desde el botón que se hizo clic
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            // 3. Crear y establecer la nueva escena
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            
+            // Opcional: Volver a centrar la ventana por si las pantallas tienen distintos tamaños
+            stage.centerOnScreen(); 
+            stage.show();
+
+        } catch (IOException e) {
+            System.err.println("Error al regresar al menú principal: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+   
 }

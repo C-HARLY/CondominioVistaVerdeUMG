@@ -10,9 +10,11 @@ import java.util.ResourceBundle;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -32,7 +34,7 @@ public class MenuPrincipalController implements Initializable {
      */
     
     
-
+    // ------------CERRAR SESION
     @FXML
     private void cerrarSesion(MouseEvent event) {
         try {
@@ -58,6 +60,7 @@ public class MenuPrincipalController implements Initializable {
         }
     }
     
+    //----METODO DEL CALENDARIO EN EL MENU
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         LocalDate fechaLocal = LocalDate.now();
@@ -68,5 +71,81 @@ public class MenuPrincipalController implements Initializable {
     // aqui se puede cargar una imagen
     lblFecha.setText("📅 " + fechaFormateada.substring(0, 1).toUpperCase() + fechaFormateada.substring(1));
     }    
+    
+    
+    // -------ABRIR VENTANA PAGOS
+     @FXML
+    private void abrirPagos(MouseEvent event) { 
+        try {
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Pago.fxml"));
+            Parent root = loader.load();
+
+            // 3. Crear una nueva escena
+            Scene scene = new Scene(root);
+
+            // 4. Obtener el escenario (Stage) actual a partir del evento del mouse
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            // 5. Establecer la nueva escena en el escenario
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            System.out.println("Error al cargar la vista de pagos: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    
+    // -------ABRIR VENTANA ESTADO DE CUENTAS
+     @FXML
+    private void abrirEstadoCuenta(MouseEvent event) { 
+        try {
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/EstadoCuenta.fxml"));
+            Parent root = loader.load();
+
+            // 3. Crear una nueva escena
+            Scene scene = new Scene(root);
+
+            // 4. Obtener el escenario (Stage) actual a partir del evento del mouse
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            // 5. Establecer la nueva escena en el escenario
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            System.out.println("Error al cargar la vista de Reporte General : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
+    
+     // -------ABRIR VENTANA REPORTE GENERAL
+     @FXML
+    private void abrirReporteGeneral(MouseEvent event) { 
+        try {
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ReporteGeneral.fxml"));
+            Parent root = loader.load();
+
+            // 3. Crear una nueva escena
+            Scene scene = new Scene(root);
+
+            // 4. Obtener el escenario (Stage) actual a partir del evento del mouse
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            // 5. Establecer la nueva escena en el escenario
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            System.out.println("Error al cargar la vista de Estados De Cuenta : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    
     
 }
