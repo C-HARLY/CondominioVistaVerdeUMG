@@ -147,5 +147,27 @@ public class MenuPrincipalController implements Initializable {
         }
     }
     
-    
+     // -------ABRIR VENTANA Propietario
+     @FXML
+    private void abrirPropietario(MouseEvent event) { 
+        try {
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/RegistroPropietario.fxml"));
+            Parent root = loader.load();
+
+            // 3. Crear una nueva escena
+            Scene scene = new Scene(root);
+
+            // 4. Obtener el escenario (Stage) actual a partir del evento del mouse
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+            // 5. Establecer la nueva escena en el escenario
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            System.out.println("Error al cargar el Registro de Propietario : " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }
