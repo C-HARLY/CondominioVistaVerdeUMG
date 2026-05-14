@@ -146,7 +146,7 @@ public class MenuPrincipalController implements Initializable {
             e.printStackTrace();
         }
     }
-    
+
      // -------ABRIR VENTANA Propietario
      @FXML
     private void abrirPropietario(MouseEvent event) { 
