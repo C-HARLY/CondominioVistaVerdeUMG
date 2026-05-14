@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 
 
 import java.io.IOException;
@@ -18,10 +19,13 @@ public class App extends Application {
         db.Conexion.conectar();
         scene = new Scene(loadFXML("login"), 600, 500);
 
-        stage.setTitle("Sistema Vista Verde");
+        stage.setTitle("Login - Sistema Administrativo");
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+        stage.getIcons().add(
+    new Image(getClass().getResourceAsStream("/images/icono.png"))
+);
     }
 
     // Permite cambiar de pantalla después (te servirá luego)

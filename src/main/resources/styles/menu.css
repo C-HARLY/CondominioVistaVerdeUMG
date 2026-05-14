@@ -1,1 +1,39 @@
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #374151;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 14;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 12 18 12 18;
+}
 
+.menu-button:hover {
+    -fx-background-color: #eef5e8;
+    -fx-text-fill: #1b5e20;
+}
+
+.menu-button-active {
+    -fx-background-color: #8bc34a;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 14;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 12 18 12 18;
+}
+
+.logout-button {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #dc2626;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 14;
+    -fx-cursor: hand;
+}
+
+.logout-button:hover {
+    -fx-background-color: #fecaca;
+}

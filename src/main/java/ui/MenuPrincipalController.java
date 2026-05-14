@@ -48,7 +48,7 @@ public class MenuPrincipalController implements Initializable {
             // 3. Cambiamos la escena de regreso al Login
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Login - Vista Verde");
+            stage.setTitle("Login - Sistema Administrativo");
             stage.centerOnScreen();
             stage.show();
 
