@@ -30,14 +30,15 @@
                </font>
             </Label>
             <Label layoutX="35.0" layoutY="178.0" text="Nombre Completo del Propietario :" />
-            <TextField layoutX="35.0" layoutY="195.0" prefHeight="27.0" prefWidth="485.0" />
+            <TextField fx:id="txtNombre" layoutX="35.0" layoutY="195.0" prefHeight="27.0" prefWidth="485.0" />
             <Label layoutX="36.0" layoutY="237.0" text="Numero de Telefono :" />
-            <TextField layoutX="36.0" layoutY="254.0" prefHeight="27.0" prefWidth="168.0" />
+            <TextField fx:id="txtTelefono" layoutX="36.0" layoutY="254.0" prefHeight="27.0" prefWidth="168.0" />
             <Label layoutX="35.0" layoutY="295.0" text="Correo Electronico:" />
-            <TextField layoutX="35.0" layoutY="312.0" prefHeight="27.0" prefWidth="485.0" />
+            <TextField fx:id="txtCorreo" layoutX="35.0" layoutY="312.0" prefHeight="27.0" prefWidth="485.0" />
             <Label layoutX="35.0" layoutY="354.0" prefHeight="0.0" prefWidth="200.0" text="Selecciones Numero de Casa ( 1 - 30):" />
-            <Button layoutX="66.0" layoutY="599.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="455.0" text="Registrar " />
-            <ComboBox layoutX="35.0" layoutY="382.0" prefHeight="0.0" prefWidth="150.0" />
+            <Button layoutX="65.0" layoutY="567.0" mnemonicParsing="false" onAction="#registrarPropietario" prefHeight="33.0" prefWidth="455.0" text="Registrar " />
+            <ComboBox fx:id="cmbCasas" layoutX="35.0" layoutY="382.0" prefHeight="0.0" prefWidth="150.0" />
+            <Button fx:id="btnRegresar" layoutX="39.0" layoutY="641.0" mnemonicParsing="false" onAction="#volverAlMenu" text="Regresar" />
          </children>
       </AnchorPane>
    </bottom>
