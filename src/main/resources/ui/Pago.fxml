@@ -14,9 +14,9 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <ComboBox fx:id="cbCasa" layoutX="363.0" layoutY="154.0" prefWidth="150.0" />
-      <ComboBox fx:id="cbYear" layoutX="363.0" layoutY="293.0" prefWidth="150.0" />
-      <ComboBox fx:id="cbMes" layoutX="363.0" layoutY="227.0" prefWidth="150.0" />
+      <ComboBox fx:id="cmbCasas" layoutX="363.0" layoutY="154.0" prefWidth="150.0" />
+      <ComboBox fx:id="cmbYear" layoutX="363.0" layoutY="293.0" prefWidth="150.0" />
+      <ComboBox fx:id="cmbMes" layoutX="363.0" layoutY="227.0" prefWidth="150.0" />
       <Label alignment="TOP_CENTER" layoutX="106.0" layoutY="157.0" prefHeight="17.0" prefWidth="182.0" style="-fx-background-color: white;" text="Selecciones el Numero de casa" textAlignment="CENTER" textFill="#0d0d0d">
          <font>
             <Font size="13.0" />
@@ -33,7 +33,7 @@
          </font>
       </Label>
       <TextField fx:id="txtMonto" editable="false" layoutX="249.0" layoutY="369.0" />
-      <Button layoutX="258.0" layoutY="461.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="132.0" text="Registrar Pago" />
+      <Button layoutX="258.0" layoutY="461.0" mnemonicParsing="false" onAction="#registrarPago" prefHeight="26.0" prefWidth="132.0" text="Registrar Pago" />
       <Button layoutX="14.0" layoutY="538.0" mnemonicParsing="false" onAction="#volverAlMenu" prefHeight="26.0" prefWidth="132.0" text="Regresar" />
    </children>
 </AnchorPane>
