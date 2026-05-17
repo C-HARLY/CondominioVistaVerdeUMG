@@ -19,7 +19,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.scene.control.Button;
+
+
 
 /**
  * FXML Controller class
@@ -28,7 +32,24 @@ import javafx.stage.Stage;
  */
 public class MenuPrincipalController implements Initializable {
     @FXML
+    private AnchorPane contentArea;
+    @FXML
     private Label lblFecha;
+    @FXML
+    private Button btnPropietarios;
+    @FXML
+    private Button btnPagos;
+    @FXML
+    private Button btnEstadoCuenta;
+    @FXML
+    private Button btnReporte;
+    @FXML
+    private Button btnMorosos;
+
+
+    
+    
+    
     /**
      * Initializes the controller class.
      */
@@ -62,112 +83,76 @@ public class MenuPrincipalController implements Initializable {
     
     //----METODO DEL CALENDARIO EN EL MENU
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        LocalDate fechaLocal = LocalDate.now();
-    // Formato de fecha
-    DateTimeFormatter formatoElegante = DateTimeFormatter.ofPattern("EEEE, dd 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
-    String fechaFormateada = fechaLocal.format(formatoElegante);
+   public void initialize(URL url, ResourceBundle rb) {
 
-    // aqui se puede cargar una imagen
-    lblFecha.setText("📅 " + fechaFormateada.substring(0, 1).toUpperCase() + fechaFormateada.substring(1));
-    }    
+    cargarVista("/ui/Dashboard.fxml");
+}   
     
+   
+   private void cargarVista(String rutaFXML) {
+
+    try {
+
+        FXMLLoader loader =
+                new FXMLLoader(getClass().getResource(rutaFXML));
+
+        Parent vista = loader.load();
+
+        contentArea.getChildren().clear();
+
+        contentArea.getChildren().add(vista);
+
+        AnchorPane.setTopAnchor(vista, 0.0);
+        AnchorPane.setBottomAnchor(vista, 0.0);
+        AnchorPane.setLeftAnchor(vista, 0.0);
+        AnchorPane.setRightAnchor(vista, 0.0);
+
+    } catch (IOException e) {
+
+        e.printStackTrace();
+    }
+}
+   
+   
+   private void activarBoton(Button botonActivo) {
+
+    btnPropietarios.getStyleClass().remove("menu-button-active");
+    btnPagos.getStyleClass().remove("menu-button-active");
+    btnEstadoCuenta.getStyleClass().remove("menu-button-active");
+    btnReporte.getStyleClass().remove("menu-button-active");
+    btnMorosos.getStyleClass().remove("menu-button-active");
+
+    botonActivo.getStyleClass().add("menu-button-active");
+}
     
     // -------ABRIR VENTANA PAGOS
      @FXML
-    private void abrirPagos(MouseEvent event) { 
-        try {
-            
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/Pago.fxml"));
-            Parent root = loader.load();
+    private void abrirPagos(ActionEvent event) {
 
-            // 3. Crear una nueva escena
-            Scene scene = new Scene(root);
+    activarBoton(btnPagos);
 
-            // 4. Obtener el escenario (Stage) actual a partir del evento del mouse
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            // 5. Establecer la nueva escena en el escenario
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException e) {
-            System.out.println("Error al cargar la vista de pagos: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+    cargarVista("/ui/Pago.fxml");
+}
     
     
     // -------ABRIR VENTANA ESTADO DE CUENTAS
      @FXML
-    private void abrirEstadoCuenta(MouseEvent event) { 
-        try {
-            
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/EstadoCuenta.fxml"));
-            Parent root = loader.load();
+    private void abrirEstadoCuenta(ActionEvent event) {
 
-            // 3. Crear una nueva escena
-            Scene scene = new Scene(root);
+    activarBoton(btnEstadoCuenta);
 
-            // 4. Obtener el escenario (Stage) actual a partir del evento del mouse
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            // 5. Establecer la nueva escena en el escenario
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException e) {
-            System.out.println("Error al cargar la vista de Reporte General : " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+    cargarVista("/ui/EstadoCuenta.fxml");
+}
     
     
      // -------ABRIR VENTANA REPORTE GENERAL
      @FXML
-    private void abrirReporteGeneral(MouseEvent event) { 
-        try {
-            
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/ReporteGeneral.fxml"));
-            Parent root = loader.load();
+    private void abrirReporteGeneral(ActionEvent event) {
 
-            // 3. Crear una nueva escena
-            Scene scene = new Scene(root);
+    activarBoton(btnReporte);
 
-            // 4. Obtener el escenario (Stage) actual a partir del evento del mouse
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            // 5. Establecer la nueva escena en el escenario
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException e) {
-            System.out.println("Error al cargar la vista de Estados De Cuenta : " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-     // -------ABRIR VENTANA Propietario
-     @FXML
-    private void abrirPropietario(MouseEvent event) { 
-        try {
-            
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/RegistroPropietario.fxml"));
-            Parent root = loader.load();
-
-            // 3. Crear una nueva escena
-            Scene scene = new Scene(root);
-
-            // 4. Obtener el escenario (Stage) actual a partir del evento del mouse
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            // 5. Establecer la nueva escena en el escenario
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException e) {
-            System.out.println("Error al cargar el Registro de Propietario : " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
+    cargarVista("/ui/ReporteGeneral.fxml");
+}
+    
+    
 }

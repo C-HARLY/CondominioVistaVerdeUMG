@@ -5,35 +5,129 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane id="AnchorPane" prefHeight="585.0" prefWidth="678.0" style="-fx-background-color: #104D54;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.PagoController">
-   <children>
-      <Label layoutX="208.0" layoutY="35.0" prefHeight="46.0" prefWidth="261.0" style="-fx-background-color: white;" text="            MENU DE PAGO" textFill="#0d0d0d" AnchorPane.bottomAnchor="503.6">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <ComboBox fx:id="cbCasa" layoutX="363.0" layoutY="154.0" prefWidth="150.0" />
-      <ComboBox fx:id="cbYear" layoutX="363.0" layoutY="293.0" prefWidth="150.0" />
-      <ComboBox fx:id="cbMes" layoutX="363.0" layoutY="227.0" prefWidth="150.0" />
-      <Label alignment="TOP_CENTER" layoutX="106.0" layoutY="157.0" prefHeight="17.0" prefWidth="182.0" style="-fx-background-color: white;" text="Selecciones el Numero de casa" textAlignment="CENTER" textFill="#0d0d0d">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <Label alignment="TOP_CENTER" layoutX="106.0" layoutY="230.0" prefHeight="17.0" prefWidth="182.0" style="-fx-background-color: white;" text="Selecciones el Mes" textAlignment="CENTER" textFill="#0d0d0d">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <Label alignment="TOP_CENTER" layoutX="106.0" layoutY="296.0" prefHeight="17.0" prefWidth="182.0" style="-fx-background-color: white;" text="Selecciones el Año" textAlignment="CENTER" textFill="#0d0d0d">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <TextField fx:id="txtMonto" editable="false" layoutX="249.0" layoutY="369.0" />
-      <Button layoutX="258.0" layoutY="461.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="132.0" text="Registrar Pago" />
-      <Button layoutX="14.0" layoutY="538.0" mnemonicParsing="false" onAction="#volverAlMenu" prefHeight="26.0" prefWidth="132.0" text="Regresar" />
-   </children>
-</AnchorPane>
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ui.PagoController"
+           style="-fx-background-color: #f4f6f5;"
+           stylesheets="@../styles/pago.css">
+
+    <children>
+
+        <!-- CARD -->
+
+        <AnchorPane prefWidth="480"
+                    prefHeight="420"
+                    maxWidth="480"
+                    maxHeight="420"
+                    styleClass="card-container">
+
+            <children>
+
+                <VBox alignment="TOP_CENTER"
+                      spacing="18"
+                      AnchorPane.topAnchor="35"
+                      AnchorPane.leftAnchor="35"
+                      AnchorPane.rightAnchor="35"
+                      AnchorPane.bottomAnchor="35">
+
+                    <children>
+
+                        <!-- TITULO -->
+
+                        <Label text="💳 Registro de Pago"
+                               styleClass="title-label"/>
+
+                        <Label text="Administra pagos de cuotas del condominio"
+                               styleClass="subtitle-label"/>
+
+                        <!-- FORMULARIO -->
+
+                        <GridPane hgap="18"
+                                  vgap="16"
+                                  style="-fx-padding: 20 0 0 0;">
+
+                            <children>
+
+                                <!-- CASA -->
+
+                                <Label text="Número de casa"
+                                       GridPane.rowIndex="0"
+                                       GridPane.columnIndex="0"
+                                       styleClass="form-label"/>
+
+                                <ComboBox fx:id="cbCasa"
+                                          prefWidth="200"
+                                          styleClass="input"
+                                          GridPane.rowIndex="0"
+                                          GridPane.columnIndex="1"/>
+
+                                <!-- MES -->
+
+                                <Label text="Mes"
+                                       GridPane.rowIndex="1"
+                                       GridPane.columnIndex="0"
+                                       styleClass="form-label"/>
+
+                                <ComboBox fx:id="cbMes"
+                                          prefWidth="200"
+                                          styleClass="input"
+                                          GridPane.rowIndex="1"
+                                          GridPane.columnIndex="1"/>
+
+                                <!-- AÑO -->
+
+                                <Label text="Año"
+                                       GridPane.rowIndex="2"
+                                       GridPane.columnIndex="0"
+                                       styleClass="form-label"/>
+
+                                <ComboBox fx:id="cbYear"
+                                          prefWidth="200"
+                                          styleClass="input"
+                                          GridPane.rowIndex="2"
+                                          GridPane.columnIndex="1"/>
+
+                                <!-- MONTO -->
+
+                                <Label text="Monto"
+                                       GridPane.rowIndex="3"
+                                       GridPane.columnIndex="0"
+                                       styleClass="form-label"/>
+
+                                <TextField fx:id="txtMonto"
+                                           prefWidth="200"
+                                           styleClass="input"
+                                           GridPane.rowIndex="3"
+                                           GridPane.columnIndex="1"/>
+
+                            </children>
+
+                        </GridPane>
+
+                        <!-- BOTON -->
+
+                        <Button text="Registrar"
+                                prefWidth="100"
+                                styleClass="primary-button">
+
+                             <VBox.margin>
+                                 <Insets top="20"/>
+                             </VBox.margin>
+                        </Button>
+
+                    </children>
+
+                </VBox>
+
+            </children>
+
+        </AnchorPane>
+
+    </children>
+
+</StackPane>

@@ -1,7 +1,54 @@
-/*
- * Empty Stylesheet file.
- */
-
-.mainFxmlClass {
-
+.card-container {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(0,0,0,0.06),
+        20,
+        0,
+        0,
+        4
+    );
 }
+
+.title-label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
+}
+
+.subtitle-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6b7280;
+}
+
+.form-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
+}
+
+.input {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #d1d5db;
+    -fx-background-color: white;
+    -fx-padding: 6 10 6 10;
+    -fx-font-size: 13px;
+    -fx-pref-height: 38;
+}
+
+.primary-button {
+    -fx-background-color: #8bc34a;
+    -fx-background-radius: 10;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-pref-height: 38;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: #7cb342;
+}
+
