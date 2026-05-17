@@ -134,6 +134,15 @@ public class MenuPrincipalController implements Initializable {
     cargarVista("/ui/Pago.fxml");
 }
     
+        // -------ABRIR VENTANA PAGOS
+     @FXML
+    private void abrirPropietario(ActionEvent event) {
+
+    activarBoton(btnPropietarios);
+
+    cargarVista("/ui/RegistroPropietario.fxml");
+}
+    
     
     // -------ABRIR VENTANA ESTADO DE CUENTAS
      @FXML
