@@ -8,14 +8,16 @@
 
 <AnchorPane id="AnchorPane" prefHeight="540.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.EstadoCuentaController">
    <children>
-      <Label layoutX="225.0" layoutY="49.0" prefHeight="18.0" prefWidth="150.0" text="       Seleccione la Casa" textAlignment="JUSTIFY" />
-      <ComboBox fx:id="cmbCasas" layoutX="225.0" layoutY="108.0" onAction="#buscarEstadoCuenta" prefWidth="150.0" />
-      <Label fx:id="lblNombrePropietario" layoutX="156.0" layoutY="164.0" prefHeight="18.0" prefWidth="286.0" text="                    Propietario no Seleccionado" />
-      <ListView fx:id="lvMesesPagados" layoutX="56.0" layoutY="234.0" prefHeight="200.0" prefWidth="200.0" />
-      <ListView fx:id="lvMesesPendientes" layoutX="342.0" layoutY="234.0" prefHeight="200.0" prefWidth="200.0" />
-      <Label layoutX="133.0" layoutY="201.0" text="Pagados" />
-      <Label layoutX="419.0" layoutY="210.0" text="Pendientes" />
-      <Label fx:id="lblTotalPagado" layoutX="245.0" layoutY="465.0" prefHeight="18.0" prefWidth="108.0" text="             0.00" />
+      <Label layoutX="58.0" layoutY="129.0" prefHeight="18.0" prefWidth="150.0" text="       Seleccione la Casa" textAlignment="JUSTIFY" />
+      <ComboBox fx:id="cmbCasas" layoutX="58.0" layoutY="156.0" onAction="#buscarEstadoCuenta" prefWidth="150.0" />
+      <Label fx:id="lblNombrePropietario" layoutX="157.0" layoutY="212.0" prefHeight="18.0" prefWidth="286.0" text="                    Propietario no Seleccionado" textAlignment="CENTER" />
+      <ListView fx:id="lvMesesPagados" layoutX="56.0" layoutY="256.0" prefHeight="200.0" prefWidth="200.0" />
+      <ListView fx:id="lvMesesPendientes" layoutX="348.0" layoutY="256.0" prefHeight="200.0" prefWidth="200.0" />
+      <Label layoutX="133.0" layoutY="231.0" text="Pagados" />
+      <Label layoutX="418.0" layoutY="231.0" text="Pendientes" />
+      <Label fx:id="lblTotalPagado" layoutX="215.0" layoutY="474.0" prefHeight="18.0" prefWidth="168.0" text="             0.00" />
       <Button layoutX="14.0" layoutY="501.0" mnemonicParsing="false" onAction="#volverAlMenu" text="Regresar" />
+      <Label layoutX="373.0" layoutY="129.0" prefHeight="18.0" prefWidth="150.0" text="        Seleccione el año" textAlignment="JUSTIFY" />
+      <ComboBox fx:id="cmbAnio" layoutX="373.0" layoutY="156.0" onAction="#buscarEstadoCuenta" prefWidth="150.0" />
    </children>
 </AnchorPane>
