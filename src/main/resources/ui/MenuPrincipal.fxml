@@ -2,69 +2,89 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MenuPrincipalController">   <left>
-      <VBox prefHeight="400.0" prefWidth="236.0" style="-fx-background-color: #80b33d;" BorderPane.alignment="CENTER">
-         <children>
-            <Button mnemonicParsing="false" onMouseClicked="#cerrarSesion" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Cerrar Sesion" textFill="WHITE">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Registro de propietario " textFill="WHITE">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Registro de pago de cuota" textFill="WHITE">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Configuración de cuota" textFill="WHITE">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Estado de cuenta por casa" textFill="WHITE">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Reporte General" textFill="WHITE">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-            <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="236.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-width: 0px 0px 2px 0px;" text="Casas Morosas" textFill="WHITE">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-         </children>
-      </VBox>
-   </left>
-   <center>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white;" BorderPane.alignment="CENTER">
-         <children>
-            <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="82.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/logo.png" />
-               </image>
-            </ImageView>
-            <Label layoutX="52.0" layoutY="190.0" text="¡Bienvenido al condominio Vista Verde!">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-            <Label fx:id="lblFecha" layoutX="168.0" layoutY="255.0" text="Label" />
-         </children>
-      </AnchorPane>
-   </center>
+<BorderPane prefHeight="600.0" prefWidth="950.0" style="-fx-background-color: #f4f6f5;" stylesheets="@../styles/menu.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MenuPrincipalController">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <left>
+
+        <VBox prefWidth="250" spacing="18" style="-fx-background-color: white;                      -fx-padding: 25;                      -fx-background-radius: 0 20 20 0;                      -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 3, 0);">
+
+            <children>
+
+                <!-- HEADER -->
+
+                <VBox spacing="4">
+
+                    <children>
+
+                        <Label style="-fx-font-size: 22px;                                       -fx-font-weight: bold;                                       -fx-text-fill: #000000;" text="Menú Principal" />
+
+                    </children>
+
+                </VBox>
+
+                <Separator />
+
+                <!-- ================= GESTIÓN ================= -->
+
+                <Label style="-fx-text-fill: #9ca3af;                               -fx-font-size: 11px;                               -fx-font-weight: bold;" text="GESTIÓN ADMINISTRATIVA" />
+
+                <!-- PROPIETARIOS -->
+
+                <Button fx:id="btnPropietarios" maxWidth="Infinity" onAction="#abrirPropietario" prefHeight="45" styleClass="menu-button" text="👤  Propietarios" />
+
+                <!-- PAGOS -->
+
+                <Button fx:id="btnPagos" maxWidth="Infinity" onAction="#abrirPagos" prefHeight="45" styleClass="menu-button" text="💳  Pagos" />
+
+                <!-- CONFIGURACIÓN -->
+
+                <Button maxWidth="Infinity" prefHeight="45" styleClass="menu-button" text="⚙  Configuración de cuota" />
+
+                <Separator />
+
+                <!-- ================= REPORTES ================= -->
+
+                <Label style="-fx-text-fill: #9ca3af;                               -fx-font-size: 11px;                               -fx-font-weight: bold;" text="REPORTES Y CONTROL" />
+
+                <!-- ESTADO DE CUENTA -->
+
+                <Button fx:id="btnEstadoCuenta" maxWidth="Infinity" onAction="#abrirEstadoCuenta" prefHeight="45" styleClass="menu-button" text="📄  Estado de cuenta" />
+
+                <!-- REPORTE GENERAL -->
+
+                <Button fx:id="btnReporte" maxWidth="Infinity" onAction="#abrirReporteGeneral" prefHeight="45" styleClass="menu-button" text="📊  Reporte general" />
+
+                <!-- MOROSOS -->
+
+                <Button fx:id="btnMorosos" maxWidth="Infinity" prefHeight="45" styleClass="menu-button" text="🚨  Casas morosas" />
+
+                <!-- ESPACIADOR -->
+
+                <VBox prefHeight="200" />
+
+                <!-- CERRAR SESIÓN -->
+
+                <Button maxWidth="Infinity" onMouseClicked="#cerrarSesion" prefHeight="45" styleClass="logout-button" text="🚪  Cerrar sesión" />
+
+            </children>
+
+        </VBox>
+
+    </left>
+
+    <!-- ================= CONTENIDO DINÁMICO ================= -->
+
+    <center>
+
+        <AnchorPane fx:id="contentArea" style="-fx-background-color: #f4f6f5;" BorderPane.alignment="CENTER" />
+
+    </center>
+
 </BorderPane>

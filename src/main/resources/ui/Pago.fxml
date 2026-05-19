@@ -1,42 +1,98 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="585.0" prefWidth="678.0" style="-fx-background-color: #104D54;" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/26" fx:controller="ui.PagoController">
-    <stylesheets>
-        <URL value="@/styles/pago.css" />
-    </stylesheets>
-   <children>
-      <Label layoutX="208.0" layoutY="35.0" prefHeight="46.0" prefWidth="261.0" style="-fx-background-color: white;" text="            MENU DE PAGO" textFill="#0d0d0d" AnchorPane.bottomAnchor="503.6">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <ComboBox fx:id="cbCasa" layoutX="363.0" layoutY="154.0" prefWidth="150.0" />
-      <ComboBox fx:id="cbYear" layoutX="363.0" layoutY="293.0" prefWidth="150.0" />
-      <ComboBox fx:id="cbMes" layoutX="363.0" layoutY="227.0" prefWidth="150.0" />
-      <Label alignment="TOP_CENTER" layoutX="106.0" layoutY="157.0" prefHeight="17.0" prefWidth="182.0" style="-fx-background-color: white;" text="Selecciones el Numero de casa" textAlignment="CENTER" textFill="#0d0d0d">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <Label alignment="TOP_CENTER" layoutX="106.0" layoutY="230.0" prefHeight="17.0" prefWidth="182.0" style="-fx-background-color: white;" text="Selecciones el Mes" textAlignment="CENTER" textFill="#0d0d0d">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <Label alignment="TOP_CENTER" layoutX="106.0" layoutY="296.0" prefHeight="17.0" prefWidth="182.0" style="-fx-background-color: white;" text="Selecciones el Año" textAlignment="CENTER" textFill="#0d0d0d">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <TextField fx:id="txtMonto" editable="false" layoutX="249.0" layoutY="369.0" />
-      <Button layoutX="258.0" layoutY="461.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="132.0" text="Registrar Pago" />
-   </children>
-</AnchorPane>
+<StackPane style="-fx-background-color: #f4f6f5;" stylesheets="@../styles/pago.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.PagoController">
+
+    <children>
+
+        <!-- CARD -->
+
+        <AnchorPane maxHeight="420" maxWidth="480" prefHeight="420" prefWidth="480" styleClass="card-container">
+
+            <children>
+
+                <VBox alignment="TOP_CENTER" spacing="18" AnchorPane.bottomAnchor="35" AnchorPane.leftAnchor="35" AnchorPane.rightAnchor="35" AnchorPane.topAnchor="35">
+
+                    <children>
+
+                        <!-- TITULO -->
+
+                        <Label styleClass="title-label" text="💳 Registro de Pago" />
+
+                        <Label styleClass="subtitle-label" text="Administra pagos de cuotas del condominio" />
+
+                        <!-- FORMULARIO -->
+
+                        <GridPane hgap="18" style="-fx-padding: 20 0 0 0;" vgap="16">
+
+                            <children>
+
+                                <!-- CASA -->
+
+                                <Label styleClass="form-label" text="Número de casa" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+
+                                <ComboBox fx:id="cmbCasas" prefWidth="200" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                <!-- MES -->
+
+                                <Label styleClass="form-label" text="Mes" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+
+                                <ComboBox fx:id="cmbMes" prefWidth="200" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                <!-- AÑO -->
+
+                                <Label styleClass="form-label" text="Año" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+
+                                <ComboBox fx:id="cmbYear" prefWidth="200" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                                <!-- MONTO -->
+
+                                <Label styleClass="form-label" text="Monto" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+
+                                <TextField fx:id="txtMonto" prefWidth="200" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                            </children>
+                     <columnConstraints>
+                        <ColumnConstraints />
+                        <ColumnConstraints />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                        <RowConstraints />
+                     </rowConstraints>
+
+                        </GridPane>
+
+                        <!-- BOTON -->
+
+                        <Button onAction="#registrarPago" prefWidth="100" styleClass="primary-button" text="Registrar">
+
+                             <VBox.margin>
+                                 <Insets top="20" />
+                             </VBox.margin>
+                        </Button>
+
+                    </children>
+
+                </VBox>
+
+            </children>
+
+        </AnchorPane>
+
+    </children>
+
+</StackPane>

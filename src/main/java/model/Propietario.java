@@ -29,7 +29,14 @@ public class Propietario {
         this.correo = correo;
         
     }
-
+    // Construcctor para Registrar// 
+    public Propietario(String nombre, int numeroCasa, String telefono, String correo) {
+        this.nombre = nombre;
+        this.numeroCasa = numeroCasa;
+        this.telefono = telefono;
+        this.correo = correo;
+    }
+     
     public int getId() {
         return id;
     }

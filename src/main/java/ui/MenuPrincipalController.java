@@ -10,14 +10,20 @@ import java.util.ResourceBundle;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.scene.control.Button;
+
+
 
 /**
  * FXML Controller class
@@ -26,13 +32,30 @@ import javafx.stage.Stage;
  */
 public class MenuPrincipalController implements Initializable {
     @FXML
+    private AnchorPane contentArea;
+    @FXML
     private Label lblFecha;
+    @FXML
+    private Button btnPropietarios;
+    @FXML
+    private Button btnPagos;
+    @FXML
+    private Button btnEstadoCuenta;
+    @FXML
+    private Button btnReporte;
+    @FXML
+    private Button btnMorosos;
+
+
+    
+    
+    
     /**
      * Initializes the controller class.
      */
     
     
-
+    // ------------CERRAR SESION
     @FXML
     private void cerrarSesion(MouseEvent event) {
         try {
@@ -46,7 +69,7 @@ public class MenuPrincipalController implements Initializable {
             // 3. Cambiamos la escena de regreso al Login
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Login - Vista Verde");
+            stage.setTitle("Login - Sistema Administrativo");
             stage.centerOnScreen();
             stage.show();
 
@@ -58,15 +81,87 @@ public class MenuPrincipalController implements Initializable {
         }
     }
     
+    //----METODO DEL CALENDARIO EN EL MENU
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        LocalDate fechaLocal = LocalDate.now();
-    // Formato de fecha
-    DateTimeFormatter formatoElegante = DateTimeFormatter.ofPattern("EEEE, dd 'de' MMMM 'de' yyyy", new Locale("es", "ES"));
-    String fechaFormateada = fechaLocal.format(formatoElegante);
+   public void initialize(URL url, ResourceBundle rb) {
 
-    // aqui se puede cargar una imagen
-    lblFecha.setText("📅 " + fechaFormateada.substring(0, 1).toUpperCase() + fechaFormateada.substring(1));
-    }    
+    cargarVista("/ui/Dashboard.fxml");
+}   
+    
+   
+   private void cargarVista(String rutaFXML) {
+
+    try {
+
+        FXMLLoader loader =
+                new FXMLLoader(getClass().getResource(rutaFXML));
+
+        Parent vista = loader.load();
+
+        contentArea.getChildren().clear();
+
+        contentArea.getChildren().add(vista);
+
+        AnchorPane.setTopAnchor(vista, 0.0);
+        AnchorPane.setBottomAnchor(vista, 0.0);
+        AnchorPane.setLeftAnchor(vista, 0.0);
+        AnchorPane.setRightAnchor(vista, 0.0);
+
+    } catch (IOException e) {
+
+        e.printStackTrace();
+    }
+}
+   
+   
+   private void activarBoton(Button botonActivo) {
+
+    btnPropietarios.getStyleClass().remove("menu-button-active");
+    btnPagos.getStyleClass().remove("menu-button-active");
+    btnEstadoCuenta.getStyleClass().remove("menu-button-active");
+    btnReporte.getStyleClass().remove("menu-button-active");
+    btnMorosos.getStyleClass().remove("menu-button-active");
+
+    botonActivo.getStyleClass().add("menu-button-active");
+}
+    
+    // -------ABRIR VENTANA PAGOS
+     @FXML
+    private void abrirPagos(ActionEvent event) {
+
+    activarBoton(btnPagos);
+
+    cargarVista("/ui/Pago.fxml");
+}
+    
+        // -------ABRIR VENTANA PAGOS
+     @FXML
+    private void abrirPropietario(ActionEvent event) {
+
+    activarBoton(btnPropietarios);
+
+    cargarVista("/ui/RegistroPropietario.fxml");
+}
+    
+    
+    // -------ABRIR VENTANA ESTADO DE CUENTAS
+     @FXML
+    private void abrirEstadoCuenta(ActionEvent event) {
+
+    activarBoton(btnEstadoCuenta);
+
+    cargarVista("/ui/EstadoCuenta.fxml");
+}
+    
+    
+     // -------ABRIR VENTANA REPORTE GENERAL
+     @FXML
+    private void abrirReporteGeneral(ActionEvent event) {
+
+    activarBoton(btnReporte);
+
+    cargarVista("/ui/ReporteGeneral.fxml");
+}
+    
     
 }
