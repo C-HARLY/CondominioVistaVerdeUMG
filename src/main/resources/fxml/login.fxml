@@ -9,39 +9,80 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane style="-fx-background-color: #f4f6f5;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.LoginController">
+<AnchorPane
+    xmlns="http://javafx.com/javafx/26"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="ui.LoginController"
+    styleClass="login-background"
+    stylesheets="@../styles/login.css">
 
     <children>
 
         <!-- CONTENEDOR CENTRAL -->
-        <VBox alignment="CENTER" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
 
-            <!-- CARD -->
-            <VBox alignment="CENTER" maxWidth="350" prefWidth="350" spacing="15" style="-fx-background-color: white;                          -fx-background-radius: 15;                          -fx-padding: 30;                          -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 20, 0, 0, 5);">
+        <VBox alignment="CENTER"
+              AnchorPane.topAnchor="0"
+              AnchorPane.bottomAnchor="0"
+              AnchorPane.leftAnchor="0"
+              AnchorPane.rightAnchor="0">
+
+            <!-- CARD LOGIN -->
+
+            <VBox alignment="CENTER"
+                  spacing="18"
+                  maxWidth="350"
+                  prefWidth="350"
+                  styleClass="login-card">
 
                 <!-- LOGO -->
-                <ImageView fitWidth="180" preserveRatio="true" smooth="true">
+
+                <ImageView fitWidth="180"
+                           preserveRatio="true"
+                           smooth="true">
+
                     <image>
-                        <Image url="@logo.png" />
+                        <Image url="@logo.png"/>
                     </image>
+
                 </ImageView>
 
+                <!-- SUBTITLE -->
 
-                <Label style="-fx-text-fill: #666;" text="Iniciar sesión" />
+                <Label text="Iniciar sesión"
+                       styleClass="login-subtitle"/>
 
-                <!-- INPUTS -->
-                <TextField fx:id="txtUsuario" maxWidth="250" promptText="Usuario" style="-fx-background-radius: 8;                                   -fx-border-radius: 8;                                   -fx-border-color: #2e7d32;" />
+                <!-- INPUT USUARIO -->
 
-                <PasswordField fx:id="txtPassword" maxWidth="250" promptText="Contraseña" style="-fx-background-radius: 8;                                       -fx-border-radius: 8;                                       -fx-border-color: #2e7d32;" />
+                <TextField fx:id="txtUsuario"
+                           maxWidth="250"
+                           promptText="Usuario"
+                           styleClass="login-input"/>
+
+                <!-- INPUT PASSWORD -->
+
+                <PasswordField fx:id="txtPassword"
+                               maxWidth="250"
+                               promptText="Contraseña"
+                               styleClass="login-input"/>
 
                 <!-- BOTÓN -->
-                <Button fx:id="btnLogin" defaultButton="true" onAction="#handleLogin" prefWidth="200" style="-fx-background-color: #2e7d32;                                -fx-text-fill: white;                                -fx-background-radius: 8;" text="Ingresar" />
 
-                <Label fx:id="lblMensaje" style="-fx-text-fill: red;" />
+                <Button fx:id="btnLogin"
+                        text="Ingresar"
+                        prefWidth="100"
+                        defaultButton="true"
+                        onAction="#handleLogin"
+                        styleClass="login-button"/>
+
+                <!-- MENSAJE -->
+
+                <Label fx:id="lblMensaje"
+                       styleClass="error-label"/>
 
             </VBox>
 
         </VBox>
 
     </children>
+
 </AnchorPane>

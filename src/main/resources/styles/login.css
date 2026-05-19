@@ -1,7 +1,121 @@
-/*
- * Empty Stylesheet file.
- */
+/* =========================================================
+   FONDO GENERAL
+========================================================= */
 
-.mainFxmlClass {
+.login-background {
 
+    -fx-background-color: #f4f6f5;
+}
+
+/* =========================================================
+   CARD LOGIN
+========================================================= */
+
+.login-card {
+
+    -fx-background-color: white;
+
+    -fx-background-radius: 18;
+
+    -fx-padding: 35;
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(0,0,0,0.08),
+        20,
+        0,
+        0,
+        4
+    );
+}
+
+/* =========================================================
+   SUBTÍTULO
+========================================================= */
+
+.login-subtitle {
+
+    -fx-text-fill: #6b7280;
+
+    -fx-font-size: 14px;
+}
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.login-input {
+
+    -fx-background-color: white;
+
+    -fx-background-radius: 10;
+
+    -fx-border-radius: 10;
+
+    -fx-border-color: #d1d5db;
+
+    -fx-border-width: 1.2px;
+
+    -fx-padding: 10 14 10 14;
+
+    -fx-font-size: 14px;
+}
+
+/* =========================================================
+   INPUT FOCUS
+========================================================= */
+
+.login-input:focused {
+
+    -fx-border-color: #14b8a6;
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(20,184,166,0.20),
+        10,
+        0,
+        0,
+        0
+    );
+}
+
+/* =========================================================
+   BOTÓN LOGIN
+========================================================= */
+
+.login-button {
+
+    -fx-background-color: #7cb342;
+
+    -fx-text-fill: white;
+
+    -fx-font-size: 14px;
+
+    -fx-font-weight: bold;
+
+    -fx-background-radius: 10;
+
+    -fx-cursor: hand;
+
+    -fx-padding: 10 20 10 20;
+}
+
+/* =========================================================
+   HOVER BOTÓN
+========================================================= */
+
+.login-button:hover {
+
+    -fx-background-color: #256b29;
+}
+
+/* =========================================================
+   LABEL ERROR
+========================================================= */
+
+.error-label {
+
+    -fx-text-fill: #ef4444;
+
+    -fx-font-size: 12px;
 }
