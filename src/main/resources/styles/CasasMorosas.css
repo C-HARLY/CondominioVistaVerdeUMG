@@ -1,0 +1,27 @@
+/* ComboBox con la clase "input" */
+.input {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #d1d5db;
+    -fx-border-radius: 10;
+    -fx-font-size: 13px;
+    -fx-pref-height: 38px;
+}
+
+/* Área interna donde se muestra el texto */
+.input .list-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #1f2937;
+    -fx-padding: 6 10 6 10;
+}
+
+/* Botón de la flecha */
+.input .arrow-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0 10 10 0;
+}
+
+/* Flecha */
+.input .arrow {
+    -fx-background-color: #6b7280;
+}
