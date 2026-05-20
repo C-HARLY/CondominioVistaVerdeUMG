@@ -63,7 +63,7 @@
 
                 <!-- MOROSOS -->
 
-                <Button fx:id="btnMorosos" maxWidth="Infinity" prefHeight="45" styleClass="menu-button" text="🚨  Casas morosas" />
+                <Button fx:id="btnMorosos" maxWidth="Infinity" onAction="#abrirCasasMorosas" prefHeight="45" styleClass="menu-button" text="🚨  Casas morosas" />
 
                 <!-- ESPACIADOR -->
 

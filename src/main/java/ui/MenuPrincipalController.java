@@ -163,5 +163,12 @@ public class MenuPrincipalController implements Initializable {
     cargarVista("/ui/ReporteGeneral.fxml");
 }
     
-    
+    // ------- ABRIR VENTANA CASAS MOROSAS
+    @FXML
+    private void abrirCasasMorosas(ActionEvent event) {
+
+    activarBoton(btnMorosos);
+
+    cargarVista("/ui/CasasMorosas.fxml");
+}
 }
