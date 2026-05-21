@@ -1,27 +1,51 @@
-/* ComboBox con la clase "input" */
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+
+/* Estilo para los ComboBox */
 .input {
-    -fx-background-color: white;
     -fx-background-radius: 10;
-    -fx-border-color: #d1d5db;
     -fx-border-radius: 10;
-    -fx-font-size: 13px;
-    -fx-pref-height: 38px;
-}
-
-/* Área interna donde se muestra el texto */
-.input .list-cell {
+    -fx-border-color: #d1d5db;
     -fx-background-color: white;
-    -fx-text-fill: #1f2937;
     -fx-padding: 6 10 6 10;
+    -fx-font-size: 13px;
+    -fx-pref-height: 38;
 }
 
-/* Botón de la flecha */
-.input .arrow-button {
-    -fx-background-color: transparent;
-    -fx-background-radius: 0 10 10 0;
+/* Título principal */
+.title-label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
 }
 
-/* Flecha */
-.input .arrow {
-    -fx-background-color: #6b7280;
+/* Subtítulo */
+.subtitle-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6b7280;
+}
+
+/* Etiquetas del formulario */
+.form-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
+}
+
+/* Botón principal */
+.primary-button {
+    -fx-background-color: #8bc34a;
+    -fx-background-radius: 10;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-pref-height: 38;
+    -fx-cursor: hand;
+}
+
+/* Efecto al pasar el mouse sobre el botón */
+.primary-button:hover {
+    -fx-background-color: #7cb342;
 }
