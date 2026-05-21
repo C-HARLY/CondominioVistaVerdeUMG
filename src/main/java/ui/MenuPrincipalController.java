@@ -162,6 +162,14 @@ public class MenuPrincipalController implements Initializable {
 
     cargarVista("/ui/ReporteGeneral.fxml");
 }
+    //abrir ventana configuracion cuota
     
+    @FXML
+    private void abrirConfiguracionCuota(ActionEvent event) {
+
+    activarBoton(btnEstadoCuenta);
+
+    cargarVista("/ui/ConfiguracionCuota.fxml");
+}
     
 }
