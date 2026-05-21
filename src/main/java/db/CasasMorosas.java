@@ -6,17 +6,20 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.CasaMorosa;
+
 public class CasasMorosas {
 
-    public List<String> obtenerCasasMorosas(int mes, int anio) {
+    public List<CasaMorosa> obtenerCasasMorosas(int mes, int anio) {
 
-        List<String> lista = new ArrayList<>();
+        List<CasaMorosa> lista = new ArrayList<>();
 
         String sql = """
             SELECT c.id_casa,
                    c.numero_casa,
                    u.nombre,
-                   u.apellido
+                   u.apellido,
+                   u.telefono
             FROM casas c
             JOIN usuarios u
                 ON c.id_usuario = u.id_usuario
@@ -41,17 +44,23 @@ public class CasasMorosas {
 
             while (rs.next()) {
 
-                String dato =
-                        rs.getString("numero_casa") + " - " +
-                        rs.getString("nombre") + " " +
-                        rs.getString("apellido");
+                CasaMorosa casa = new CasaMorosa();
 
-                lista.add(dato);
+                casa.setNumeroCasa(rs.getString("numero_casa"));
+
+                casa.setNombre(
+                        rs.getString("nombre") + " " +
+                        rs.getString("apellido")
+                );
+
+                casa.setTelefono(rs.getString("telefono"));
+
+                lista.add(casa);
             }
 
         } catch (Exception e) {
-    System.out.println(e.getMessage());
-}
+            System.out.println(e.getMessage());
+        }
 
         return lista;
     }
