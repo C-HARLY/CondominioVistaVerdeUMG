@@ -48,4 +48,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
 /* Efecto al pasar el mouse sobre el botón */
 .primary-button:hover {
     -fx-background-color: #7cb342;
+    
+    
 }
