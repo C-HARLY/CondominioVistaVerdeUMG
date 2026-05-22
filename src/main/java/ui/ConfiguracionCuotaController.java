@@ -6,21 +6,33 @@ package ui;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextField;
+import logic.CuotaDAO;
+import model.Cuota;
 
-/**
- * FXML Controller class
- *
- * @author carlo
- */
 public class ConfiguracionCuotaController implements Initializable {
 
-    /**
-     * Initializes the controller class.
-     */
+    @FXML
+    private TextField txtCuotaActual;
+
+    @FXML
+    private TextField txtNuevaCuota;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+
+        CuotaDAO dao = new CuotaDAO();
+
+        Cuota cuota = dao.obtenerCuota();
+
+        if (cuota != null) {
+
+            txtCuotaActual.setText(String.valueOf(cuota.getMontoActual()));
+
+            txtCuotaActual.setEditable(false);
+        }
+    }
+
 }
