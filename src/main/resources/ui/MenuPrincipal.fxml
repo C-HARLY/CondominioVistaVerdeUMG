@@ -45,7 +45,7 @@
 
                 <!-- CONFIGURACIÓN -->
 
-                <Button maxWidth="Infinity" onAction="#abrirConfiguracionCuota" prefHeight="45" styleClass="menu-button" text="⚙  Configuración de cuota" />
+                <Button fx:id="btnConfiguracion" maxWidth="Infinity" onAction="#abrirConfiguracionCuota" prefHeight="45" styleClass="menu-button" text="⚙  Configuración de cuota" />
 
                 <Separator />
 
