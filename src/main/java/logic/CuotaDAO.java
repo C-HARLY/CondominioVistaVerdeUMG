@@ -42,15 +42,14 @@ public class CuotaDAO {
     }
 
     // ACTUALIZAR CUOTA
-    public boolean actualizarCuota(int nuevaCuota) {
+   public boolean actualizarMontoMantenimiento(int nuevoMonto) {
 
         String sql = "UPDATE cuotas SET monto_actual = ? WHERE id = 1";
 
         try (Connection conn = Conexion.conectar();
              PreparedStatement pst = conn.prepareStatement(sql)) {
 
-            pst.setDouble(1, nuevaCuota);
-
+            pst.setDouble(1, nuevoMonto);
             int filas = pst.executeUpdate();
 
             return filas > 0;

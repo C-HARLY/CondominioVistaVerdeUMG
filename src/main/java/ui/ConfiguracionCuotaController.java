@@ -13,6 +13,8 @@ import logic.CuotaDAO;
 import model.Cuota;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.DatePicker;
+import java.time.LocalDate;
 
 public class ConfiguracionCuotaController implements Initializable {
 
@@ -21,6 +23,9 @@ public class ConfiguracionCuotaController implements Initializable {
 
     @FXML
     private TextField txtNuevaCuota;
+    
+    @FXML
+private DatePicker dpFecha;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -34,6 +39,8 @@ public class ConfiguracionCuotaController implements Initializable {
             txtCuotaActual.setText(String.valueOf(cuota.getMontoActual()));
 
             txtCuotaActual.setEditable(false);
+            
+            
         }
     }
      @FXML
@@ -41,11 +48,23 @@ public class ConfiguracionCuotaController implements Initializable {
 
         try {
 
+            LocalDate fechaSeleccionada = dpFecha.getValue();
+
+if (!fechaSeleccionada.equals(LocalDate.now())) {
+
+    Alert alert = new Alert(Alert.AlertType.WARNING);
+
+    alert.setContentText("La fecha no es válida. Debe seleccionar la fecha actual.");
+
+    alert.showAndWait();
+
+    return;
+}
             int nuevaCuota = Integer.parseInt(txtNuevaCuota.getText());
 
             CuotaDAO dao = new CuotaDAO();
 
-            boolean actualizado = dao.actualizarCuota(nuevaCuota);
+            boolean actualizado = dao.actualizarMontoMantenimiento(nuevaCuota);
 
             if (actualizado) {
 
