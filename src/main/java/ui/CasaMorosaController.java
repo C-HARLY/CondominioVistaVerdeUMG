@@ -3,7 +3,7 @@ package ui;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import db.CasasMorosas;
+import logic.CasasMorosasDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -69,7 +69,7 @@ private void cargarMorosos() {
     String mes = comboMeses.getValue();
     int anio = Integer.parseInt(comboAnios.getValue());
 
-    CasasMorosas dao = new CasasMorosas();
+    CasasMorosasDAO dao = new CasasMorosasDAO();
 
     ObservableList<CasaMorosa> lista = FXCollections.observableArrayList(
             dao.obtenerCasasMorosas(mes, anio)

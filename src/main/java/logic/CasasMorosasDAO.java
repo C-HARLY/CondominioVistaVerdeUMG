@@ -1,5 +1,6 @@
-package db;
+package logic;
 
+import db.Conexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,7 +9,7 @@ import java.util.List;
 
 import model.CasaMorosa;
 
-public class CasasMorosas {
+public class CasasMorosasDAO {
 
     public List<CasaMorosa> obtenerCasasMorosas(String mes, int anio) {
 
