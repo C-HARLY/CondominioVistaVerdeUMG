@@ -2,6 +2,8 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -17,12 +19,10 @@
 
     <children>
 
-        <!-- CARD PRINCIPAL -->
-
-        <AnchorPane prefWidth="500"
+        <AnchorPane prefWidth="520"
                     prefHeight="520"
                     maxWidth="520"
-                    maxHeight="500"
+                    maxHeight="520"
                     styleClass="card-container">
 
             <children>
@@ -35,117 +35,100 @@
 
                     <children>
 
-                        <!-- HEADER -->
-
                         <VBox spacing="6">
-
                             <children>
-
                                 <Label text="📄 Estado de Cuenta"
                                        styleClass="title-label"/>
 
                                 <Label text="Consulta pagos y cuotas pendientes"
                                        styleClass="subtitle-label"/>
-
                             </children>
-
                         </VBox>
 
-                        <!-- FILTROS -->
-
-                        <HBox spacing="20">
-
+                        <HBox spacing="15" alignment="BOTTOM_LEFT">
                             <children>
-
                                 <VBox spacing="6">
-
                                     <children>
-
-                                        <Label text="Número de casa"
+                                        <Label text="Casa"
                                                styleClass="form-label"/>
 
                                         <ComboBox fx:id="cmbCasas"
-                                                  prefWidth="100"
+                                                  prefWidth="90"
                                                   onAction="#buscarEstadoCuenta"
                                                   styleClass="input"/>
-
                                     </children>
-
                                 </VBox>
 
                                 <VBox spacing="6">
-
                                     <children>
-
-                                        <Label text="Año"
+                                        <Label text="Desde:"
                                                styleClass="form-label"/>
 
-                                        <ComboBox fx:id="cmbAnio"
-                                                  prefWidth="100"
-                                                  onAction="#buscarEstadoCuenta"
-                                                  styleClass="input"/>
-
+                                        <DatePicker fx:id="dpInicio"
+                                                    prefWidth="110"
+                                                    styleClass="input"/>
                                     </children>
-
                                 </VBox>
 
-                            </children>
+                                <VBox spacing="6">
+                                    <children>
+                                        <Label text="Hasta:"
+                                               styleClass="form-label"/>
 
+                                        <DatePicker fx:id="dpFin"
+                                                    prefWidth="110"
+                                                    styleClass="input"/>
+                                    </children>
+                                </VBox>
+
+                                <Button fx:id="btnGenerarPDF" 
+                                        text="🖨 PDF" 
+                                        onAction="#generarReportePDF" 
+                                        prefHeight="30"
+                                        style="-fx-background-color: #1B5E20; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 5;"/>
+
+                            </children>
                         </HBox>
 
-                        <!-- PROPIETARIO -->
-
                         <HBox alignment="CENTER_LEFT"
-                            spacing="20"
-                            styleClass="owner-card">
+                              spacing="20"
+                              styleClass="owner-card">
 
                           <children>
-
-                              <!-- IZQUIERDA -->
 
                               <HBox alignment="CENTER_LEFT"
                                     spacing="12"
                                     HBox.hgrow="ALWAYS">
 
                                   <children>
-
                                       <Label text="👤"
                                              styleClass="owner-icon"/>
 
                                       <VBox spacing="2">
-
                                           <children>
-
                                               <Label text="Propietario"
                                                      styleClass="section-label"/>
 
                                               <Label fx:id="lblNombrePropietario"
                                                      text="Seleccione una casa"
                                                      styleClass="owner-label"/>
-
                                           </children>
-
                                       </VBox>
-
                                   </children>
 
                               </HBox>
-
-                              <!-- DERECHA -->
 
                               <VBox alignment="CENTER_RIGHT"
                                     spacing="2">
 
                                   <children>
-
                                     <Label text="Total Pagado"
                                            styleClass="section-label"/>
 
                                     <Label fx:id="lblTotalPagado"
                                            text="Q0.00"
                                            styleClass="total-label"/>
-
-                                </children>
+                                  </children>
 
                               </VBox>
 
@@ -153,20 +136,14 @@
 
                       </HBox>
 
-                        <!-- CARDS -->
-
                         <HBox spacing="20">
-
                             <children>
-
-                                <!-- PAGADOS -->
 
                                 <VBox spacing="12"
                                       prefWidth="250"
                                       styleClass="mini-card">
 
                                     <children>
-
                                         <Label text="✅ Pagados"
                                                styleClass="card-title"/>
 
@@ -174,19 +151,15 @@
                                                   prefHeight="220"
                                                   prefWidth="210"
                                                   styleClass="custom-list"/>
-
                                     </children>
 
                                 </VBox>
-
-                                <!-- PENDIENTES -->
 
                                 <VBox spacing="12"
                                       prefWidth="250"
                                       styleClass="mini-card">
 
                                     <children>
-
                                         <Label text="⚠ Pendientes"
                                                styleClass="card-title"/>
 
@@ -194,13 +167,11 @@
                                                   prefHeight="220"
                                                   prefWidth="210"
                                                   styleClass="custom-list"/>
-
                                     </children>
 
                                 </VBox>
 
                             </children>
-
                         </HBox>
                        
                     </children>
