@@ -1,26 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="707.0" prefWidth="776.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.ReporteGeneralController">
-   <children>
-      <Label layoutX="256.0" layoutY="48.0" prefHeight="18.0" prefWidth="264.0" text="              MENU DE REPORTES DEL MES" />
-      <TableView fx:id="tblReporte" layoutX="51.0" layoutY="193.0" prefHeight="390.0" prefWidth="690.0">
-        <columns>
-          <TableColumn fx:id="colNumeroCasa" prefWidth="75.0" text="No. Casa" />
-          <TableColumn fx:id="colPropietario" prefWidth="331.20001220703125" text="Propietario" />
-            <TableColumn fx:id="colEstadoMes" prefWidth="139.20001220703125" text="Mes Actual" />
-            <TableColumn fx:id="colTotalAnio" prefWidth="130.40008544921875" text="Total Año" />
-        </columns>
-      </TableView>
-      <Label layoutX="627.0" layoutY="611.0" prefHeight="18.0" prefWidth="103.0" text="Total Recaudado" />
-      <Label layoutX="479.0" layoutY="611.0" prefHeight="18.0" prefWidth="103.0" text="Total Esperado" />
-      <Label fx:id="lblTotalRecaudado" layoutX="627.0" layoutY="659.0" prefHeight="18.0" prefWidth="103.0" text="            0.00" />
-      <Label fx:id="lblTotaEsperado" layoutX="468.0" layoutY="659.0" prefHeight="18.0" prefWidth="103.0" text="            0.00" />
-      <Button layoutX="14.0" layoutY="665.0" mnemonicParsing="false" onAction="#volverAlMenu" text="Regresar" />
-   </children>
-</AnchorPane>
+<StackPane style="-fx-background-color: #f4f6f5;" stylesheets="@../styles/reportegeneral.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.ReporteGeneralController">
+    <children>
+        <AnchorPane maxHeight="500" maxWidth="580" prefHeight="520" prefWidth="520" styleClass="card-container">
+            <children>
+                <VBox spacing="12" AnchorPane.bottomAnchor="28" AnchorPane.leftAnchor="30" AnchorPane.rightAnchor="30" AnchorPane.topAnchor="28">
+                    <children>
+                        
+                        <VBox spacing="10">
+                            <children>
+                                <Label styleClass="title-label" text="📊 Reporte General" />
+                                <Label styleClass="subtitle-label" text="Resumen financiero del condominio" />
+                            </children>
+                        </VBox>
+
+                        <HBox maxWidth="520" prefWidth="520" spacing="20" alignment="CENTER_LEFT">
+                            <children>
+                                <VBox spacing="10" alignment="CENTER_LEFT">
+                                    <children>
+                                        <ComboBox fx:id="cmbMes" onAction="#onCmbMesChange" prefHeight="37.0" prefWidth="133.0" styleClass="custom-combo" />
+                                        <Button fx:id="btnGenerarPDF" onAction="#generarReportePDF" mnemonicParsing="false" text="Generar PDF" style="-fx-background-color: #1B5E20; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
+                                    </children>
+                                </VBox>
+
+                                <VBox alignment="CENTER" prefHeight="68.0" prefWidth="150.0" spacing="6" styleClass="summary-card">
+                                    <children>
+                                        <Label styleClass="summary-title" text="Total Esperado" />
+                                        <Label fx:id="lblTotalEsperado" styleClass="summary-value" text="Q0.00" />
+                                    </children>
+                                </VBox>
+
+                                <VBox alignment="CENTER" prefHeight="68.0" prefWidth="150.0" spacing="6" styleClass="summary-card">
+                                    <children>
+                                        <Label styleClass="summary-title" text="Total Recaudado" />
+                                        <Label fx:id="lblTotalRecaudado" styleClass="summary-value-green" text="Q0.00" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                        <TableView fx:id="tblReporte" maxWidth="520" prefHeight="276.0" prefWidth="460.0" styleClass="custom-table">
+                            <columns>
+                                <TableColumn fx:id="colCasa" prefWidth="55" text="Casa" />
+                                <TableColumn fx:id="colPropietario" prefWidth="150" text="Propietario" />
+                                <TableColumn fx:id="colEstado" prefWidth="85" text="Estado" />
+                                <TableColumn fx:id="colMontoMes" prefWidth="95" text="Mes" />
+                                <TableColumn fx:id="colTotal" prefWidth="95" text="Total" />
+                            </columns>
+                        </TableView>
+                        
+                    </children>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </children>
+</StackPane>

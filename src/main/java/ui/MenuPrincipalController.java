@@ -23,43 +23,30 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 
-
-
 /**
  * FXML Controller class
  *
  * @author carlo
  */
 public class MenuPrincipalController implements Initializable {
-    @FXML
-    private AnchorPane contentArea;
-    @FXML
-    private Label lblFecha;
-    @FXML
-    private Button btnPropietarios;
-    @FXML
-    private Button btnPagos;
-    @FXML
-    private Button btnEstadoCuenta;
-    @FXML
-    private Button btnReporte;
-    @FXML
-    private Button btnMorosos;
+    
+    @FXML private AnchorPane contentArea;
+    @FXML private Label lblFecha;
+    @FXML private Button btnPropietarios;
+    @FXML private Button btnPagos;
+    @FXML private Button btnEstadoCuenta;
+    @FXML private Button btnReporte;
+    @FXML private Button btnMorosos;
 
-
-    
-    
-    
     /**
      * Initializes the controller class.
      */
-    
     
     // ------------CERRAR SESION
     @FXML
     private void cerrarSesion(MouseEvent event) {
         try {
-            // 1. Cargamos de vuelta el archivo  Login
+            // 1. Cargamos de vuelta el archivo Login
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login.fxml")); 
             Parent root = loader.load();
 
@@ -83,92 +70,78 @@ public class MenuPrincipalController implements Initializable {
     
     //----METODO DEL CALENDARIO EN EL MENU
     @Override
-   public void initialize(URL url, ResourceBundle rb) {
-
-    cargarVista("/ui/Dashboard.fxml");
-}   
+    public void initialize(URL url, ResourceBundle rb) {
+        cargarVista("/ui/Dashboard.fxml");
+    }   
     
-   
-   private void cargarVista(String rutaFXML) {
+    private void cargarVista(String rutaFXML) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+            Parent vista = loader.load();
 
-    try {
+            contentArea.getChildren().clear();
+            contentArea.getChildren().add(vista);
 
-        FXMLLoader loader =
-                new FXMLLoader(getClass().getResource(rutaFXML));
+            AnchorPane.setTopAnchor(vista, 0.0);
+            AnchorPane.setBottomAnchor(vista, 0.0);
+            AnchorPane.setLeftAnchor(vista, 0.0);
+            AnchorPane.setRightAnchor(vista, 0.0);
 
-        Parent vista = loader.load();
-
-        contentArea.getChildren().clear();
-
-        contentArea.getChildren().add(vista);
-
-        AnchorPane.setTopAnchor(vista, 0.0);
-        AnchorPane.setBottomAnchor(vista, 0.0);
-        AnchorPane.setLeftAnchor(vista, 0.0);
-        AnchorPane.setRightAnchor(vista, 0.0);
-
-    } catch (IOException e) {
-
-        e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-}
    
-   
-   private void activarBoton(Button botonActivo) {
+    private void activarBoton(Button botonActivo) {
+        btnPropietarios.getStyleClass().remove("menu-button-active");
+        btnPagos.getStyleClass().remove("menu-button-active");
+        btnEstadoCuenta.getStyleClass().remove("menu-button-active");
+        btnReporte.getStyleClass().remove("menu-button-active");
+        btnMorosos.getStyleClass().remove("menu-button-active");
 
-    btnPropietarios.getStyleClass().remove("menu-button-active");
-    btnPagos.getStyleClass().remove("menu-button-active");
-    btnEstadoCuenta.getStyleClass().remove("menu-button-active");
-    btnReporte.getStyleClass().remove("menu-button-active");
-    btnMorosos.getStyleClass().remove("menu-button-active");
-
-    botonActivo.getStyleClass().add("menu-button-active");
-}
+        botonActivo.getStyleClass().add("menu-button-active");
+    }
     
     // -------ABRIR VENTANA PAGOS
-     @FXML
+    @FXML
     private void abrirPagos(ActionEvent event) {
-
-    activarBoton(btnPagos);
-
-    cargarVista("/ui/Pago.fxml");
-}
+        activarBoton(btnPagos);
+        cargarVista("/ui/Pago.fxml");
+    }
     
-        // -------ABRIR VENTANA PAGOS
-     @FXML
+    // -------ABRIR VENTANA PROPIETARIOS
+    @FXML
     private void abrirPropietario(ActionEvent event) {
-
-    activarBoton(btnPropietarios);
-
-    cargarVista("/ui/RegistroPropietario.fxml");
-}
-    
+        activarBoton(btnPropietarios);
+        cargarVista("/ui/RegistroPropietario.fxml");
+    }
     
     // -------ABRIR VENTANA ESTADO DE CUENTAS
-     @FXML
+    @FXML
     private void abrirEstadoCuenta(ActionEvent event) {
-
-    activarBoton(btnEstadoCuenta);
-
-    cargarVista("/ui/EstadoCuenta.fxml");
-}
+        activarBoton(btnEstadoCuenta);
+        cargarVista("/ui/EstadoCuenta.fxml");
+    }
     
-    
-     // -------ABRIR VENTANA REPORTE GENERAL
-     @FXML
+    // -------ABRIR VENTANA REPORTE GENERAL
+    @FXML
     private void abrirReporteGeneral(ActionEvent event) {
-
-    activarBoton(btnReporte);
-
-    cargarVista("/ui/ReporteGeneral.fxml");
-}
+        activarBoton(btnReporte);
+        cargarVista("/ui/ReporteGeneral.fxml");
+    }
     
     // ------- ABRIR VENTANA CASAS MOROSAS
     @FXML
     private void abrirCasasMorosas(ActionEvent event) {
+        activarBoton(btnMorosos);
+        cargarVista("/ui/CasasMorosas.fxml");
+    }
 
-    activarBoton(btnMorosos);
-
-    cargarVista("/ui/CasasMorosas.fxml");
-}
+    // ------- ABRIR VENTANA CONFIGURACION CUOTA
+    @FXML
+    private void abrirConfiguracionCuota(ActionEvent event) {
+        activarBoton(btnEstadoCuenta);
+        cargarVista("/ui/ConfiguracionCuota.fxml");
+    }
+    
 }

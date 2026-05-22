@@ -99,7 +99,7 @@ public class EstadoCuentaController implements Initializable {
                     try (ResultSet rsInfo = psInfo.executeQuery()) {
                         if (rsInfo.next()) {
                             lblNombrePropietario.setText(rsInfo.getString("nombre"));
-                            lblNombrePropietario.setStyle("-fx-text-fill: #10b981; -fx-font-weight: bold;");
+                            lblNombrePropietario.setStyle("-fx-text-fill: #000000; -fx-font-weight: bold;");
                             
                             // EXTRAEMOS LA FECHA DE REGISTRO
                             java.sql.Date fechaSql = rsInfo.getDate("fecha_registro");
@@ -122,7 +122,7 @@ public class EstadoCuentaController implements Initializable {
                             String mesQuePago = rsPagos.getString("mes");
                             double montoPagado = rsPagos.getDouble("monto");
                             
-                            mesesPagados.add(mesQuePago + " (Q" + montoPagado + ")");
+                            mesesPagados.add(mesQuePago + " (Q" + String.format("%,.0f", montoPagado) + ")");
                             sumaTotal += montoPagado;
                             
                             // EL TRUCO SIGUE FUNCIONANDO: Borramos de los pendientes solo si existe en la lista
@@ -136,7 +136,7 @@ public class EstadoCuentaController implements Initializable {
                 ObservableList<String> mesesPendientes = FXCollections.observableArrayList(mesesPendientesList);
                 lvMesesPendientes.setItems(mesesPendientes);
                 
-                lblTotalPagado.setText("Total Pagado: Q" + String.format("%.2f", sumaTotal));
+                lblTotalPagado.setText("Q" + String.format("%,.0f", sumaTotal));
                 
             } catch (SQLException e) {
                 System.err.println("Error procesando el estado de cuenta: " + e.getMessage());
@@ -173,16 +173,7 @@ public class EstadoCuentaController implements Initializable {
         return mesesValidos;
     }
    
-    @FXML
-    private void volverAlMenu(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MenuPrincipal.fxml")); 
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    } 
+     
 }
+ 
+
