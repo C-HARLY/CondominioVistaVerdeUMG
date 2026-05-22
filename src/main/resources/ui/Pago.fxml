@@ -18,7 +18,7 @@
 
         <!-- CARD -->
 
-        <AnchorPane maxHeight="420" maxWidth="480" prefHeight="420" prefWidth="480" styleClass="card-container">
+        <AnchorPane maxHeight="500" maxWidth="520" prefHeight="520" prefWidth="500" styleClass="card-container">
 
             <children>
 
@@ -42,25 +42,25 @@
 
                                 <Label styleClass="form-label" text="Número de casa" GridPane.columnIndex="0" GridPane.rowIndex="0" />
 
-                                <ComboBox fx:id="cmbCasas" prefWidth="200" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                <ComboBox fx:id="cmbCasas" prefWidth="200.0" prefHeight="41" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                                 <!-- MES -->
 
                                 <Label styleClass="form-label" text="Mes" GridPane.columnIndex="0" GridPane.rowIndex="1" />
 
-                                <ComboBox fx:id="cmbMes" prefWidth="200" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                <ComboBox fx:id="cmbMes" prefWidth="200" prefHeight="41" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
                                 <!-- AÑO -->
 
                                 <Label styleClass="form-label" text="Año" GridPane.columnIndex="0" GridPane.rowIndex="2" />
 
-                                <ComboBox fx:id="cmbYear" prefWidth="200" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                <ComboBox fx:id="cmbYear" prefWidth="200" prefHeight="41" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
                                 <!-- MONTO -->
 
                                 <Label styleClass="form-label" text="Monto" GridPane.columnIndex="0" GridPane.rowIndex="3" />
 
-                                <TextField fx:id="txtMonto" prefWidth="200" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                <TextField fx:id="txtMonto" prefWidth="200" prefHeight="41" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                             </children>
                      <columnConstraints>
