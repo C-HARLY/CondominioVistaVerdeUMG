@@ -3,10 +3,10 @@ module umg.vistaverdeumg {
     requires javafx.fxml;
     requires java.sql;
     requires java.base;
+    requires jasperreports;
+
     opens ui to javafx.fxml;
     exports ui;
     opens db to javafx.fxml;
     opens model to javafx.base;
-    requires jasperreports;
 }
-
