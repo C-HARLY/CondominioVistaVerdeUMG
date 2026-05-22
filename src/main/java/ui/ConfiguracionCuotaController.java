@@ -11,6 +11,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import logic.CuotaDAO;
 import model.Cuota;
+import javafx.event.ActionEvent;
+import javafx.scene.control.Alert;
 
 public class ConfiguracionCuotaController implements Initializable {
 
@@ -34,5 +36,45 @@ public class ConfiguracionCuotaController implements Initializable {
             txtCuotaActual.setEditable(false);
         }
     }
+     @FXML
+    private void guardarCuota(ActionEvent event) {
 
+        try {
+
+            int nuevaCuota = Integer.parseInt(txtNuevaCuota.getText());
+
+            CuotaDAO dao = new CuotaDAO();
+
+            boolean actualizado = dao.actualizarCuota(nuevaCuota);
+
+            if (actualizado) {
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+                alert.setContentText("Cuota actualizada correctamente");
+
+                alert.showAndWait();
+
+                txtCuotaActual.setText(String.valueOf(nuevaCuota));
+
+                txtNuevaCuota.clear();
+
+            } else {
+
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+
+                alert.setContentText("No se pudo actualizar");
+
+                alert.showAndWait();
+            }
+
+        } catch (Exception e) {
+
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+
+            alert.setContentText("Ingrese un número válido");
+
+            alert.showAndWait();
+        }
+    }
 }
