@@ -60,34 +60,39 @@ public class CasaMorosaController implements Initializable {
     }
 
     @FXML
-    private void cargarMorosos() {
+private void cargarMorosos() {
 
-        
-        if (comboMeses.getValue() == null || comboAnios.getValue() == null) {
-            return;
-        }
+    if (comboMeses.getValue() == null || comboAnios.getValue() == null) {
+        return;
+    }
 
-        String mes = comboMeses.getValue();
-        int anio = Integer.parseInt(comboAnios.getValue());
+    String mes = comboMeses.getValue();
+    int anio = Integer.parseInt(comboAnios.getValue());
 
-        CasasMorosas dao = new CasasMorosas();
+    CasasMorosas dao = new CasasMorosas();
 
-        ObservableList<CasaMorosa> lista = FXCollections.observableArrayList(
-                dao.obtenerCasasMorosas(mes, anio)
+    ObservableList<CasaMorosa> lista = FXCollections.observableArrayList(
+            dao.obtenerCasasMorosas(mes, anio)
+    );
+
+    System.out.println("MES: " + mes);
+    System.out.println("AÑO: " + anio);
+    System.out.println("TAMAÑO LISTA: " + lista.size());
+
+    tablaMorosos.setItems(lista);
+
+    if (lista.isEmpty()) {
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+        alert.setTitle("Casas Morosas");
+        alert.setHeaderText("Sin pagos pendientes");
+
+        alert.setContentText(
+            "Al día de hoy, todas las casas se encuentran al día con sus pagos."
         );
 
-        tablaMorosos.setItems(lista);
-
-        
-        if (lista.isEmpty()) {
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Información");
-            alert.setHeaderText(null);
-            alert.setContentText(
-                    "Al día de hoy, todas las casas se encuentran al día con sus pagos"
-            );
-            alert.showAndWait();
-        }
+        alert.showAndWait();
     }
+}
 }

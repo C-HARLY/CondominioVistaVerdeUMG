@@ -21,15 +21,21 @@ SELECT
     p.apellido,
     p.telefono
 FROM casas c
+
 JOIN propietarios p
     ON c.id = p.id_casa
-WHERE NOT EXISTS (
+
+WHERE c.estado = 'Ocupada'
+
+AND NOT EXISTS (
     SELECT 1
     FROM pagos pa
     WHERE pa.id_casa = c.id
       AND pa.mes = ?
       AND pa.anio = ?
 )
+
+ORDER BY c.numero_casa ASC
 """;
 
         try (
