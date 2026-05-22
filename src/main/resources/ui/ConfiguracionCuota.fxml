@@ -61,7 +61,7 @@
                         <DatePicker fx:id="dpFecha" layoutX="117.0" layoutY="54.0" prefHeight="25.0" prefWidth="151.0" />
                         <TextField fx:id="txtCuotaActual" layoutX="118.0" layoutY="99.0" />
                         <TextField fx:id="txtNuevaCuota" layoutX="118.0" layoutY="147.0" />
-                        <Button layoutX="151.0" layoutY="215.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="70.0" style="-fx-background-color: #757575; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-weight: bold;" text="Cancelar" />
+                        <Button layoutX="151.0" layoutY="215.0" mnemonicParsing="false" onAction="#cancelarCuota" prefHeight="39.0" prefWidth="70.0" style="-fx-background-color: #757575; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-weight: bold;" text="Cancelar" />
                         <ImageView fitHeight="25.0" fitWidth="21.0" layoutX="14.0" layoutY="101.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../../../../../../../../Downloads/dinero.png" />

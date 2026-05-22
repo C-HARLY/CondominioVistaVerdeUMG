@@ -15,6 +15,8 @@ import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DatePicker;
 import java.time.LocalDate;
+import javafx.scene.control.ButtonType;
+import java.util.Optional;
 
 public class ConfiguracionCuotaController implements Initializable {
 
@@ -45,7 +47,7 @@ private DatePicker dpFecha;
     }
      @FXML
     private void guardarCuota(ActionEvent event) {
-
+        
         try {
 
             LocalDate fechaSeleccionada = dpFecha.getValue();
@@ -59,7 +61,10 @@ if (!fechaSeleccionada.equals(LocalDate.now())) {
     alert.showAndWait();
 
     return;
+    
+    
 }
+           
             int nuevaCuota = Integer.parseInt(txtNuevaCuota.getText());
 
             CuotaDAO dao = new CuotaDAO();
@@ -96,4 +101,33 @@ if (!fechaSeleccionada.equals(LocalDate.now())) {
             alert.showAndWait();
         }
     }
+    @FXML
+private void cancelarCuota(ActionEvent event) {
+
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+
+    alert.setTitle("Confirmación");
+
+    alert.setHeaderText(null);
+
+    alert.setContentText("¿Está seguro que desea cancelar la actualización de la cuota?");
+
+    Optional<ButtonType> resultado = alert.showAndWait();
+
+    if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+
+        CuotaDAO dao = new CuotaDAO();
+
+Cuota cuota = dao.obtenerCuota();
+
+if (cuota != null) {
+
+    txtCuotaActual.setText(String.valueOf(cuota.getMontoActual()));
+}
+
+txtNuevaCuota.clear();
+
+dpFecha.setValue(null);
+    }
+}
 }
