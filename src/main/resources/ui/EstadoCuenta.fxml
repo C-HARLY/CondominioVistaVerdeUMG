@@ -1,31 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane xmlns="http://javafx.com/javafx/21"
+<StackPane style="-fx-background-color: #f4f6f5;"
+           stylesheets="@../styles/estadocuenta.css"
+           xmlns="http://javafx.com/javafx/21"
            xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="ui.EstadoCuentaController"
-           style="-fx-background-color: #f4f6f5;"
-           stylesheets="@../styles/estadocuenta.css">
+           fx:controller="ui.EstadoCuentaController">
 
     <children>
 
         <!-- CARD PRINCIPAL -->
 
-        <AnchorPane prefWidth="500"
-                    prefHeight="520"
+        <AnchorPane maxHeight="500"
                     maxWidth="520"
-                    maxHeight="500"
+                    prefHeight="520"
+                    prefWidth="580"
                     styleClass="card-container">
 
             <children>
+
+                <!-- CONTENEDOR PRINCIPAL -->
 
                 <VBox spacing="24"
                       AnchorPane.topAnchor="30"
@@ -37,15 +39,16 @@
 
                         <!-- HEADER -->
 
-                        <VBox spacing="6">
+                        <VBox spacing="4"
+                        >
 
                             <children>
 
                                 <Label text="📄 Estado de Cuenta"
-                                       styleClass="title-label"/>
+                                       styleClass="title-label" />
 
                                 <Label text="Consulta pagos y cuotas pendientes"
-                                       styleClass="subtitle-label"/>
+                                       styleClass="subtitle-label" />
 
                             </children>
 
@@ -57,33 +60,37 @@
 
                             <children>
 
+                                <!-- CASA -->
+
                                 <VBox spacing="6">
 
                                     <children>
 
                                         <Label text="Número de casa"
-                                               styleClass="form-label"/>
+                                               styleClass="form-label" />
 
                                         <ComboBox fx:id="cmbCasas"
                                                   prefWidth="100"
-                                                  onAction="#buscarEstadoCuenta"
-                                                  styleClass="input"/>
+                                                  styleClass="input"
+                                                  onAction="#buscarEstadoCuenta" />
 
                                     </children>
 
                                 </VBox>
+
+                                <!-- AÑO -->
 
                                 <VBox spacing="6">
 
                                     <children>
 
                                         <Label text="Año"
-                                               styleClass="form-label"/>
+                                               styleClass="form-label" />
 
                                         <ComboBox fx:id="cmbAnio"
                                                   prefWidth="100"
-                                                  onAction="#buscarEstadoCuenta"
-                                                  styleClass="input"/>
+                                                  styleClass="input"
+                                                  onAction="#buscarEstadoCuenta" />
 
                                     </children>
 
@@ -96,104 +103,54 @@
                         <!-- PROPIETARIO -->
 
                         <HBox alignment="CENTER_LEFT"
-                            spacing="20"
-                            styleClass="owner-card">
-
-                          <children>
-
-                              <!-- IZQUIERDA -->
-
-                              <HBox alignment="CENTER_LEFT"
-                                    spacing="12"
-                                    HBox.hgrow="ALWAYS">
-
-                                  <children>
-
-                                      <Label text="👤"
-                                             styleClass="owner-icon"/>
-
-                                      <VBox spacing="2">
-
-                                          <children>
-
-                                              <Label text="Propietario"
-                                                     styleClass="section-label"/>
-
-                                              <Label fx:id="lblNombrePropietario"
-                                                     text="Seleccione una casa"
-                                                     styleClass="owner-label"/>
-
-                                          </children>
-
-                                      </VBox>
-
-                                  </children>
-
-                              </HBox>
-
-                              <!-- DERECHA -->
-
-                              <VBox alignment="CENTER_RIGHT"
-                                    spacing="2">
-
-                                  <children>
-
-                                    <Label text="Total Pagado"
-                                           styleClass="section-label"/>
-
-                                    <Label fx:id="lblTotalPagado"
-                                           text="Q0.00"
-                                           styleClass="total-label"/>
-
-                                </children>
-
-                              </VBox>
-
-                          </children>
-
-                      </HBox>
-
-                        <!-- CARDS -->
-
-                        <HBox spacing="20">
+                              spacing="20"
+                              styleClass="owner-card">
 
                             <children>
 
-                                <!-- PAGADOS -->
+                                <!-- IZQUIERDA -->
 
-                                <VBox spacing="12"
-                                      prefWidth="250"
-                                      styleClass="mini-card">
+                                <HBox alignment="CENTER_LEFT"
+                                      spacing="12"
+                                      HBox.hgrow="ALWAYS">
 
                                     <children>
 
-                                        <Label text="✅ Pagados"
-                                               styleClass="card-title"/>
+                                        <Label text="👤"
+                                               styleClass="owner-icon" />
 
-                                        <ListView fx:id="lvMesesPagados"
-                                                  prefHeight="220"
-                                                  prefWidth="210"
-                                                  styleClass="custom-list"/>
+                                        <VBox spacing="2">
+
+                                            <children>
+
+                                                <Label text="Propietario"
+                                                       styleClass="section-label" />
+
+                                                <Label fx:id="lblNombrePropietario"
+                                                       text="Seleccione una casa"
+                                                       styleClass="owner-label" />
+
+                                            </children>
+
+                                        </VBox>
 
                                     </children>
 
-                                </VBox>
+                                </HBox>
 
-                                <!-- PENDIENTES -->
+                                <!-- DERECHA -->
 
-                                <VBox spacing="12"
-                                      prefWidth="250"
-                                      styleClass="mini-card">
+                                <VBox alignment="CENTER_RIGHT"
+                                      spacing="2">
 
                                     <children>
 
-                                        <Label text="⚠ Pendientes"
-                                               styleClass="card-title"/>
+                                        <Label text="Total Pagado"
+                                               styleClass="section-label" />
 
-                                        <ListView fx:id="lvMesesPendientes"
-                                                  prefHeight="220"
-                                                  prefWidth="210"
-                                                  styleClass="custom-list"/>
+                                        <Label fx:id="lblTotalPagado"
+                                               text="Q0.00"
+                                               styleClass="total-label" />
 
                                     </children>
 
@@ -202,7 +159,57 @@
                             </children>
 
                         </HBox>
-                       
+
+                        <!-- MINI CARDS -->
+
+                        <HBox spacing="20">
+
+                            <children>
+
+                                <!-- PAGADOS -->
+
+                                <VBox prefWidth="250"
+                                      spacing="12"
+                                      styleClass="mini-card">
+
+                                    <children>
+
+                                        <Label text="✅ Pagados"
+                                               styleClass="card-title" />
+
+                                        <ListView fx:id="lvMesesPagados"
+                                                  prefHeight="220"
+                                                  prefWidth="210"
+                                                  styleClass="custom-list" />
+
+                                    </children>
+
+                                </VBox>
+
+                                <!-- PENDIENTES -->
+
+                                <VBox prefWidth="250"
+                                      spacing="12"
+                                      styleClass="mini-card">
+
+                                    <children>
+
+                                        <Label text="⚠ Pendientes"
+                                               styleClass="card-title" />
+
+                                        <ListView fx:id="lvMesesPendientes"
+                                                  prefHeight="220"
+                                                  prefWidth="210"
+                                                  styleClass="custom-list" />
+
+                                    </children>
+
+                                </VBox>
+
+                            </children>
+
+                        </HBox>
+
                     </children>
 
                 </VBox>

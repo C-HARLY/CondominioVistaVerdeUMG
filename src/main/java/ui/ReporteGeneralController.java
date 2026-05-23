@@ -48,6 +48,10 @@ public class ReporteGeneralController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // Ajuste visual para que la tabla de Axel se vea simétrica
+        colCasa.setStyle("-fx-alignment: CENTER;");
+        colMontoMes.setStyle("-fx-alignment: CENTER;");
+        colTotal.setStyle("-fx-alignment: CENTER;");
+        
         tblReporte.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         
         configurarColumnas();
@@ -89,7 +93,7 @@ public class ReporteGeneralController implements Initializable {
         System.out.println("El ComboBox detectó el mes: " + mesSeleccionado); 
 
         if (colMontoMes != null) {
-            colMontoMes.setText("Pagado en " + mesSeleccionado);
+            colMontoMes.setText("Monto");
         }
 
         int anioActual = LocalDate.now().getYear();
@@ -126,8 +130,8 @@ public class ReporteGeneralController implements Initializable {
         System.out.println("Total a pintar en el Label: Q. " + totalRecaudadoMes);
         System.out.println("-----------------------");
 
-        lblTotalEsperado.setText(String.format("Q. %,.2f", totalEsperado));
-        lblTotalRecaudado.setText(String.format("Q. %,.2f", totalRecaudadoMes));
+        lblTotalEsperado.setText(String.format("Q. %,.0f", totalEsperado));
+        lblTotalRecaudado.setText(String.format("Q. %,.0f", totalRecaudadoMes));
     }
 
     /* =========================================================

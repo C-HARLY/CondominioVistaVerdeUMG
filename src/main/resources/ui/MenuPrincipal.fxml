@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="950.0" style="-fx-background-color: #f4f6f5;" stylesheets="@../styles/menu.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MenuPrincipalController">
+<BorderPane prefHeight="600.0" prefWidth="950.0" style="-fx-background-color: #f4f6f5;" stylesheets="@../styles/menu.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MenuPrincipalController">
 
     <!-- ================= SIDEBAR ================= -->
 
@@ -23,7 +23,7 @@
 
                     <children>
 
-                        <Label style="-fx-font-size: 22px;                                       -fx-font-weight: bold;                                       -fx-text-fill: #000000;" text="Menú Principal" />
+                        <Label style="-fx-font-size: 22px;                                       -fx-font-weight: bold;                                       -fx-text-fill: #000000;" text="Panel Principal" />
 
                     </children>
 

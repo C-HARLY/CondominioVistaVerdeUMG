@@ -60,7 +60,7 @@ public class MenuPrincipalController implements Initializable {
 
         cargarVista("/ui/Dashboard.fxml");
 
-        activarBoton(btnPropietarios);
+      
     }
 
     // =========================================================

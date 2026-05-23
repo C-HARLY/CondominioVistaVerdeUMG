@@ -24,7 +24,7 @@
 
 .title-label {
 
-    -fx-font-size: 26px;
+    -fx-font-size: 22px;
 
     -fx-font-weight: bold;
 
@@ -165,7 +165,58 @@
 
     -fx-padding: 10;
 
-    -fx-font-size: 13px;
+    -fx-font-size: 11px;
+}
+
+.table-row-cell {
+
+    -fx-cell-size: 24px;
+
+}
+
+.table-cell {
+
+    -fx-padding: 0 6 0 6;
+
+    -fx-font-size: 11px;
+}
+
+.table-row-cell:selected {
+
+    -fx-background-color: #eef1f4;
+}
+
+.table-row-cell:selected .table-cell {
+
+    -fx-background-color: #eef1f4;
+
+    -fx-text-fill: #1e293b;
+
+    -fx-border-color: transparent;
+}
+
+.table-view:focused .table-row-cell:selected {
+
+    -fx-background-color: #eef1f4;
+}
+
+.table-view:focused .table-cell:focused {
+
+    -fx-background-color: #eef1f4;
+
+    -fx-border-color: transparent;
+}
+
+.table-view .table-cell {
+
+    -fx-focus-color: transparent;
+
+    -fx-faint-focus-color: transparent;
+}
+
+.table-row-cell:hover {
+
+    -fx-background-color: #f7f9fb;
 }
 
 /* =========================================================
@@ -199,4 +250,38 @@
 .custom-combo:focused {
 
     -fx-border-color: #8bc34a;
+}
+
+/* =========================================================
+   FILTRO
+========================================================= */
+
+.pdf-button {
+
+    -fx-background-color: #f4fff0;
+    -fx-text-fill: #2e7d32;
+
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+
+    -fx-border-color: #cfe7c7;
+    -fx-border-width: 1;
+
+    -fx-cursor: hand;
+}
+
+.pdf-button:hover {
+
+    -fx-background-color: #e8f5e9;
+}
+
+.filter-label {
+
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+
+    -fx-text-fill: #94a3b8;
 }
