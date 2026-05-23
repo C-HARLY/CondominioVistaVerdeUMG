@@ -4,7 +4,7 @@ module umg.vistaverdeumg {
     requires java.sql;
     requires java.base;
     requires jasperreports;
-
+    requires com.zaxxer.hikari;
     opens ui to javafx.fxml;
     exports ui;
     opens db to javafx.fxml;

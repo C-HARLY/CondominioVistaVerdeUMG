@@ -26,7 +26,7 @@ import model.ReporteCasaDTO;
 public class ReporteGeneralController implements Initializable {
 
     /* =========================================================
-       COMPONENTES DE LA VISTA (Alineados con el diseño de Axel)
+       COMPONENTES DE LA VISTA 
     ========================================================= */
     @FXML private TableView<ReporteCasaDTO> tblReporte;
     @FXML private TableColumn<ReporteCasaDTO, Integer> colCasa;
@@ -34,12 +34,11 @@ public class ReporteGeneralController implements Initializable {
     @FXML private TableColumn<ReporteCasaDTO, String> colEstado;
     @FXML private TableColumn<ReporteCasaDTO, Double> colMontoMes;
     @FXML private TableColumn<ReporteCasaDTO, Double> colTotal;
-
     @FXML private Label lblTotalEsperado;
     @FXML private Label lblTotalRecaudado;
-    
     @FXML private ComboBox<String> cmbMes;
 
+    //combobox con los meses que usaremos
     private final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
 
     /* =========================================================
@@ -47,15 +46,15 @@ public class ReporteGeneralController implements Initializable {
     ========================================================= */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Ajuste visual para que la tabla de Axel se vea simétrica
+        // Ajuste visual para que la tabla  se vea simétrica
         tblReporte.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        
         configurarColumnas();
         inicializarComboBox();
         // Al cargar, procesa con el mes actual automáticamente
         ejecutarReporte();
     }
-
+    
+    
     private void configurarColumnas() {
         colCasa.setCellValueFactory(new PropertyValueFactory<>("numeroCasa"));
         colPropietario.setCellValueFactory(new PropertyValueFactory<>("propietario"));
@@ -138,7 +137,7 @@ public class ReporteGeneralController implements Initializable {
         String mesSeleccionado = cmbMes.getSelectionModel().getSelectedItem();
 
         if (mesSeleccionado == null || mesSeleccionado.trim().isEmpty()) {
-            System.out.println("⚠️ ALERTA: Selecciona un mes primero.");
+            System.out.println("ALERTA: Selecciona un mes primero.");
             return; 
         }
 
@@ -151,7 +150,7 @@ public class ReporteGeneralController implements Initializable {
             java.io.InputStream reporteStream = getClass().getResourceAsStream("/reportes/ReporteVistaVerde.jasper");
             
             if (reporteStream == null) {
-                System.out.println("❌ ERROR: No se encontró el archivo .jasper en la carpeta de resources.");
+                System.out.println(" ERROR: No se encontró el archivo .jasper en la carpeta de resources.");
                 return;
             }
 
@@ -168,25 +167,10 @@ public class ReporteGeneralController implements Initializable {
             visor.setVisible(true);
 
         } catch (Exception e) {
-            System.out.println(" ERROR FATAL al generar el PDF:");
+            System.out.println(" ERROR  al generar el PDF:");
             e.printStackTrace();
         }
     }
 
-    /* =========================================================
-       NAVEGACIÓN (Diseño de Axel)
-    ========================================================= */
-    @FXML
-    private void volverAlMenu(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MenuPrincipal.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            System.out.println("Error al cargar el Menú Principal:");
-            e.printStackTrace();
-        }
-    }
+    
 }

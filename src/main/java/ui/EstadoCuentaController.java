@@ -242,7 +242,7 @@ public class EstadoCuentaController implements Initializable {
             java.sql.Connection conexion = db.Conexion.conectar(); 
             
             if (conexion == null) {
-                System.out.println("❌ ERROR: No se pudo conectar a Neon DB.");
+                System.out.println(" ERROR: No se pudo conectar a Neon DB.");
                 return;
             }
 
