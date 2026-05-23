@@ -60,16 +60,15 @@ public class RegistroPropietarioController implements Initializable {
         String nombre = txtNombre.getText();
         String tel = txtTelefono.getText();
         String mail = txtCorreo.getText();
-        String casaSeleccionada = cmbCasas.getValue(); // Trae "Casa X"
+        String casaSeleccionada = cmbCasas.getValue(); // Trae "Casa "
 
         // 2. Validar que no haya vacíos
         if (nombre.isEmpty() || tel.isEmpty() || casaSeleccionada == null) {
-            // Aquí puedes usar tu método mostrarAlerta que hicimos antes
             System.out.println("Faltan datos");
             return;
         }
 
-        // 3. Extraer solo el número de la casa (ej: "Casa 5" -> 5)
+        // 3. Extraer solo el número de la casa 
         int numCasa = Integer.parseInt(casaSeleccionada.replace("Casa ", ""));
 
         // 4. Ejecutar el registro
@@ -92,31 +91,4 @@ public class RegistroPropietarioController implements Initializable {
         cmbCasas.getSelectionModel().clearSelection();
     }
     
-    
-     //----METODO REGRESAR AL MENU PRINCIPAL
-    
-    @FXML
-    private void volverAlMenu(ActionEvent event) {
-        try {
-            // 1. Cargar el archivo FXML del Menú Principal
-            // Asegúrate de que el nombre del archivo sea exactamente igual a como está en tu proyecto
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MenuPrincipal.fxml")); 
-            Parent root = loader.load();
-
-            // 2. Obtener la ventana (Stage) actual desde el botón que se hizo clic
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            // 3. Crear y establecer la nueva escena
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            
-            // Opcional: Volver a centrar la ventana por si las pantallas tienen distintos tamaños
-            stage.centerOnScreen(); 
-            stage.show();
-
-        } catch (IOException e) {
-            System.err.println("Error al regresar al menú principal: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 }

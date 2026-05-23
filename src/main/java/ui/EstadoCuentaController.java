@@ -16,21 +16,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.stage.Stage;
 
 public class EstadoCuentaController implements Initializable {
 
     @FXML private ComboBox<Integer> cmbCasas;
-   
-    @FXML private ComboBox<Integer> cmbAnio; 
+    @FXML private DatePicker dpInicio;
+    @FXML private DatePicker dpFin;
     @FXML private Label lblNombrePropietario;
     @FXML private ListView<String> lvMesesPagados;
     @FXML private ListView<String> lvMesesPendientes;
@@ -39,14 +35,24 @@ public class EstadoCuentaController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarCasasOcupadas();
-        cargarAnios(); 
+        configurarFiltros();
     }    
     
-    // MÉTODO PARA LLENAR EL COMBOBOX DE AÑOS
-    private void cargarAnios() {
-        int anioActual = LocalDate.now().getYear();
-        cmbAnio.getItems().addAll(anioActual - 1, anioActual, anioActual + 1, anioActual + 2);
-        cmbAnio.getSelectionModel().select(Integer.valueOf(anioActual)); // Selecciona el actual por defecto
+    private void configurarFiltros() {
+        // Bloqueamos la edición manual de texto en los calendarios (solo clic)
+        if (dpInicio != null) dpInicio.setEditable(false);
+        if (dpFin != null) dpFin.setEditable(false);
+        
+        // Listeners: Si cambia la casa, o alguna fecha, actualiza la pantalla automáticamente
+        if(cmbCasas != null) {
+            cmbCasas.valueProperty().addListener((obs, oldVal, newVal) -> buscarEstadoCuenta());
+        }
+        if(dpInicio != null) {
+            dpInicio.valueProperty().addListener((obs, oldVal, newVal) -> buscarEstadoCuenta());
+        }
+        if(dpFin != null) {
+            dpFin.valueProperty().addListener((obs, oldVal, newVal) -> buscarEstadoCuenta());
+        }
     }
 
     private void cargarCasasOcupadas() {
@@ -62,7 +68,9 @@ public class EstadoCuentaController implements Initializable {
             while (rs.next()) {
                 listaCasas.add(rs.getInt("numero_casa"));
             }
-            cmbCasas.setItems(listaCasas); 
+            if(cmbCasas != null) {
+               cmbCasas.setItems(listaCasas); 
+            }
             
         } catch (SQLException e) {
             System.err.println("Error al cargar las casas ocupadas: " + e.getMessage());
@@ -70,26 +78,47 @@ public class EstadoCuentaController implements Initializable {
     }
    
     @FXML
-    private void buscarEstadoCuenta(ActionEvent event) {
-        Integer casaSeleccionada = cmbCasas.getValue();
-        Integer anioSeleccionado = cmbAnio.getValue(); // OBTENEMOS EL AÑO
+    private void buscarEstadoCuenta() {
+        // Esta validación asegura que el usuario no escriba texto en el combo si no está el FXML
+        if(cmbCasas == null || dpInicio == null || dpFin == null) return;
         
-        // Validamos que hayan seleccionado casa y año
-        if (casaSeleccionada != null && anioSeleccionado != null) {
+        Integer casaSeleccionada = cmbCasas.getValue();
+        LocalDate fechaInicio = dpInicio.getValue();
+        LocalDate fechaFin = dpFin.getValue();
+        
+        // Validamos que los tres campos tengan datos
+        if (casaSeleccionada != null && fechaInicio != null && fechaFin != null) {
+            
+            // Validación lógica: La fecha inicio no puede ser después de la fecha fin
+            if(fechaInicio.isAfter(fechaFin)){
+                System.out.println("La fecha de inicio no puede ser mayor a la fecha de fin");
+                return;
+            }
             
             lvMesesPagados.getItems().clear();
             lvMesesPendientes.getItems().clear();
-            lblTotalPagado.setText("0.00");
+            lblTotalPagado.setText("Q0.00");
             
             ObservableList<String> mesesPagados = FXCollections.observableArrayList();
             List<String> mesesPendientesList = new ArrayList<>();
             double sumaTotal = 0.0;
 
-            // 3. CONSULTA MEJORADA: Traemos nombre Y fecha_registro
             String sqlInfo = "SELECT p.nombre, p.fecha_registro FROM propietarios p INNER JOIN casas c ON p.id_casa = c.id WHERE c.numero_casa = ?";
             
-            // 4. CONSULTA MEJORADA: Filtramos los pagos por la casa Y EL AÑO seleccionado
-            String sqlPagos = "SELECT pa.mes, pa.monto FROM pagos pa INNER JOIN casas c ON pa.id_casa = c.id WHERE c.numero_casa = ? AND pa.anio = ?";
+            // EL TRUCO DEL RANGO: 
+            // Multiplicamos Año * 100 + Mes para comparar fácilmente periodos numéricos. Ej: 202605
+            // EL TRUCO DEL RANGO SIN TOCAR LA BASE DE DATOS:
+            String sqlPagos = "SELECT pa.mes, pa.anio, pa.monto " +
+                              "FROM pagos pa " +
+                              "INNER JOIN casas c ON pa.id_casa = c.id " +
+                              "WHERE c.numero_casa = ? " +
+                              "AND (pa.anio * 100 + " +
+                              "    CASE pa.mes " +
+                              "        WHEN 'Enero' THEN 1 WHEN 'Febrero' THEN 2 WHEN 'Marzo' THEN 3 " +
+                              "        WHEN 'Abril' THEN 4 WHEN 'Mayo' THEN 5 WHEN 'Junio' THEN 6 " +
+                              "        WHEN 'Julio' THEN 7 WHEN 'Agosto' THEN 8 WHEN 'Septiembre' THEN 9 " +
+                              "        WHEN 'Octubre' THEN 10 WHEN 'Noviembre' THEN 11 WHEN 'Diciembre' THEN 12 " +
+                              "    END) BETWEEN ? AND ?";
 
             try (Connection con = Conexion.conectar()) {
                 
@@ -101,37 +130,42 @@ public class EstadoCuentaController implements Initializable {
                             lblNombrePropietario.setText(rsInfo.getString("nombre"));
                             lblNombrePropietario.setStyle("-fx-text-fill: #000000; -fx-font-weight: bold;");
                             
-                            // EXTRAEMOS LA FECHA DE REGISTRO
                             java.sql.Date fechaSql = rsInfo.getDate("fecha_registro");
                             if(fechaSql != null) {
                                 LocalDate fechaRegistro = fechaSql.toLocalDate();
-                                // CONSTRUIMOS LA LISTA DE MESES VÁLIDOS
-                                mesesPendientesList = calcularMesesValidos(anioSeleccionado, fechaRegistro);
+                                mesesPendientesList = calcularMesesValidosEnRango(fechaInicio, fechaFin, fechaRegistro);
                             }
                         }
                     }
                 }
 
-                // --- EJECUTAR CONSULTA DE PAGOS ---
+                // --- EJECUTAR CONSULTA DE PAGOS EN EL RANGO ---
                 try (PreparedStatement psPagos = con.prepareStatement(sqlPagos)) {
                     psPagos.setInt(1, casaSeleccionada);
-                    psPagos.setInt(2, anioSeleccionado); // LE PASAMOS EL AÑO AL QUERY
+                    
+                    // Convertimos las fechas a nuestro formato numérico (Ej: 202601)
+                    int rangoInicio = (fechaInicio.getYear() * 100) + fechaInicio.getMonthValue();
+                    int rangoFin = (fechaFin.getYear() * 100) + fechaFin.getMonthValue();
+                    
+                    psPagos.setInt(2, rangoInicio);
+                    psPagos.setInt(3, rangoFin);
                     
                     try (ResultSet rsPagos = psPagos.executeQuery()) {
                         while (rsPagos.next()) {
                             String mesQuePago = rsPagos.getString("mes");
+                            int anioPago = rsPagos.getInt("anio");
                             double montoPagado = rsPagos.getDouble("monto");
                             
-                            mesesPagados.add(mesQuePago + " (Q" + String.format("%,.0f", montoPagado) + ")");
+                            String etiquetaPago = mesQuePago + " " + anioPago;
+                            mesesPagados.add(etiquetaPago + " (Q" + String.format("%,.0f", montoPagado) + ")");
                             sumaTotal += montoPagado;
                             
-                            // EL TRUCO SIGUE FUNCIONANDO: Borramos de los pendientes solo si existe en la lista
-                            mesesPendientesList.remove(mesQuePago);
+                            mesesPendientesList.remove(etiquetaPago);
                         }
                     }
                 }
                 
-                // 5. PINTAR LOS RESULTADOS EN LA PANTALLA
+                // PINTAR LOS RESULTADOS
                 lvMesesPagados.setItems(mesesPagados);
                 ObservableList<String> mesesPendientes = FXCollections.observableArrayList(mesesPendientesList);
                 lvMesesPendientes.setItems(mesesPendientes);
@@ -142,38 +176,85 @@ public class EstadoCuentaController implements Initializable {
                 System.err.println("Error procesando el estado de cuenta: " + e.getMessage());
             }
         } else {
-            System.out.println("Por favor selecciona una casa y un año.");
+            System.out.println("Esperando selección de casa y fechas.");
         }
     }
     
-    // MÉTODO AUXILIAR: Calcula qué meses realmente debe el inquilino según cuándo llegó
-    private List<String> calcularMesesValidos(int anioSeleccionado, LocalDate fechaRegistro) {
-        List<String> todosLosMeses = Arrays.asList(
-            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
-            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-        );
-        
+    // MÉTODO AUXILIAR ADAPTADO AL RANGO DE FECHAS
+    private List<String> calcularMesesValidosEnRango(LocalDate fechaInicioRango, LocalDate fechaFinRango, LocalDate fechaRegistro) {
         List<String> mesesValidos = new ArrayList<>();
-        int anioRegistro = fechaRegistro.getYear();
-        int mesRegistro = fechaRegistro.getMonthValue();
+        List<String> nombresMeses = Arrays.asList("", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
 
-        if (anioSeleccionado < anioRegistro) {
-            // Si el año consultado es antes de que llegara, no debe nada. Devuelve lista vacía.
-            return mesesValidos; 
-        } else if (anioSeleccionado == anioRegistro) {
-            // Si es el año en que llegó, empieza a deber desde ese mes en adelante
-            for (int i = mesRegistro - 1; i < 12; i++) {
-                mesesValidos.add(todosLosMeses.get(i));
-            }
-        } else {
-            // Si es un año posterior, debe los 12 meses
-            mesesValidos.addAll(todosLosMeses);
+        // Decidimos desde cuándo empezar a cobrar
+        // Si el inquilino llegó DESPUÉS de la fecha de inicio del filtro, empezamos a cobrar desde que llegó
+        LocalDate fechaInicioCobro = fechaInicioRango.isBefore(fechaRegistro) ? fechaRegistro : fechaInicioRango;
+
+        // Iteramos mes a mes desde el inicio del cobro hasta la fecha fin del rango
+        LocalDate fechaActual = fechaInicioCobro.withDayOfMonth(1); 
+        LocalDate fechaLimite = fechaFinRango.withDayOfMonth(fechaFinRango.lengthOfMonth()); 
+
+        while (!fechaActual.isAfter(fechaLimite)) {
+            String etiquetaMes = nombresMeses.get(fechaActual.getMonthValue()) + " " + fechaActual.getYear();
+            mesesValidos.add(etiquetaMes);
+            fechaActual = fechaActual.plusMonths(1);
         }
-        
+
         return mesesValidos;
     }
    
-     
-}
- 
+    @FXML
+    private void generarReportePDF(ActionEvent event) {
+        // 1. Validar que tengamos todo seleccionado
+        if(cmbCasas.getValue() == null || dpInicio.getValue() == null || dpFin.getValue() == null) {
+            System.out.println("⚠️ ALERTA: Selecciona la casa y el rango de fechas primero.");
+            return; 
+        }
 
+        try {
+            Integer casaSeleccionada = cmbCasas.getValue();
+            LocalDate fechaInicio = dpInicio.getValue();
+            LocalDate fechaFin = dpFin.getValue();
+
+            // 2. Convertir fechas a nuestro formato matemático (Ej: Mayo 2026 -> 202605)
+            int rangoInicio = (fechaInicio.getYear() * 100) + fechaInicio.getMonthValue();
+            int rangoFin = (fechaFin.getYear() * 100) + fechaFin.getMonthValue();
+
+            System.out.println("Generando Estado de Cuenta PDF para la casa: " + casaSeleccionada);
+
+            // 3. Empaquetar los parámetros para Jasper
+            java.util.Map<String, Object> parametros = new java.util.HashMap<>();
+            parametros.put("P_NUMERO_CASA", casaSeleccionada);
+            parametros.put("P_RANGO_INICIO", rangoInicio);
+            parametros.put("P_RANGO_FIN", rangoFin);
+            
+            // Textos bonitos para que los pongas en el diseño del PDF
+            parametros.put("P_FECHA_INICIO_STR", fechaInicio.toString());
+            parametros.put("P_FECHA_FIN_STR", fechaFin.toString());
+
+            // 4. Cargar el reporte (Asegúrate de compilar tu .jrxml a .jasper y ponerlo en esta ruta)
+            java.io.InputStream reporteStream = getClass().getResourceAsStream("/reportes/EstadoCuentaIndividual.jasper");
+            
+            if (reporteStream == null) {
+                System.out.println("❌ ERROR: No se encontró el archivo EstadoCuentaIndividual.jasper en resources/reportes");
+                return;
+            }
+
+            java.sql.Connection conexion = db.Conexion.conectar(); 
+            
+            if (conexion == null) {
+                System.out.println(" ERROR: No se pudo conectar a Neon DB.");
+                return;
+            }
+
+            // 5. Generar y mostrar
+            net.sf.jasperreports.engine.JasperPrint jasperPrint = net.sf.jasperreports.engine.JasperFillManager.fillReport(reporteStream, parametros, conexion);
+            net.sf.jasperreports.view.JasperViewer visor = new net.sf.jasperreports.view.JasperViewer(jasperPrint, false);
+            visor.setTitle("Estado de Cuenta - Casa " + casaSeleccionada);
+            visor.setVisible(true);
+
+        } catch (Exception e) {
+            System.out.println("❌ ERROR FATAL al generar el PDF:");
+            e.printStackTrace();
+        }
+    }   
+}
