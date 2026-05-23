@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -12,77 +14,158 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane style="-fx-background-color: #f4f6f5;" stylesheets="@../styles/pago.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.PagoController">
+<StackPane style="-fx-background-color: #f4f6f5;"
+           stylesheets="@../styles/pago.css"
+           xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ui.PagoController">
 
     <children>
 
-        <!-- CARD -->
+        <!-- CARD PRINCIPAL -->
 
-        <AnchorPane maxHeight="500" maxWidth="520" prefHeight="520" prefWidth="500" styleClass="card-container">
+        <AnchorPane maxHeight="500"
+                    maxWidth="520"
+                    prefHeight="520"
+                    prefWidth="500"
+                    styleClass="card-container">
 
             <children>
 
-                <VBox alignment="TOP_CENTER" spacing="18" AnchorPane.bottomAnchor="35" AnchorPane.leftAnchor="35" AnchorPane.rightAnchor="35" AnchorPane.topAnchor="35">
+                <!-- CONTENEDOR PRINCIPAL -->
+
+                <VBox alignment="TOP_CENTER"
+                      spacing="18"
+                      AnchorPane.topAnchor="35"
+                      AnchorPane.leftAnchor="35"
+                      AnchorPane.rightAnchor="35"
+                      AnchorPane.bottomAnchor="35">
 
                     <children>
 
-                        <!-- TITULO -->
+                        <!-- HEADER -->
 
-                        <Label styleClass="title-label" text="💳 Registro de Pago" />
+                        <VBox spacing="4"
+                              alignment="CENTER"
+                              maxWidth="Infinity">
 
-                        <Label styleClass="subtitle-label" text="Administra pagos de cuotas del condominio" />
+                            <children>
+
+                                <Label text="💳 Registro de Pago"
+                                       styleClass="title-label" />
+
+                                <Label text="Administra pagos de cuotas del condominio"
+                                       styleClass="subtitle-label" />
+
+                            </children>
+
+                        </VBox>
 
                         <!-- FORMULARIO -->
 
-                        <GridPane hgap="18" style="-fx-padding: 20 0 0 0;" vgap="16">
+                        <GridPane hgap="18"
+                                  vgap="16"
+                                  style="-fx-padding: 20 0 0 0;">
 
                             <children>
 
                                 <!-- CASA -->
 
-                                <Label styleClass="form-label" text="Número de casa" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <Label text="Número de casa"
+                                       styleClass="form-label"
+                                       GridPane.columnIndex="0"
+                                       GridPane.rowIndex="0" />
 
-                                <ComboBox fx:id="cmbCasas" prefWidth="200.0" prefHeight="41" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                <ComboBox fx:id="cmbCasas"
+                                          prefWidth="200"
+                                          prefHeight="41"
+                                          styleClass="input"
+                                          GridPane.columnIndex="1"
+                                          GridPane.rowIndex="0" />
 
                                 <!-- MES -->
 
-                                <Label styleClass="form-label" text="Mes" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <Label text="Mes"
+                                       styleClass="form-label"
+                                       GridPane.columnIndex="0"
+                                       GridPane.rowIndex="1" />
 
-                                <ComboBox fx:id="cmbMes" prefWidth="200" prefHeight="41" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                <ComboBox fx:id="cmbMes"
+                                          prefWidth="200"
+                                          prefHeight="41"
+                                          styleClass="input"
+                                          GridPane.columnIndex="1"
+                                          GridPane.rowIndex="1" />
 
                                 <!-- AÑO -->
 
-                                <Label styleClass="form-label" text="Año" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <Label text="Año"
+                                       styleClass="form-label"
+                                       GridPane.columnIndex="0"
+                                       GridPane.rowIndex="2" />
 
-                                <ComboBox fx:id="cmbYear" prefWidth="200" prefHeight="41" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                <ComboBox fx:id="cmbYear"
+                                          prefWidth="200"
+                                          prefHeight="41"
+                                          styleClass="input"
+                                          GridPane.columnIndex="1"
+                                          GridPane.rowIndex="2" />
 
                                 <!-- MONTO -->
 
-                                <Label styleClass="form-label" text="Monto" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                <Label text="Monto"
+                                       styleClass="form-label"
+                                       GridPane.columnIndex="0"
+                                       GridPane.rowIndex="3" />
 
-                                <TextField fx:id="txtMonto" prefWidth="200" prefHeight="41" styleClass="input" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                <TextField fx:id="txtMonto"
+                                           prefWidth="200"
+                                           prefHeight="41"
+                                           styleClass="input"
+                                           GridPane.columnIndex="1"
+                                           GridPane.rowIndex="3" />
 
                             </children>
-                     <columnConstraints>
-                        <ColumnConstraints />
-                        <ColumnConstraints />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                     </rowConstraints>
+
+                            <!-- COLUMNAS -->
+
+                            <columnConstraints>
+
+                                <ColumnConstraints />
+
+                                <ColumnConstraints />
+
+                            </columnConstraints>
+
+                            <!-- FILAS -->
+
+                            <rowConstraints>
+
+                                <RowConstraints />
+
+                                <RowConstraints />
+
+                                <RowConstraints />
+
+                                <RowConstraints />
+
+                            </rowConstraints>
 
                         </GridPane>
 
                         <!-- BOTON -->
 
-                        <Button onAction="#registrarPago" prefWidth="100" styleClass="primary-button" text="Registrar">
+                        <Button text="Registrar"
+                                prefWidth="100"
+                                styleClass="primary-button"
+                                onAction="#registrarPago">
 
-                             <VBox.margin>
-                                 <Insets top="20" />
-                             </VBox.margin>
+                            <VBox.margin>
+
+                                <Insets top="20" />
+
+                            </VBox.margin>
+
                         </Button>
 
                     </children>

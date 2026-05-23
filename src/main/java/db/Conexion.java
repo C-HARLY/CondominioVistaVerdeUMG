@@ -1,22 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package db;
+
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-/**
- *
- * @author carlo
- */
+
 public class Conexion {
+
     // URL BASE DE DATOS EN neon.tech 
     private static final String URL = "jdbc:postgresql://ep-young-math-aqseeseq.c-8.us-east-1.aws.neon.tech/neondb?sslmode=require";
+    
     // USUARIO
     private static final String USER = "neondb_owner";
+
     // PASSWORD
     private static final String PASS = "npg_Bz2ydLU7vowY";
     
@@ -39,18 +35,18 @@ public class Conexion {
             dataSource = new HikariDataSource(config);
             System.out.println(" Pool de conexiones HikariCP inicializado correctamente.");
         } catch (Exception e) {
-            System.err.println("ERROR CRÍTICO AL INICIAR EL POOL DE CONEXIONES:");
+            System.err.println(" ERROR  AL INICIAR EL POOL DE CONEXIONES:");
             e.printStackTrace();
         }
     }
 
     // Método estático optimizado
     public static Connection conectar() {
-        Connection conn = null; 
+        Connection conn = null;
         try {
             conn = dataSource.getConnection();
         } catch (SQLException e) {
-            System.err.println(" ERROR AL OBTENER CONEXIÓN :");
+            System.err.println(" ERROR AL OBTENER CONEXIÓN:");
             System.err.println(e.getMessage());
         }
         return conn;
