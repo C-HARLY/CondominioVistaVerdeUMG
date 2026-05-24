@@ -13,15 +13,7 @@ import model.ReporteCasaDTO;
 
 public class ReporteDAO {
 
-    // CONEXIÓN GLOBAL REUTILIZABLE
-    private final Connection conn;
-
-    // CONSTRUCTOR
-    public ReporteDAO() {
-
-        this.conn = Conexion.conectar();
-    }
-
+  
     /* =========================================================
        REPORTE GENERAL
     ========================================================= */
@@ -43,48 +35,34 @@ public class ReporteDAO {
             "LEFT JOIN propietarios pr ON pr.id_casa = c.id " +
             "ORDER BY c.numero_casa ASC";
 
-        try {
+        //  ABRIMOS LA CONEXIÓN  AHORA Y LA CERRAMOS AUTOMÁTICAMENTE
+        try (Connection conn = Conexion.conectar()) {
+            if (conn != null) {
+                try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                    pstmt.setString(1, mesActual);
+                    pstmt.setInt(2, anioActual);
+                    pstmt.setString(3, mesActual);
+                    pstmt.setInt(4, anioActual);
+                    pstmt.setInt(5, anioActual);
 
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-
-            pstmt.setString(1, mesActual);
-            pstmt.setInt(2, anioActual);
-
-            pstmt.setString(3, mesActual);
-            pstmt.setInt(4, anioActual);
-
-            pstmt.setInt(5, anioActual);
-
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-
-                ReporteCasaDTO fila = new ReporteCasaDTO(
-
-                    rs.getInt("numero_casa"),
-
-                    rs.getString("nombre_propietario"),
-
-                    rs.getString("estado_mes_actual"),
-
-                    rs.getDouble("monto_pagado_mes"),
-
-                    rs.getDouble("total_pagado_anio")
-                );
-
-                listaReporte.add(fila);
+                    try (ResultSet rs = pstmt.executeQuery()) {
+                        while (rs.next()) {
+                            ReporteCasaDTO fila = new ReporteCasaDTO(
+                                rs.getInt("numero_casa"),
+                                rs.getString("nombre_propietario"),
+                                rs.getString("estado_mes_actual"),
+                                rs.getDouble("monto_pagado_mes"),
+                                rs.getDouble("total_pagado_anio")
+                            );
+                            listaReporte.add(fila);
+                        }
+                    }
+                }
+            } else {
+                 System.out.println("⚠️ ReporteDAO: No se pudo obtener conexión del pool (Timeout).");
             }
-
-            rs.close();
-            pstmt.close();
-
         } catch (Exception e) {
-
-            System.err.println(
-                "Error crítico en ReporteDAO.obtenerReporteGeneral: "
-                + e.getMessage()
-            );
-
+            System.err.println("Error crítico en ReporteDAO.obtenerReporteGeneral: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -97,33 +75,23 @@ public class ReporteDAO {
     public double obtenerCuotaActual() {
 
         double cuota = 1500.00;
+        String sql = "SELECT monto_actual FROM cuotas LIMIT 1";
 
-        String sql =
-            "SELECT monto_actual FROM cuotas LIMIT 1";
-
-        try {
-
-            PreparedStatement pstmt =
-                conn.prepareStatement(sql);
-
-            ResultSet rs =
-                pstmt.executeQuery();
-
-            if (rs.next()) {
-
-                cuota =
-                    rs.getDouble("monto_actual");
-            }
-
-            rs.close();
-            pstmt.close();
-
+        // ✅ ABRIMOS OTRA CONEXIÓN NUEVA Y LA DEVOLVEMOS AL TERMINAR
+        try (Connection conn = Conexion.conectar()) {
+             if (conn != null) {
+                 try (PreparedStatement pstmt = conn.prepareStatement(sql);
+                      ResultSet rs = pstmt.executeQuery()) {
+                     
+                     if (rs.next()) {
+                         cuota = rs.getDouble("monto_actual");
+                     }
+                 }
+             } else {
+                 System.out.println("⚠️ ReporteDAO: No se pudo conectar para obtener cuota.");
+             }
         } catch (Exception e) {
-
-            System.err.println(
-                "Error al obtener la cuota de la DB: "
-                + e.getMessage()
-            );
+            System.err.println("Error al obtener la cuota de la DB: " + e.getMessage());
         }
 
         return cuota;

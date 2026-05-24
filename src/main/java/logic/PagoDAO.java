@@ -7,6 +7,7 @@ package logic;
 import db.Conexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import model.Pago;
 
@@ -40,5 +41,28 @@ public class PagoDAO {
             return false;
         }
     }
+    
+    //METODO PARA VALIDAR SI YA SE PAGO EL MES ANTERIOR ANTES DE PAGAR EL SIGUIENTE
+    public boolean verificarPagoExiste(int idCasa, String mes, int anio) {
+    boolean existe = false;
+    String sql = "SELECT 1 FROM pagos WHERE id_casa = ? AND mes = ? AND anio = ?";
+
+    try (Connection conn = db.Conexion.conectar();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+         
+        ps.setInt(1, idCasa);
+        ps.setString(2, mes);
+        ps.setInt(3, anio);
+
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                existe = true; // Si encuentra al menos una fila, ya está pagado
+            }
+        }
+    } catch (Exception e) {
+        System.err.println("Error al verificar pago anterior: " + e.getMessage());
+    }
+    return existe;
+}
     
 }

@@ -1,0 +1,81 @@
+/* resources/styles/alertas.css */
+
+/* El contenedor principal de la alerta */
+.dialog-pane.condo-alert {
+    -fx-background-color: #ffffff; /* Blanco limpio como tus paneles */
+    
+    /* 🌟 TU REQUISITO PRINCIPAL: Redondeado extremo como tu panel principal */
+    -fx-border-radius: 25px; 
+    -fx-background-radius: 25px;
+    
+    -fx-font-family: 'Segoe UI', Arial, sans-serif; /* Tipografía moderna */
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    
+    /* Efecto de sombra suave para profundidad */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 15, 0, 0, 5); 
+    
+    -fx-padding: 0px;
+}
+
+/* Oculta los bordes nativos feos y el panel de cabecera gris por defecto */
+.dialog-pane.condo-alert .header-panel {
+    -fx-background-color: transparent;
+    -fx-padding: 0px;
+}
+
+/* Contenedor del contenido (gráfico y texto) */
+.dialog-pane.condo-alert .content {
+    -fx-background-color: transparent;
+    -fx-alignment: center; /* Centrado SweetAlert */
+    -fx-padding: 30px 20px 10px 20px; /* Padding cómodo */
+}
+
+/* Título (estilizado si decides usar cabecera más adelante) */
+.dialog-pane.condo-alert .header-panel .label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+/* El texto principal del mensaje */
+.dialog-pane.condo-alert .content.label {
+    -fx-text-fill: #555555; /* Gris suave SweetAlert */
+    -fx-font-size: 14px;
+    -fx-text-alignment: center; /* Centrar texto */
+    -fx-line-spacing: 1.2;
+}
+
+/* Estilo para los iconos nativos si no usas personalizados */
+.dialog-pane.condo-alert .graphic-container {
+    -fx-padding: 20px;
+}
+.dialog-pane.condo-alert .graphic {
+    /* Mantenerlos limpios, nativos pero quizás ocultarlos si usas ic_success etc */
+}
+
+/* Barra de botones */
+.dialog-pane.condo-alert .button-bar {
+    -fx-background-color: transparent;
+    -fx-padding: 10px 20px 25px 20px;
+    -fx-alignment: center; /* Centrar el botón "Aceptar" */
+}
+
+/* 🌟 BOTÓN ACETAR ESTILO VISTA VERDE: Redondeado y VERDE LIMA (#8dc63f aprox de image 4) */
+.dialog-pane.condo-alert .button-bar .button {
+    -fx-background-color: #8dc63f; /* Color lime green exacto de tus botones */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    
+    /* Botones redondeados como tu Panel Principal */
+    -fx-border-radius: 20px; 
+    -fx-background-radius: 20px;
+    
+    -fx-padding: 10px 30px; /* Padding amplio estilo web modernillo */
+    -fx-font-size: 14px;
+    -fx-cursor: hand; /* Cursor de mano on hover */
+}
+
+.dialog-pane.condo-alert .button-bar .button:hover {
+    -fx-background-color: #7bb535; /* Un tono más oscuro al pasar mouse */
+}

@@ -109,7 +109,8 @@ public class ReporteGeneralController implements Initializable {
         calcularTotalesFinancieros(datos, cuotaVigente);
     }
 
-    private void calcularTotalesFinancieros(List<ReporteCasaDTO> datos, double cuotaVigente) {
+   private void calcularTotalesFinancieros(List<ReporteCasaDTO> datos, double cuotaVigente) {
+        // Asumiendo que 30 es el número total de casas en el condominio
         double totalEsperado = 30 * cuotaVigente; 
         double totalRecaudadoMes = 0.0; 
         
@@ -117,9 +118,13 @@ public class ReporteGeneralController implements Initializable {
 
         if (datos != null) {
             for (ReporteCasaDTO casa : datos) {
+                // 1. Sumamos directamente el valor real de la columna "Monto"
+                // No importa de cuánto sea la cuota actual, sumará lo que se pagó ese mes.
+                totalRecaudadoMes += casa.getMontoMes();
+                
+                // 2. Solo contamos cuántas casas están totalmente pagadas para el log
                 String estado = casa.getEstadoMes();
                 if (estado != null && estado.trim().equalsIgnoreCase("Pagado")) {
-                    totalRecaudadoMes += cuotaVigente;
                     contadorCasasPagadas++;
                 }
             }
@@ -133,7 +138,6 @@ public class ReporteGeneralController implements Initializable {
         lblTotalEsperado.setText(String.format("Q. %,.0f", totalEsperado));
         lblTotalRecaudado.setText(String.format("Q. %,.0f", totalRecaudadoMes));
     }
-
     /* =========================================================
        JASPER REPORTS
     ========================================================= */
@@ -159,17 +163,20 @@ public class ReporteGeneralController implements Initializable {
                 return;
             }
 
-            java.sql.Connection conexion = db.Conexion.conectar(); 
+            // 🛠️ LA CIRUGÍA FINAL: Abrazamos la conexión
+            try (java.sql.Connection conexion = db.Conexion.conectar()) {
+                
+                if (conexion == null) {
+                    System.out.println(" ERROR: No se pudo establecer conexión con Neon.");
+                    return;
+                }
 
-            if (conexion == null) {
-                System.out.println(" ERROR: No se pudo establecer conexión con Neon.");
-                return;
-            }
-
-            net.sf.jasperreports.engine.JasperPrint jasperPrint = net.sf.jasperreports.engine.JasperFillManager.fillReport(reporteStream, parametros, conexion);
-            net.sf.jasperreports.view.JasperViewer visor = new net.sf.jasperreports.view.JasperViewer(jasperPrint, false);
-            visor.setTitle("Vista Verde - Estado de Cuenta (" + mesSeleccionado + ")");
-            visor.setVisible(true);
+                net.sf.jasperreports.engine.JasperPrint jasperPrint = net.sf.jasperreports.engine.JasperFillManager.fillReport(reporteStream, parametros, conexion);
+                net.sf.jasperreports.view.JasperViewer visor = new net.sf.jasperreports.view.JasperViewer(jasperPrint, false);
+                visor.setTitle("Vista Verde - Estado de Cuenta (" + mesSeleccionado + ")");
+                visor.setVisible(true);
+                
+            } // <- Aquí se cierra automáticamente y se devuelve al pool
 
         } catch (Exception e) {
             System.out.println(" ERROR  al generar el PDF:");
