@@ -60,16 +60,25 @@ public class EstadoCuentaController implements Initializable {
                    + "INNER JOIN propietarios p ON c.id = p.id_casa "
                    + "ORDER BY c.numero_casa";
                    
-        try (Connection con = Conexion.conectar(); 
-             PreparedStatement ps = con.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-             
-            ObservableList<Integer> listaCasas = FXCollections.observableArrayList();
-            while (rs.next()) {
-                listaCasas.add(rs.getInt("numero_casa"));
-            }
-            if(cmbCasas != null) {
-               cmbCasas.setItems(listaCasas); 
+        // 1. Primero abrimos SOLO la conexión
+        try (Connection con = Conexion.conectar()) {
+            
+            // 2. Validamos que Hikari sí nos haya dado una conexión (que no sea null)
+            if (con != null) {
+                // 3. Ahora sí, hacemos el statement seguros de que no explotará
+                try (PreparedStatement ps = con.prepareStatement(sql);
+                     ResultSet rs = ps.executeQuery()) {
+                     
+                    ObservableList<Integer> listaCasas = FXCollections.observableArrayList();
+                    while (rs.next()) {
+                        listaCasas.add(rs.getInt("numero_casa"));
+                    }
+                    if(cmbCasas != null) {
+                       cmbCasas.setItems(listaCasas); 
+                    }
+                }
+            } else {
+                System.err.println("⚠️ No se pudo obtener conexión (Timeout o base de datos inalcanzable).");
             }
             
         } catch (SQLException e) {
@@ -105,8 +114,6 @@ public class EstadoCuentaController implements Initializable {
 
             String sqlInfo = "SELECT p.nombre, p.fecha_registro FROM propietarios p INNER JOIN casas c ON p.id_casa = c.id WHERE c.numero_casa = ?";
             
-            // EL TRUCO DEL RANGO: 
-            // Multiplicamos Año * 100 + Mes para comparar fácilmente periodos numéricos. Ej: 202605
             // EL TRUCO DEL RANGO SIN TOCAR LA BASE DE DATOS:
             String sqlPagos = "SELECT pa.mes, pa.anio, pa.monto " +
                               "FROM pagos pa " +
@@ -206,7 +213,7 @@ public class EstadoCuentaController implements Initializable {
     private void generarReportePDF(ActionEvent event) {
         // 1. Validar que tengamos todo seleccionado
         if(cmbCasas.getValue() == null || dpInicio.getValue() == null || dpFin.getValue() == null) {
-            System.out.println("⚠️ ALERTA: Selecciona la casa y el rango de fechas primero.");
+            System.out.println(" ALERTA: Selecciona la casa y el rango de fechas primero.");
             return; 
         }
 
@@ -231,7 +238,7 @@ public class EstadoCuentaController implements Initializable {
             parametros.put("P_FECHA_INICIO_STR", fechaInicio.toString());
             parametros.put("P_FECHA_FIN_STR", fechaFin.toString());
 
-            // 4. Cargar el reporte (Asegúrate de compilar tu .jrxml a .jasper y ponerlo en esta ruta)
+            // 4. Cargar el reporte
             java.io.InputStream reporteStream = getClass().getResourceAsStream("/reportes/EstadoCuentaIndividual.jasper");
             
             if (reporteStream == null) {
@@ -239,21 +246,22 @@ public class EstadoCuentaController implements Initializable {
                 return;
             }
 
-            java.sql.Connection conexion = db.Conexion.conectar(); 
-            
-            if (conexion == null) {
-                System.out.println(" ERROR: No se pudo conectar a Neon DB.");
-                return;
-            }
+            // AQUI ESTA LA CORRECCIÓN: El try asegura que la conexión regrese al pool de Hikari
+            try (java.sql.Connection conexion = db.Conexion.conectar()) {
+                if (conexion == null) {
+                    System.out.println(" ERROR: No se pudo conectar a Neon DB.");
+                    return;
+                }
 
-            // 5. Generar y mostrar
-            net.sf.jasperreports.engine.JasperPrint jasperPrint = net.sf.jasperreports.engine.JasperFillManager.fillReport(reporteStream, parametros, conexion);
-            net.sf.jasperreports.view.JasperViewer visor = new net.sf.jasperreports.view.JasperViewer(jasperPrint, false);
-            visor.setTitle("Estado de Cuenta - Casa " + casaSeleccionada);
-            visor.setVisible(true);
+                // 5. Generar y mostrar
+                net.sf.jasperreports.engine.JasperPrint jasperPrint = net.sf.jasperreports.engine.JasperFillManager.fillReport(reporteStream, parametros, conexion);
+                net.sf.jasperreports.view.JasperViewer visor = new net.sf.jasperreports.view.JasperViewer(jasperPrint, false);
+                visor.setTitle("Estado de Cuenta - Casa " + casaSeleccionada);
+                visor.setVisible(true);
+            } 
 
         } catch (Exception e) {
-            System.out.println("❌ ERROR FATAL al generar el PDF:");
+            System.out.println(" ERROR FATAL al generar el PDF:");
             e.printStackTrace();
         }
     }   

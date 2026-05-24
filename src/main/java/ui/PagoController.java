@@ -1,4 +1,5 @@
 package ui;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -13,8 +14,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import model.Configuracion;
 import logic.CasaDAO;
+import logic.SweetAlert;
 
 public class PagoController implements Initializable {
 
@@ -31,29 +32,23 @@ public class PagoController implements Initializable {
     }
 
     private void configurarMonto() {
-        double montoActual = Configuracion.cuotaMantenimiento;
+        logic.ReporteDAO dao = new logic.ReporteDAO();
+        double montoActual = dao.obtenerCuotaActual();
         txtMonto.setText(String.format("%.2f", montoActual));
-        txtMonto.setEditable(false); // Recomendado para que no alteren el precio
+        txtMonto.setEditable(false); 
     }
 
     private void llenarCombosEstaticos() {
-        // 1. Llenar Meses 
         cmbMes.getItems().addAll("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
                                  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
 
-        // 2. Obtener el año real del sistema
         int anioActual = java.time.LocalDate.now().getYear();
-
-        // 3. Limpiar y agregar SOLO el año actual
         cmbYear.getItems().clear();
         cmbYear.getItems().add(anioActual); 
-
-        // 4. Dejarlo seleccionado por defecto
         cmbYear.getSelectionModel().selectFirst();
     }
 
     private void cargarCasasOcupadas() {
-        // Aquí conectamos con la base de datos a través del DAO
         CasaDAO dao = new CasaDAO();
         List<Integer> ocupadas = dao.obtenerCasasOcupadas();
 
@@ -77,7 +72,7 @@ public class PagoController implements Initializable {
 
         // 2. Validar que no haya campos vacíos
         if (casaSeleccionada == null || mes == null || anio == null || montoTexto.isEmpty()) {
-            System.out.println("Error: Faltan datos por seleccionar.");
+            SweetAlert.showWarning("Campos Incompletos", "Por favor, selecciona todos los datos requeridos en el formulario.");
             return; 
         }
         
@@ -86,18 +81,7 @@ public class PagoController implements Initializable {
         double monto = Double.parseDouble(montoTexto.replace(",", "."));
         int mesSeleccionadoNum = obtenerNumeroMes(mes);
 
-
-        //. Validar que no sea un mes pasado respecto a la fecha actual
-        java.time.LocalDate hoy = java.time.LocalDate.now();
-        int mesActual = hoy.getMonthValue();
-        int anioActual = hoy.getYear();
-
-        if (anio < anioActual || (anio == anioActual && mesSeleccionadoNum < mesActual)) {
-            System.out.println("Error: No puedes realizar pagos de meses que ya pasaron.");
-            return; // Detenemos la ejecución antes de guardar
-        }
-
-        //  Validar fecha de registro del propietario
+        // Validar fecha de registro del propietario
         logic.CasaDAO casaDao = new logic.CasaDAO();
         java.time.LocalDate fechaRegistroInquilino = casaDao.obtenerFechaRegistroPropietario(numeroCasa);
 
@@ -106,8 +90,36 @@ public class PagoController implements Initializable {
             int anioRegistro = fechaRegistroInquilino.getYear();
 
             if (anio < anioRegistro || (anio == anioRegistro && mesSeleccionadoNum < mesRegistro)) {
-                System.out.println("Error: No puedes cobrar meses anteriores a la llegada del propietario (" + fechaRegistroInquilino + ").");
-                return; // Detenemos la ejecución antes de guardar
+                SweetAlert.showError("Periodo Inválido", "No se pueden procesar cobros previos a la fecha de ingreso del inquilino (" + fechaRegistroInquilino + ").");
+                return; 
+            }
+            
+            // --- VALIDACIÓN DE SECUENCIA DE MESES ---
+            List<String> mesesNombres = java.util.Arrays.asList("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+
+            int indexMesActual = mesesNombres.indexOf(mes); 
+            int mesAnteriorIndex = indexMesActual - 1;
+            int anioAnterior = anio;
+
+            if (mesAnteriorIndex < 0) {
+                mesAnteriorIndex = 11; 
+                anioAnterior--; 
+            }
+
+            String nombreMesAnterior = mesesNombres.get(mesAnteriorIndex);
+            int valorMesAnteriorNumerico = mesAnteriorIndex + 1;
+
+            java.time.LocalDate fechaMesAnterior = java.time.LocalDate.of(anioAnterior, valorMesAnteriorNumerico, 1);
+            java.time.LocalDate fechaInicioCobro = fechaRegistroInquilino.withDayOfMonth(1);
+
+            if (!fechaMesAnterior.isBefore(fechaInicioCobro)) {
+                logic.PagoDAO pagoDaoAux = new logic.PagoDAO();
+                boolean mesAnteriorEstaPagado = pagoDaoAux.verificarPagoExiste(numeroCasa, nombreMesAnterior, anioAnterior);
+                
+                if (!mesAnteriorEstaPagado) {
+                    SweetAlert.showError("Validación de Historial", "No puedes pagar " + mes + " " + anio + " porque está pendiente el mes de " + nombreMesAnterior + " " + anioAnterior + ".");
+                    return; 
+                }
             }
         }
 
@@ -118,24 +130,24 @@ public class PagoController implements Initializable {
         logic.PagoDAO dao = new logic.PagoDAO();
         boolean exito = dao.registrarPago(pagoParaGuardar);
         
-        // 6. Confirmación final
+        // 6. Confirmación final con tu estilo SweetAlert
         if (exito) {
-            System.out.println("¡Transacción exitosa! El pago se ha guardado.");
             // Limpiamos la pantalla
             cmbCasas.getSelectionModel().clearSelection();
             cmbMes.getSelectionModel().clearSelection();
             cmbYear.getSelectionModel().selectFirst();
+
+            SweetAlert.showSuccess("¡Transacción Exitosa!", "El pago de la Casa " + numeroCasa + " se registró correctamente.");
         } else {
-            System.out.println("Error: El pago no pudo ser procesado. Es probable que ya esté pagado.");
+            SweetAlert.showError("Error de Registro", "La transacción no pudo completarse. Es muy probable que este mes ya esté pagado.");
         }
     }
-    
     
     private int obtenerNumeroMes(String mesTexto) {
         java.util.List<String> meses = java.util.Arrays.asList(
             "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         );
-        return meses.indexOf(mesTexto) + 1; // Enero será 1, Febrero 2, etc.
+        return meses.indexOf(mesTexto) + 1;
     }
- }
+}

@@ -38,7 +38,7 @@
             <artifactId>jasperreports</artifactId>
             <version>6.20.6</version>
         </dependency>
-        <!--  -->
+        <!--  HIKARI PARA LAS CONEXIONES A LA DB-->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
