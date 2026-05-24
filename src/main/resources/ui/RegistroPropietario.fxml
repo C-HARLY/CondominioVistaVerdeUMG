@@ -1,45 +1,145 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.RegistroPropietarioController">
-   <bottom>
-      <AnchorPane id="AnchorPane" prefHeight="701.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-         <children>
-            <ImageView fitHeight="117.0" fitWidth="160.0" layoutX="213.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../images/logo.png" />
-               </image>
-            </ImageView>
-            <Label layoutX="120.0" layoutY="100.0" prefHeight="48.0" prefWidth="361.0" text="¡Bienvenido al condominio Vista Verde!">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Label>
-            <Label layoutX="186.0" layoutY="138.0" text="Nuevo Registro de Popietarios" textFill="#00000073">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-            <Label layoutX="35.0" layoutY="178.0" text="Nombre Completo del Propietario :" />
-            <TextField fx:id="txtNombre" layoutX="35.0" layoutY="195.0" prefHeight="27.0" prefWidth="485.0" />
-            <Label layoutX="36.0" layoutY="237.0" text="Numero de Telefono :" />
-            <TextField fx:id="txtTelefono" layoutX="36.0" layoutY="254.0" prefHeight="27.0" prefWidth="168.0" />
-            <Label layoutX="35.0" layoutY="295.0" text="Correo Electronico:" />
-            <TextField fx:id="txtCorreo" layoutX="35.0" layoutY="312.0" prefHeight="27.0" prefWidth="485.0" />
-            <Label layoutX="35.0" layoutY="354.0" prefHeight="0.0" prefWidth="200.0" text="Selecciones Numero de Casa ( 1 - 30):" />
-            <Button layoutX="65.0" layoutY="567.0" mnemonicParsing="false" onAction="#registrarPropietario" prefHeight="33.0" prefWidth="455.0" text="Registrar " />
-            <ComboBox fx:id="cmbCasas" layoutX="35.0" layoutY="382.0" prefHeight="0.0" prefWidth="150.0" />
-            <Button fx:id="btnRegresar" layoutX="39.0" layoutY="641.0" mnemonicParsing="false" onAction="#volverAlMenu" text="Regresar" />
-         </children>
-      </AnchorPane>
-   </bottom>
-</BorderPane>
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ui.RegistroPropietarioController"
+           style="-fx-background-color: #f4f6f5;"
+           stylesheets="@../styles/registropropietario.css">
+
+    <children>
+
+        <!-- CARD -->
+
+        <AnchorPane prefWidth="520"
+                    prefHeight="500"
+                    maxWidth="520"
+                    maxHeight="500"
+                    styleClass="card-container">
+
+            <children>
+
+                <VBox alignment="TOP_CENTER"
+                      spacing="18"
+                      AnchorPane.topAnchor="35"
+                      AnchorPane.leftAnchor="35"
+                      AnchorPane.rightAnchor="35"
+                      AnchorPane.bottomAnchor="35">
+
+                    <children>
+
+                        <!-- HEADER -->
+
+                        <VBox spacing="4"
+                              alignment="CENTER"
+                              maxWidth="Infinity">
+
+                            <children>
+
+                                <Label text="👤 Registro de Propietario"
+                                       styleClass="title-label"/>
+
+                                <Label text="Administra propietarios del condominio"
+                                       styleClass="subtitle-label"/>
+
+                            </children>
+
+                        </VBox>
+
+                        <!-- FORMULARIO -->
+
+                        <GridPane hgap="18"
+                                  style="-fx-padding: 20 0 0 0;"
+                                  vgap="16">
+
+                            <children>
+
+                                <!-- NOMBRE -->
+
+                                <Label text="Nombre completo"
+                                       GridPane.rowIndex="0"
+                                       GridPane.columnIndex="0"
+                                       styleClass="form-label"/>
+
+                                <TextField fx:id="txtNombre"
+                                           prefWidth="260"
+                                           styleClass="input"
+                                           GridPane.rowIndex="0"
+                                           GridPane.columnIndex="1"/>
+
+                                <!-- TELEFONO -->
+
+                                <Label text="Teléfono"
+                                       GridPane.rowIndex="1"
+                                       GridPane.columnIndex="0"
+                                       styleClass="form-label"/>
+
+                                <TextField fx:id="txtTelefono"
+                                           prefWidth="260"
+                                           styleClass="input"
+                                           GridPane.rowIndex="1"
+                                           GridPane.columnIndex="1"/>
+
+                                <!-- CORREO -->
+
+                                <Label text="Correo electrónico"
+                                       GridPane.rowIndex="2"
+                                       GridPane.columnIndex="0"
+                                       styleClass="form-label"/>
+
+                                <TextField fx:id="txtCorreo"
+                                           prefWidth="260"
+                                           styleClass="input"
+                                           GridPane.rowIndex="2"
+                                           GridPane.columnIndex="1"/>
+
+                                <!-- CASA -->
+
+                                <Label text="Número de casa"
+                                       GridPane.rowIndex="3"
+                                       GridPane.columnIndex="0"
+                                       styleClass="form-label"/>
+
+                                <ComboBox fx:id="cmbCasas"
+                                          prefWidth="260"
+                                          styleClass="input"
+                                          GridPane.rowIndex="3"
+                                          GridPane.columnIndex="1"/>
+
+                            </children>
+
+                        </GridPane>
+
+                        <!-- BOTON -->
+
+                        <Button text="Registrar"
+                                prefWidth="100"
+                                onAction="#registrarPropietario"
+                                styleClass="primary-button">
+
+                            <VBox.margin>
+                                <Insets top="20"/>
+                            </VBox.margin>
+
+                        </Button>
+
+                    </children>
+
+                </VBox>
+
+            </children>
+
+        </AnchorPane>
+
+    </children>
+
+</StackPane>

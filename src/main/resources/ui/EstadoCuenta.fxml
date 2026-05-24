@@ -1,23 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" prefHeight="540.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.EstadoCuentaController">
-   <children>
-      <Label layoutX="58.0" layoutY="129.0" prefHeight="18.0" prefWidth="150.0" text="       Seleccione la Casa" textAlignment="JUSTIFY" />
-      <ComboBox fx:id="cmbCasas" layoutX="58.0" layoutY="156.0" onAction="#buscarEstadoCuenta" prefWidth="150.0" />
-      <Label fx:id="lblNombrePropietario" layoutX="157.0" layoutY="212.0" prefHeight="18.0" prefWidth="286.0" text="                    Propietario no Seleccionado" textAlignment="CENTER" />
-      <ListView fx:id="lvMesesPagados" layoutX="56.0" layoutY="256.0" prefHeight="200.0" prefWidth="200.0" />
-      <ListView fx:id="lvMesesPendientes" layoutX="348.0" layoutY="256.0" prefHeight="200.0" prefWidth="200.0" />
-      <Label layoutX="133.0" layoutY="231.0" text="Pagados" />
-      <Label layoutX="418.0" layoutY="231.0" text="Pendientes" />
-      <Label fx:id="lblTotalPagado" layoutX="215.0" layoutY="474.0" prefHeight="18.0" prefWidth="168.0" text="             0.00" />
-      <Button layoutX="14.0" layoutY="501.0" mnemonicParsing="false" onAction="#volverAlMenu" text="Regresar" />
-      <Label layoutX="373.0" layoutY="129.0" prefHeight="18.0" prefWidth="150.0" text="        Seleccione el año" textAlignment="JUSTIFY" />
-      <ComboBox fx:id="cmbAnio" layoutX="373.0" layoutY="156.0" onAction="#buscarEstadoCuenta" prefWidth="150.0" />
-   </children>
-</AnchorPane>
+<StackPane style="-fx-background-color: #f4f6f5;"
+           stylesheets="@../styles/estadocuenta.css"
+           xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ui.EstadoCuentaController">
+
+    <children>
+        <AnchorPane maxHeight="520" maxWidth="580" prefHeight="520" prefWidth="580" styleClass="card-container">
+            <children>
+                <VBox spacing="24" AnchorPane.topAnchor="30" AnchorPane.leftAnchor="35" AnchorPane.rightAnchor="35" AnchorPane.bottomAnchor="30">
+                    <children>
+                        <VBox spacing="4">
+                            <children>
+                                <Label text="📄 Estado de Cuenta" styleClass="title-label" />
+                                <Label text="Consulta pagos y cuotas pendientes" styleClass="subtitle-label" />
+                            </children>
+                        </VBox>
+
+                        <HBox spacing="15" alignment="BOTTOM_LEFT">
+                            <children>
+                                <VBox spacing="6">
+                                    <children>
+                                        <Label text="Número de casa" styleClass="form-label" />
+                                        <ComboBox fx:id="cmbCasas" prefWidth="100" styleClass="input" onAction="#buscarEstadoCuenta" />
+                                    </children>
+                                </VBox>
+
+                                <VBox spacing="6">
+                                    <children>
+                                        <Label text="Desde:" styleClass="form-label"/>
+                                        <DatePicker fx:id="dpInicio" prefWidth="110" styleClass="input"/>
+                                    </children>
+                                </VBox>
+
+                                <VBox spacing="6">
+                                    <children>
+                                        <Label text="Hasta:" styleClass="form-label"/>
+                                        <DatePicker fx:id="dpFin" prefWidth="110" styleClass="input"/>
+                                    </children>
+                                </VBox>
+
+                                <Button fx:id="btnGenerarPDF" text="🖨 PDF" onAction="#generarReportePDF" prefHeight="30" style="-fx-background-color: #1B5E20; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 5;"/>
+                            </children>
+                        </HBox>
+
+                        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="owner-card">
+                            <children>
+                                <HBox alignment="CENTER_LEFT" spacing="12" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label text="👤" styleClass="owner-icon" />
+                                        <VBox spacing="2">
+                                            <children>
+                                                <Label text="Propietario" styleClass="section-label" />
+                                                <Label fx:id="lblNombrePropietario" text="Seleccione una casa" styleClass="owner-label" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+
+                                <VBox alignment="CENTER_RIGHT" spacing="2">
+                                    <children>
+                                        <Label text="Total Pagado" styleClass="section-label" />
+                                        <Label fx:id="lblTotalPagado" text="Q0.00" styleClass="total-label" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="20">
+                            <children>
+                                <VBox prefWidth="250" spacing="12" styleClass="mini-card">
+                                    <children>
+                                        <Label text="✅ Pagados" styleClass="card-title" />
+                                        <ListView fx:id="lvMesesPagados" prefHeight="220" prefWidth="210" styleClass="custom-list" />
+                                    </children>
+                                </VBox>
+
+                                <VBox prefWidth="250" spacing="12" styleClass="mini-card">
+                                    <children>
+                                        <Label text="⚠ Pendientes" styleClass="card-title" />
+                                        <ListView fx:id="lvMesesPendientes" prefHeight="220" prefWidth="210" styleClass="custom-list" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </AnchorPane>
+    </children>
+</StackPane>

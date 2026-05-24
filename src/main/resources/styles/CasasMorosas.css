@@ -1,79 +1,53 @@
-.card-container {
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
 
+/* Estilo para los ComboBox */
+.input {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #d1d5db;
     -fx-background-color: white;
-
-    -fx-background-radius: 20;
-
-    -fx-effect: dropshadow(
-        gaussian,
-        rgba(0,0,0,0.06),
-        20,
-        0,
-        0,
-        4
-    );
+    -fx-padding: 6 10 6 10;
+    -fx-font-size: 13px;
+    -fx-pref-height: 38;
 }
 
+/* Título principal */
 .title-label {
-
     -fx-font-size: 22px;
-
     -fx-font-weight: bold;
-
     -fx-text-fill: #1f2937;
 }
 
+/* Subtítulo */
 .subtitle-label {
-
     -fx-font-size: 13px;
-
     -fx-text-fill: #6b7280;
 }
 
+/* Etiquetas del formulario */
 .form-label {
-
     -fx-font-size: 13px;
-
     -fx-font-weight: bold;
-
     -fx-text-fill: #1f2937;
 }
 
-.input {
-
-    -fx-background-radius: 10;
-
-    -fx-border-radius: 10;
-
-    -fx-border-color: #d1d5db;
-
-    -fx-background-color: white;
-
-    -fx-padding: 6 10 6 10;
-
-    -fx-font-size: 13px;
-
-    -fx-pref-height: 38;
-}
-
+/* Botón principal */
 .primary-button {
-
     -fx-background-color: #8bc34a;
-
     -fx-background-radius: 10;
-
     -fx-text-fill: white;
-
     -fx-font-size: 13px;
-
     -fx-font-weight: bold;
-
     -fx-pref-height: 38;
-
     -fx-cursor: hand;
 }
 
+/* Efecto al pasar el mouse sobre el botón */
 .primary-button:hover {
-
     -fx-background-color: #7cb342;
+    
+    
 }

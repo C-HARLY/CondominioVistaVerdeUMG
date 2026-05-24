@@ -1,7 +1,140 @@
-/*
- * Empty Stylesheet file.
- */
+.card-container {
 
-.mainFxmlClass {
+    -fx-background-color: white;
 
+    -fx-background-radius: 24;
+
+    -fx-effect: dropshadow(
+        gaussian,
+        rgba(0,0,0,0.08),
+        20,
+        0,
+        0,
+        4
+    );
+}
+
+/* =========================================================
+   TITULOS
+========================================================= */
+
+.title-label {
+
+    -fx-font-size: 22px;
+
+    -fx-font-weight: bold;
+
+    -fx-text-fill: #0f172a;
+}
+
+.subtitle-label {
+
+    -fx-font-size: 13px;
+
+    -fx-text-fill: #64748b;
+}
+
+/* =========================================================
+   CARDS
+========================================================= */
+
+.form-card,
+.info-card {
+
+    -fx-background-color: #f8fafc;
+
+    -fx-background-radius: 18;
+
+    -fx-border-radius: 18;
+
+    -fx-border-color: #e5e7eb;
+
+    -fx-padding: 20;
+}
+
+/* =========================================================
+   LABELS
+========================================================= */
+
+.field-label {
+
+    -fx-font-size: 12px;
+
+    -fx-font-weight: bold;
+
+    -fx-text-fill: #334155;
+}
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.custom-input,
+.custom-date {
+
+    -fx-background-color: white;
+
+    -fx-background-radius: 10;
+
+    -fx-border-radius: 10;
+
+    -fx-border-color: #d1d5db;
+
+    -fx-padding: 8 12 8 12;
+}
+
+.custom-input:focused,
+.custom-date:focused {
+
+    -fx-border-color: #8bc34a;
+}
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+.save-button {
+
+    -fx-background-color: #8bc34a;
+
+    -fx-text-fill: white;
+
+    -fx-font-weight: bold;
+
+    -fx-background-radius: 10;
+
+    -fx-padding: 10 18 10 18;
+}
+
+.cancel-button {
+
+    -fx-background-color: #e5e7eb;
+
+    -fx-text-fill: #334155;
+
+    -fx-font-weight: bold;
+
+    -fx-background-radius: 10;
+
+    -fx-padding: 10 18 10 18;
+}
+
+/* =========================================================
+   INFO
+========================================================= */
+
+.info-title {
+
+    -fx-font-size: 13px;
+
+    -fx-font-weight: bold;
+
+    -fx-text-fill: #0f172a;
+}
+
+.info-text {
+
+    -fx-font-size: 12px;
+
+    -fx-text-fill: #64748b;
 }
