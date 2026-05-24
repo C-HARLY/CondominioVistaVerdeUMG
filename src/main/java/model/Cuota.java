@@ -10,12 +10,12 @@ package model;
  */
 public class Cuota {
     private int id;
-    private double montoActual;
+  private int montoActual;
 
     public Cuota() {
     }
 
-    public Cuota(int id, double montoActual) {
+   public Cuota(int id, int montoActual) {
         this.id = id;
         this.montoActual = montoActual;
     }
@@ -28,11 +28,11 @@ public class Cuota {
         this.id = id;
     }
 
-    public double getMontoActual() {
+    public int getMontoActual() {
         return montoActual;
     }
 
-    public void setMontoActual(double montoActual) {
+    public void setMontoActual(int montoActual) {
         this.montoActual = montoActual;
     }
     

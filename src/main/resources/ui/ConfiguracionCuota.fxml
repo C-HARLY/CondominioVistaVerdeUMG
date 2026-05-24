@@ -4,7 +4,6 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -18,8 +17,6 @@
            fx:controller="ui.ConfiguracionCuotaController">
 
     <children>
-
-        <!-- CARD PRINCIPAL -->
 
         <AnchorPane maxHeight="500"
                     maxWidth="520"
@@ -37,33 +34,22 @@
 
                     <children>
 
-                        <!-- HEADER -->
-
                         <VBox spacing="4"
                               alignment="CENTER"
                               maxWidth="Infinity">
-
                             <children>
-
                                 <Label text="⚙ Configuración de Cuota"
                                        styleClass="title-label"/>
-
                                 <Label text="Actualiza el valor mensual del condominio"
                                        styleClass="subtitle-label"/>
-
                             </children>
-
                         </VBox>
-
-                        <!-- CONTENIDO -->
 
                         <HBox spacing="14"
                               alignment="TOP_CENTER"
                               translateY="28">
 
                             <children>
-
-                                <!-- FORM CARD -->
 
                                 <VBox spacing="14"
                                       prefWidth="300"
@@ -97,60 +83,49 @@
                                                    styleClass="custom-input"
                                                    translateY="-8"/>
 
-                                        <!-- BOTONES -->
-
                                         <HBox spacing="10"
                                               alignment="CENTER">
-
                                             <children>
-
                                                 <Button text="Guardar"
+                                                        onAction="#guardarCuota"
                                                         prefWidth="95"
                                                         prefHeight="38"
                                                         styleClass="save-button"/>
-
+                                                
+                                                <Button text="Cancelar"
+                                                        onAction="#cancelarCuota"
+                                                        prefWidth="95"
+                                                        prefHeight="38"
+                                                        styleClass="cancel-button"/>
                                             </children>
-
                                         </HBox>
 
                                     </children>
-
                                 </VBox>
-
-                                <!-- INFO CARD -->
 
                                 <VBox spacing="10"
                                       prefWidth="145"
                                       prefHeight="180"
                                       alignment="CENTER"
                                       styleClass="info-card">
-
                                     <children>
-
                                         <Label text="🛈 Información"
                                                styleClass="info-title"/>
-
                                         <Label text="Los cambios se aplicarán automáticamente a partir de la fecha seleccionada."
                                                wrapText="true"
                                                textAlignment="CENTER"
                                                styleClass="info-text"/>
-
                                     </children>
-
                                 </VBox>
 
                             </children>
-
                         </HBox>
 
                     </children>
-
                 </VBox>
 
             </children>
-
         </AnchorPane>
 
     </children>
-
 </StackPane>
