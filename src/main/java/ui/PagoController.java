@@ -31,13 +31,23 @@ public class PagoController implements Initializable {
         cargarCasasOcupadas();
     }
 
-    private void configurarMonto() {
-        logic.ReporteDAO dao = new logic.ReporteDAO();
-        double montoActual = dao.obtenerCuotaActual();
-        txtMonto.setText(String.format("%.2f", montoActual));
+   private void configurarMonto() {
+        logic.CuotaDAO dao = new logic.CuotaDAO();
+        model.Cuota cuotaVigente = dao.obtenerCuota();
+        
+        // Verificamos que la BD sí nos haya devuelto algo
+        if (cuotaVigente != null) {
+            txtMonto.setText(String.format("%.2f", cuotaVigente.getMontoActual()));
+        } else {
+            // Si no hay internet o falló la consulta, lo dejamos en 0.00 y avisamos al usuario
+            txtMonto.setText("0.00");
+            logic.SweetAlert.showError("Error de Conexión", "No se pudo obtener la cuota actual de la base de datos.");
+        }
+        
         txtMonto.setEditable(false); 
     }
-
+   
+   
     private void llenarCombosEstaticos() {
         cmbMes.getItems().addAll("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
                                  "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");

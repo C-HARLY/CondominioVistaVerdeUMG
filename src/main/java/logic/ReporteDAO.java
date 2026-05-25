@@ -1,19 +1,15 @@
 package logic;
 
 import db.Conexion;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import model.ReporteCasaDTO;
 
 public class ReporteDAO {
 
-  
     /* =========================================================
        REPORTE GENERAL
     ========================================================= */
@@ -67,33 +63,5 @@ public class ReporteDAO {
         }
 
         return listaReporte;
-    }
-
-    /* =========================================================
-       OBTENER CUOTA ACTUAL
-    ========================================================= */
-    public double obtenerCuotaActual() {
-
-        double cuota = 1500.00;
-        String sql = "SELECT monto_actual FROM cuotas LIMIT 1";
-
-        // ✅ ABRIMOS OTRA CONEXIÓN NUEVA Y LA DEVOLVEMOS AL TERMINAR
-        try (Connection conn = Conexion.conectar()) {
-             if (conn != null) {
-                 try (PreparedStatement pstmt = conn.prepareStatement(sql);
-                      ResultSet rs = pstmt.executeQuery()) {
-                     
-                     if (rs.next()) {
-                         cuota = rs.getDouble("monto_actual");
-                     }
-                 }
-             } else {
-                 System.out.println("⚠️ ReporteDAO: No se pudo conectar para obtener cuota.");
-             }
-        } catch (Exception e) {
-            System.err.println("Error al obtener la cuota de la DB: " + e.getMessage());
-        }
-
-        return cuota;
     }
 }

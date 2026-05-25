@@ -36,7 +36,9 @@ public class ReporteGeneralController implements Initializable {
     @FXML private TableColumn<ReporteCasaDTO, Double> colTotal;
     @FXML private Label lblTotalEsperado;
     @FXML private Label lblTotalRecaudado;
+    
     @FXML private ComboBox<String> cmbMes;
+    @FXML private ComboBox<Integer> cmbYear; 
 
     //combobox con los meses que usaremos
     private final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
@@ -75,6 +77,10 @@ public class ReporteGeneralController implements Initializable {
         // Seleccionamos el mes actual del sistema por defecto
         int mesActualDelSistema = LocalDate.now().getMonthValue(); 
         cmbMes.getSelectionModel().select(mesActualDelSistema - 1); 
+
+        int anioActual = LocalDate.now().getYear();
+        cmbYear.getItems().addAll(anioActual - 1, anioActual, anioActual + 1);
+        cmbYear.getSelectionModel().select(Integer.valueOf(anioActual));
     }
 
     /* =========================================================
@@ -87,21 +93,22 @@ public class ReporteGeneralController implements Initializable {
 
     private void ejecutarReporte() {
         String mesSeleccionado = cmbMes.getSelectionModel().getSelectedItem();
+        Integer anioSeleccionado = cmbYear.getSelectionModel().getSelectedItem(); // 🌟 NUEVO: Obtenemos el año
         
-        if (mesSeleccionado == null) return;
+        if (mesSeleccionado == null || anioSeleccionado == null) return; // Validación extra de seguridad
 
-        System.out.println("El ComboBox detectó el mes: " + mesSeleccionado); 
+        System.out.println("El ComboBox detectó el mes: " + mesSeleccionado + " del año: " + anioSeleccionado); 
 
         if (colMontoMes != null) {
             colMontoMes.setText("Monto");
         }
 
-        int anioActual = LocalDate.now().getYear();
+        logic.CuotaDAO cuotaDao = new logic.CuotaDAO();
+        model.Cuota cuota = cuotaDao.obtenerCuota();
+        double cuotaVigente = (cuota != null) ? cuota.getMontoActual() : 1500.00;
 
         ReporteDAO dao = new ReporteDAO();
-        double cuotaVigente = dao.obtenerCuotaActual(); 
-
-        List<ReporteCasaDTO> datos = dao.obtenerReporteGeneral(mesSeleccionado, anioActual);
+        List<ReporteCasaDTO> datos = dao.obtenerReporteGeneral(mesSeleccionado, anioSeleccionado);
 
         ObservableList<ReporteCasaDTO> listaObservable = FXCollections.observableArrayList(datos);
         tblReporte.setItems(listaObservable);
@@ -110,22 +117,23 @@ public class ReporteGeneralController implements Initializable {
     }
 
    private void calcularTotalesFinancieros(List<ReporteCasaDTO> datos, double cuotaVigente) {
-        // Asumiendo que 30 es el número total de casas en el condominio
-        double totalEsperado = 30 * cuotaVigente; 
         double totalRecaudadoMes = 0.0; 
+        double totalEsperado = 0.0; // 
         
         int contadorCasasPagadas = 0; 
 
         if (datos != null) {
             for (ReporteCasaDTO casa : datos) {
-                // 1. Sumamos directamente el valor real de la columna "Monto"
-                // No importa de cuánto sea la cuota actual, sumará lo que se pagó ese mes.
-                totalRecaudadoMes += casa.getMontoMes();
-                
-                // 2. Solo contamos cuántas casas están totalmente pagadas para el log
-                String estado = casa.getEstadoMes();
-                if (estado != null && estado.trim().equalsIgnoreCase("Pagado")) {
+                if (casa.getPropietario().equalsIgnoreCase("Sin Asignar")) {
+                    continue; 
+                }
+
+                if (casa.getEstadoMes() != null && casa.getEstadoMes().trim().equalsIgnoreCase("Pagado")) {
+                    totalRecaudadoMes += casa.getMontoMes();
+                    totalEsperado += casa.getMontoMes();
                     contadorCasasPagadas++;
+                } else {
+                    totalEsperado += cuotaVigente;
                 }
             }
         }
@@ -135,26 +143,29 @@ public class ReporteGeneralController implements Initializable {
         System.out.println("Total a pintar en el Label: Q. " + totalRecaudadoMes);
         System.out.println("-----------------------");
 
-        lblTotalEsperado.setText(String.format("Q. %,.0f", totalEsperado));
-        lblTotalRecaudado.setText(String.format("Q. %,.0f", totalRecaudadoMes));
+        lblTotalEsperado.setText(String.format("Q. %,.2f", totalEsperado));
+        lblTotalRecaudado.setText(String.format("Q. %,.2f", totalRecaudadoMes));
     }
+
     /* =========================================================
        JASPER REPORTS
     ========================================================= */
     @FXML
     private void generarReportePDF(ActionEvent event) {
         String mesSeleccionado = cmbMes.getSelectionModel().getSelectedItem();
+        Integer anioSeleccionado = cmbYear.getSelectionModel().getSelectedItem();
 
-        if (mesSeleccionado == null || mesSeleccionado.trim().isEmpty()) {
-            System.out.println("ALERTA: Selecciona un mes primero.");
+        if (mesSeleccionado == null || mesSeleccionado.trim().isEmpty() || anioSeleccionado == null) {
+            System.out.println("ALERTA: Selecciona un mes y año primero.");
             return; 
         }
 
         try {
-            System.out.println("Generando PDF para el mes: " + mesSeleccionado);
+            System.out.println("Generando PDF para: " + mesSeleccionado + " " + anioSeleccionado);
 
             java.util.Map<String, Object> parametros = new java.util.HashMap<>();
             parametros.put("MesSeleccionado", mesSeleccionado);
+            // Si en el futuro necesitas pasarle el año a tu reporte PDF, ya lo tienes listo para meterlo aquí.
 
             java.io.InputStream reporteStream = getClass().getResourceAsStream("/reportes/ReporteVistaVerde.jasper");
             
@@ -163,7 +174,6 @@ public class ReporteGeneralController implements Initializable {
                 return;
             }
 
-            // 🛠️ LA CIRUGÍA FINAL: Abrazamos la conexión
             try (java.sql.Connection conexion = db.Conexion.conectar()) {
                 
                 if (conexion == null) {
@@ -173,16 +183,14 @@ public class ReporteGeneralController implements Initializable {
 
                 net.sf.jasperreports.engine.JasperPrint jasperPrint = net.sf.jasperreports.engine.JasperFillManager.fillReport(reporteStream, parametros, conexion);
                 net.sf.jasperreports.view.JasperViewer visor = new net.sf.jasperreports.view.JasperViewer(jasperPrint, false);
-                visor.setTitle("Vista Verde - Estado de Cuenta (" + mesSeleccionado + ")");
+                visor.setTitle("Vista Verde - Estado de Cuenta (" + mesSeleccionado + " " + anioSeleccionado + ")");
                 visor.setVisible(true);
                 
-            } // <- Aquí se cierra automáticamente y se devuelve al pool
+            }
 
         } catch (Exception e) {
             System.out.println(" ERROR  al generar el PDF:");
             e.printStackTrace();
         }
     }
-
-    
 }

@@ -19,15 +19,14 @@ public class PagoDAO {
     // Ahora recibimos el objeto Pago completo
     public boolean registrarPago(Pago nuevoPago) {
         
-        // Asumiendo que en PostgreSQL tu tabla tiene las columnas: id_casa, mes, anio, monto
-        // El sub-query busca el ID real de la casa basado en el numero de casa que seleccionó el usuario
+        //  busca el ID real de la casa basado en el numero de casa que seleccionó el usuario
         String sql = "INSERT INTO pagos (id_casa, mes, anio, monto) "
                    + "VALUES ((SELECT id FROM casas WHERE numero_casa = ?), ?, ?, ?)";
 
         try (Connection conn = Conexion.conectar();
              PreparedStatement pst = conn.prepareStatement(sql)) {
 
-            // Usamos los getters de tu modelo
+            // Usamos los getters del modelo
             pst.setInt(1, nuevoPago.getNumeroCasa());
             pst.setString(2, nuevoPago.getMes());
             pst.setInt(3, nuevoPago.getYear());
