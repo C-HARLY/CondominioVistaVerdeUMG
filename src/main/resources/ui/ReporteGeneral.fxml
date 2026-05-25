@@ -20,8 +20,6 @@
 
     <children>
 
-        <!-- CARD PRINCIPAL -->
-
         <AnchorPane maxHeight="500"
                     maxWidth="520"
                     prefHeight="520"
@@ -38,13 +36,9 @@
 
                     <children>
 
-                        <!-- HEADER -->
-
                         <HBox alignment="TOP_LEFT">
 
                             <children>
-
-                                <!-- TITULOS -->
 
                                 <VBox spacing="4"
                                       HBox.hgrow="ALWAYS">
@@ -61,8 +55,6 @@
 
                                 </VBox>
 
-                                <!-- BOTON PDF -->
-
                                 <Button fx:id="btnGenerarPDF"
                                         mnemonicParsing="false"
                                         onAction="#generarReportePDF"
@@ -75,8 +67,6 @@
 
                         </HBox>
 
-                        <!-- FILTROS + RESUMEN -->
-
                         <HBox alignment="CENTER_LEFT"
                               maxWidth="520"
                               prefWidth="520"
@@ -84,14 +74,17 @@
 
                             <children>
 
-                                <!-- FILTRO MES -->
-
                                 <VBox spacing="6"
                                       alignment="TOP_LEFT">
 
                                     <children>
-
-                                                  <ComboBox fx:id="cmbMes"
+                                          <ComboBox fx:id="cmbMes"
+                                                  onAction="#onCmbMesChange"
+                                                  prefHeight="38"
+                                                  prefWidth="132"
+                                                  styleClass="custom-combo"/>
+                                                  
+                                          <ComboBox fx:id="cmbYear"
                                                   onAction="#onCmbMesChange"
                                                   prefHeight="38"
                                                   prefWidth="132"
@@ -100,8 +93,6 @@
                                     </children>
 
                                 </VBox>
-
-                                <!-- TOTAL ESPERADO -->
 
                                 <VBox alignment="CENTER"
                                       prefHeight="68"
@@ -121,8 +112,6 @@
                                     </children>
 
                                 </VBox>
-
-                                <!-- TOTAL RECAUDADO -->
 
                                 <VBox alignment="CENTER"
                                       prefHeight="68"
@@ -146,8 +135,6 @@
                             </children>
 
                         </HBox>
-
-                        <!-- TABLA -->
 
                         <TableView fx:id="tblReporte"
                                    maxWidth="520"

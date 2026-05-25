@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package logic;
 
 import db.Conexion;
@@ -10,31 +6,31 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import model.Cuota;
+
 /**
  *
  * @author rache
  */
 public class CuotaDAO {
-   public Cuota obtenerCuota() {
-
+    
+    public Cuota obtenerCuota() {
         Cuota cuota = null;
-
-        String sql = "SELECT * FROM cuotas LIMIT 1";
+        
+        // CAMBIO 1: Ahora busca en el historial y trae el más reciente
+        String sql = "SELECT * FROM historial_cuotas ORDER BY fecha_cambio DESC LIMIT 1";
 
         try (Connection conn = Conexion.conectar();
              PreparedStatement pst = conn.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
 
             if (rs.next()) {
-
                 cuota = new Cuota();
-
-                cuota.setId(rs.getInt("id"));
-                cuota.setMontoActual(rs.getInt("monto_actual"));
+                
+                cuota.setId(rs.getInt("id_cambio"));
+                cuota.setMontoActual(rs.getDouble("monto_cuota"));
             }
 
         } catch (SQLException e) {
-
             System.out.println("Error al obtener cuota: " + e.getMessage());
         }
 
@@ -42,9 +38,10 @@ public class CuotaDAO {
     }
 
     // ACTUALIZAR CUOTA
-   public boolean actualizarMontoMantenimiento(int nuevoMonto) {
-
-        String sql = "UPDATE cuotas SET monto_actual = ? WHERE id = 1";
+    public boolean actualizarMontoMantenimiento(double nuevoMonto) {
+        
+        //  CAMBIO : El UPDATE se convirtió en INSERT para llevar la bitácora
+        String sql = "INSERT INTO historial_cuotas (monto_cuota) VALUES (?)";
 
         try (Connection conn = Conexion.conectar();
              PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -55,9 +52,7 @@ public class CuotaDAO {
             return filas > 0;
 
         } catch (SQLException e) {
-
             System.out.println("Error al actualizar cuota: " + e.getMessage());
-
             return false;
         }
     } 
