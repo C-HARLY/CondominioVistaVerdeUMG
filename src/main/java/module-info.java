@@ -9,4 +9,5 @@ module umg.vistaverdeumg {
     exports ui;
     opens db to javafx.fxml;
     opens model to javafx.base;
+    requires jakarta.mail;
 }

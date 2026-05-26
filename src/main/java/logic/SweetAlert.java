@@ -1,11 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package logic;
 
 import javafx.scene.control.Alert;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
+import javafx.stage.Stage;
+
 /**
  *
  * @author carlo
@@ -45,8 +44,20 @@ public class SweetAlert {
             alerta.getDialogPane().getStylesheets().add(
                 Alert.class.getResource("/css/alertas.css").toExternalForm()
             );
+            //Inyectamos la clase de tu CSS
+            alerta.getDialogPane().getStyleClass().add("condo-alert"); 
         } catch (Exception e) {
             System.out.println("Nota: No se encontró el archivo CSS de alertas, usando estilo por defecto.");
+        }
+        
+        //forzamos que salga en el centro de la pantalla
+        Window window = alerta.getDialogPane().getScene().getWindow();
+        if (window instanceof Stage) {
+            Stage stage = (Stage) window;
+            // Para que el centro se calcule bien después de aplicar el CSS
+            stage.setOnShown(event -> {
+                stage.centerOnScreen();
+            });
         }
 
         // 5. Mostramos la alerta y bloqueamos la pantalla hasta que el usuario le de Aceptar
