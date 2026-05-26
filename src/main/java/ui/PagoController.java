@@ -102,6 +102,7 @@ public class PagoController implements Initializable {
         });
     }
     
+    
     @FXML
     private void registrarPago(ActionEvent event) {
         // 1. Extraer los datos de la pantalla
@@ -116,7 +117,7 @@ public class PagoController implements Initializable {
             return; 
         }
         
-        // 3. Limpiar los datos para poder hacer validaciones numéricas
+         // 3. Limpiar los datos para poder hacer validaciones numéricas
         int numeroCasa = Integer.parseInt(casaSeleccionada.replace("Casa ", ""));
         double monto = Double.parseDouble(montoTexto.replace(",", "."));
         int mesSeleccionadoNum = obtenerNumeroMes(mes);
@@ -168,14 +169,14 @@ public class PagoController implements Initializable {
             }
         }
 
-        // 4. Si pasó todas las validaciones, creamos el objeto Pago (Excelente práctica OOP)
+        // 4. Si pasó todas las validaciones, creamos el objeto Pago
         model.Pago pagoParaGuardar = new model.Pago(0, numeroCasa, mes, anio, monto);
 
         // 5. Mandar a guardar usando nuestro DAO
         logic.PagoDAO dao = new logic.PagoDAO();
         boolean exito = dao.registrarPago(pagoParaGuardar);
         
-        // 6. Confirmación final con tu estilo SweetAlert
+        // 6. Confirmación final y ENVÍO DE CORREO 📧
         if (exito) {
             // Limpiamos la pantalla
             cmbCasas.getSelectionModel().clearSelection();
@@ -186,16 +187,34 @@ public class PagoController implements Initializable {
                 txtNombrePropietario.setText(""); // Limpiamos el nombre
             }
 
-            SweetAlert.showSuccess("¡Transacción Exitosa!", "El pago de la Casa " + numeroCasa + " se registró correctamente.");
+            //  MAGIA DEL CORREO: Validamos que el propietario tenga email y enviamos
+            if (propietarioActual != null && propietarioActual.getCorreo() != null && !propietarioActual.getCorreo().trim().isEmpty()) {
+                String correoDestino = propietarioActual.getCorreo();
+                
+                // Llamamos a la clase estática que construimos
+                logic.EmailService.enviarRecibo(correoDestino, monto, mes, anio, numeroCasa);
+                
+                SweetAlert.showSuccess("¡Transacción Exitosa!", "El pago se registró y el recibo fue enviado a " + correoDestino);
+            } else {
+                // Si el inquilino no tiene correo, igual registramos el pago pero avisamos al usuario
+                SweetAlert.showWarning("Pago Registrado", "El pago se guardó correctamente, pero el propietario no tiene un correo registrado para enviarle el recibo.");
+            }
+
         } else {
             SweetAlert.showError("Error de Registro", "La transacción no pudo completarse. Es muy probable que este mes ya esté pagado.");
-        }
-    }
-    private int obtenerNumeroMes(String mesTexto) {
+        };
+        
+        
+
+    } 
+    
+    private int obtenerNumeroMes(String mesTexto){
         java.util.List<String> meses = java.util.Arrays.asList(
             "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         );
         return meses.indexOf(mesTexto) + 1;
     }
+        
+       
 }
