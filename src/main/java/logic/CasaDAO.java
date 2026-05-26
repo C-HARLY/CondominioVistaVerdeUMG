@@ -1,8 +1,4 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package logic;
+package logic; // O el paquete donde lo tengas
 
 import db.Conexion;
 import java.sql.Connection;
@@ -11,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import model.Propietario; // 🌟 VITAL: Importar tu modelo
 
 /**
  *
@@ -18,13 +15,12 @@ import java.util.List;
  */
 public class CasaDAO {
     
-    //Metodo para traer casas disponibles
-   public List<Integer> obtenerCasasDisponibles() {
+    // Metodo para traer casas disponibles
+    public List<Integer> obtenerCasasDisponibles() {
         List<Integer> casasDisponibles = new ArrayList<>();
         // Query: Trae el número de las casas cuyo estado sea 'Disponible'
         String sql = "SELECT numero_casa FROM casas WHERE estado = 'Disponible' ORDER BY numero_casa ASC";
 
-        // Usamos try-with-resources con el método Conexion.conectar()
         try (Connection conn = Conexion.conectar();
              PreparedStatement pst = conn.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
@@ -35,21 +31,19 @@ public class CasaDAO {
             }
 
         } catch (SQLException e) {
-            System.out.println("Error al cargar las casas: " + e.getMessage());
+            System.out.println("Error al cargar las casas disponibles: " + e.getMessage());
         }
 
         return casasDisponibles;
     } 
    
-   
-   
-   // Nuevo método para la vista de PAGOS(casas ocupadas)
+    // Metodo para la vista de PAGOS (casas ocupadas)
     public List<Integer> obtenerCasasOcupadas() {
         List<Integer> casasOcupadas = new ArrayList<>();
         // Query: Solo trae las casas que SÍ tienen dueño
         String sql = "SELECT numero_casa FROM casas WHERE estado = 'Ocupada' ORDER BY numero_casa ASC";
 
-        try (Connection conn = db.Conexion.conectar();
+        try (Connection conn = Conexion.conectar();
              PreparedStatement pst = conn.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
 
@@ -64,29 +58,43 @@ public class CasaDAO {
         return casasOcupadas;
     }
     
-    // Metodo para obtener la fecha en que se registro el propietario   
-    public java.time.LocalDate obtenerFechaRegistroPropietario(int numeroCasa) {
-        String sql = "SELECT p.fecha_registro FROM propietarios p " +
+    // Trae toda la información del dueño de la casa 
+    public Propietario obtenerPropietarioPorCasa(int numeroCasa) {
+        Propietario prop = null; 
+        
+        String sql = "SELECT p.id, p.nombre, p.telefono, p.correo, p.fecha_registro FROM propietarios p " +
                      "INNER JOIN casas c ON p.id_casa = c.id " +
                      "WHERE c.numero_casa = ?";
-        
-        try (java.sql.Connection conn = db.Conexion.conectar();
-             java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+
+        try (Connection conn = Conexion.conectar();
+             PreparedStatement pst = conn.prepareStatement(sql)) {
             
             pst.setInt(1, numeroCasa);
-            try (java.sql.ResultSet rs = pst.executeQuery()) {
+            
+            try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
+                    prop = new Propietario();
+                    prop.setId(rs.getInt("id"));
+                    prop.setNombre(rs.getString("nombre"));
+                    prop.setNumeroCasa(numeroCasa); 
+                    
+                    String tel = rs.getString("telefono");
+                    prop.setTelefono((tel != null && !tel.trim().isEmpty()) ? tel : "Sin teléfono");
+                    
+                    String correo = rs.getString("correo");
+                    prop.setCorreo((correo != null && !correo.trim().isEmpty()) ? correo : "Sin correo");
+
+                    // 🌟 CAPTURAMOS LA FECHA Y LA GUARDAMOS EN EL OBJETO
                     java.sql.Date fechaSQL = rs.getDate("fecha_registro");
                     if (fechaSQL != null) {
-                        return fechaSQL.toLocalDate(); // Lo convertimos a LocalDate de Java
+                        prop.setFechaRegistro(fechaSQL.toLocalDate());
                     }
                 }
             }
-        } catch (java.sql.SQLException e) {
-            System.out.println("Error al buscar fecha de registro: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Error al buscar el propietario: " + e.getMessage());
         }
-        return null; // Si hay error o no tiene fecha
+        
+        return prop; 
     }
 }
-
-

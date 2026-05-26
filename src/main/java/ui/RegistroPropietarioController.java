@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package ui;
 
 import java.io.IOException;
@@ -21,6 +17,7 @@ import javafx.stage.Stage;
 import logic.CasaDAO;
 import logic.PropietarioDAO;
 import model.Propietario;
+import logic.SweetAlert; // 🌟 IMPORTACIÓN CLAVE
 
 /**
  * FXML Controller class
@@ -36,10 +33,12 @@ public class RegistroPropietarioController implements Initializable {
     @FXML private TextField txtTelefono;
     @FXML private TextField txtCorreo;
     @FXML private ComboBox<String> cmbCasas;
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarCasasDesdeDB();
-    }    
+    }   
+    
     private void cargarCasasDesdeDB(){
         CasaDAO dao = new CasaDAO();
         List<Integer> disponibles = dao.obtenerCasasDisponibles();
@@ -64,7 +63,7 @@ public class RegistroPropietarioController implements Initializable {
 
         // 2. Validar que no haya vacíos
         if (nombre.isEmpty() || tel.isEmpty() || casaSeleccionada == null) {
-            System.out.println("Faltan datos");
+            SweetAlert.showWarning("Campos Incompletos", "Por favor, llena todos los campos obligatorios para registrar al inquilino.");
             return;
         }
 
@@ -76,11 +75,11 @@ public class RegistroPropietarioController implements Initializable {
         PropietarioDAO dao = new PropietarioDAO();
 
         if (dao.registrar(nuevo)) {
-            System.out.println("¡Propietario registrado exitosamente!");
+            SweetAlert.showSuccess("¡Registro Exitoso!", "El propietario " + nombre + " ha sido asignado correctamente a la Casa " + numCasa + ".");
             limpiarCampos();
             cargarCasasDesdeDB(); // Recargamos el ComboBox para que la casa ya no aparezca
         } else {
-            System.out.println("Error al registrar.");
+            SweetAlert.showError("Error de Registro", "Hubo un problema de conexión. No se pudo guardar el propietario.");
         }
     }
 
@@ -90,5 +89,4 @@ public class RegistroPropietarioController implements Initializable {
         txtCorreo.clear();
         cmbCasas.getSelectionModel().clearSelection();
     }
-    
 }

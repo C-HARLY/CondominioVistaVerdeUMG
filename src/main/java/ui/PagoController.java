@@ -16,6 +16,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import logic.CasaDAO;
 import logic.SweetAlert;
+import model.Propietario; // Importante agregar tu modelo
 
 public class PagoController implements Initializable {
 
@@ -23,15 +24,19 @@ public class PagoController implements Initializable {
     @FXML private ComboBox<String> cmbMes;
     @FXML private ComboBox<Integer> cmbYear;
     @FXML private TextField txtMonto; 
+    
+    // 🌟 NUEVO: El campo de texto de solo lectura para el nombre
+    @FXML private TextField txtNombrePropietario; 
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         configurarMonto();
         llenarCombosEstaticos();
         cargarCasasOcupadas();
+        configurarListenerCasas(); // 🌟 NUEVO: Iniciamos el "escucha" del ComboBox
     }
 
-   private void configurarMonto() {
+    private void configurarMonto() {
         logic.CuotaDAO dao = new logic.CuotaDAO();
         model.Cuota cuotaVigente = dao.obtenerCuota();
         
@@ -46,7 +51,6 @@ public class PagoController implements Initializable {
         
         txtMonto.setEditable(false); 
     }
-   
    
     private void llenarCombosEstaticos() {
         cmbMes.getItems().addAll("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
@@ -72,6 +76,32 @@ public class PagoController implements Initializable {
         }
     }
     
+    // 🌟 NUEVO MÉTODO: Se encarga de llenar el nombre del propietario automáticamente
+    private void configurarListenerCasas() {
+        cmbCasas.valueProperty().addListener((observable, oldValue, newValue) -> {
+            // Verificamos que hayan seleccionado algo válido
+            if (newValue != null && !newValue.startsWith("No hay")) {
+                
+                // Limpiamos el texto para que "Casa 5" se vuelva un int 5
+                int numeroCasa = Integer.parseInt(newValue.replace("Casa ", ""));
+                
+                CasaDAO casaDao = new CasaDAO();
+                Propietario prop = casaDao.obtenerPropietarioPorCasa(numeroCasa);
+                
+                if (prop != null) {
+                    txtNombrePropietario.setText(prop.getNombre());
+                } else {
+                    txtNombrePropietario.setText("Sin Asignar");
+                }
+            } else {
+                // Si limpian la selección, limpiamos el campo
+                if (txtNombrePropietario != null) {
+                    txtNombrePropietario.setText("");
+                }
+            }
+        });
+    }
+    
     @FXML
     private void registrarPago(ActionEvent event) {
         // 1. Extraer los datos de la pantalla
@@ -91,9 +121,14 @@ public class PagoController implements Initializable {
         double monto = Double.parseDouble(montoTexto.replace(",", "."));
         int mesSeleccionadoNum = obtenerNumeroMes(mes);
 
-        // Validar fecha de registro del propietario
+        // 🌟 BUENAS PRÁCTICAS: Validar fecha de registro extrayéndola del modelo Propietario
         logic.CasaDAO casaDao = new logic.CasaDAO();
-        java.time.LocalDate fechaRegistroInquilino = casaDao.obtenerFechaRegistroPropietario(numeroCasa);
+        model.Propietario propietarioActual = casaDao.obtenerPropietarioPorCasa(numeroCasa);
+        
+        java.time.LocalDate fechaRegistroInquilino = null;
+        if (propietarioActual != null) {
+            fechaRegistroInquilino = propietarioActual.getFechaRegistro();
+        }
 
         if (fechaRegistroInquilino != null) {
             int mesRegistro = fechaRegistroInquilino.getMonthValue();
@@ -133,7 +168,7 @@ public class PagoController implements Initializable {
             }
         }
 
-        // 4. Si pasó todas las validaciones, creamos el objeto Pago
+        // 4. Si pasó todas las validaciones, creamos el objeto Pago (Excelente práctica OOP)
         model.Pago pagoParaGuardar = new model.Pago(0, numeroCasa, mes, anio, monto);
 
         // 5. Mandar a guardar usando nuestro DAO
@@ -146,13 +181,16 @@ public class PagoController implements Initializable {
             cmbCasas.getSelectionModel().clearSelection();
             cmbMes.getSelectionModel().clearSelection();
             cmbYear.getSelectionModel().selectFirst();
+            
+            if (txtNombrePropietario != null) {
+                txtNombrePropietario.setText(""); // Limpiamos el nombre
+            }
 
             SweetAlert.showSuccess("¡Transacción Exitosa!", "El pago de la Casa " + numeroCasa + " se registró correctamente.");
         } else {
             SweetAlert.showError("Error de Registro", "La transacción no pudo completarse. Es muy probable que este mes ya esté pagado.");
         }
     }
-    
     private int obtenerNumeroMes(String mesTexto) {
         java.util.List<String> meses = java.util.Arrays.asList(
             "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 

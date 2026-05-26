@@ -69,8 +69,6 @@
 
                             <children>
 
-                                <!-- CASA -->
-
                                 <Label text="Número de casa"
                                        styleClass="form-label"
                                        GridPane.columnIndex="0"
@@ -83,72 +81,70 @@
                                           GridPane.columnIndex="1"
                                           GridPane.rowIndex="0" />
 
-                                <!-- MES -->
+                                <Label text="Propietario"
+                                       styleClass="form-label"
+                                       GridPane.columnIndex="0"
+                                       GridPane.rowIndex="1" />
+
+                                <TextField fx:id="txtNombrePropietario"
+                                           prefWidth="200"
+                                           prefHeight="41"
+                                           styleClass="input"
+                                           editable="false"
+                                           promptText="Seleccione una casa..."
+                                           style="-fx-background-color: #e9ecef; -fx-text-fill: #555555; -fx-font-weight: bold;"
+                                           GridPane.columnIndex="1"
+                                           GridPane.rowIndex="1" />
 
                                 <Label text="Mes"
                                        styleClass="form-label"
                                        GridPane.columnIndex="0"
-                                       GridPane.rowIndex="1" />
+                                       GridPane.rowIndex="2" />
 
                                 <ComboBox fx:id="cmbMes"
                                           prefWidth="200"
                                           prefHeight="41"
                                           styleClass="input"
                                           GridPane.columnIndex="1"
-                                          GridPane.rowIndex="1" />
-
-                                <!-- AÑO -->
+                                          GridPane.rowIndex="2" />
 
                                 <Label text="Año"
                                        styleClass="form-label"
                                        GridPane.columnIndex="0"
-                                       GridPane.rowIndex="2" />
+                                       GridPane.rowIndex="3" />
 
                                 <ComboBox fx:id="cmbYear"
                                           prefWidth="200"
                                           prefHeight="41"
                                           styleClass="input"
                                           GridPane.columnIndex="1"
-                                          GridPane.rowIndex="2" />
-
-                                <!-- MONTO -->
+                                          GridPane.rowIndex="3" />
 
                                 <Label text="Monto"
                                        styleClass="form-label"
                                        GridPane.columnIndex="0"
-                                       GridPane.rowIndex="3" />
+                                       GridPane.rowIndex="4" />
 
                                 <TextField fx:id="txtMonto"
                                            prefWidth="200"
                                            prefHeight="41"
                                            styleClass="input"
                                            GridPane.columnIndex="1"
-                                           GridPane.rowIndex="3" />
+                                           GridPane.rowIndex="4" />
 
                             </children>
 
-                            <!-- COLUMNAS -->
-
                             <columnConstraints>
-
                                 <ColumnConstraints />
-
                                 <ColumnConstraints />
-
                             </columnConstraints>
 
-                            <!-- FILAS -->
-
                             <rowConstraints>
-
                                 <RowConstraints />
-
                                 <RowConstraints />
-
                                 <RowConstraints />
-
                                 <RowConstraints />
-
+                                <RowConstraints />
                             </rowConstraints>
 
                         </GridPane>

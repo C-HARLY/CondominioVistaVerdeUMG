@@ -1,8 +1,5 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
+import java.time.LocalDate; 
 
 /**
  *
@@ -14,22 +11,22 @@ public class Propietario {
     private int numeroCasa;
     private String telefono;
     private String correo;
+    private LocalDate fechaRegistro; 
     
     public Propietario(){ //constructor vacio 
         
     }
     
-    //constructor completo
-    
+    //constructor completo original
     public Propietario(int id, String nombre, int numeroCasa, String telefono, String correo ){
         this.id = id;
         this.nombre = nombre;
         this.numeroCasa = numeroCasa;
         this.telefono = telefono;
         this.correo = correo;
-        
     }
-    // Construcctor para Registrar// 
+    
+    // Construcctor para Registrar original
     public Propietario(String nombre, int numeroCasa, String telefono, String correo) {
         this.nombre = nombre;
         this.numeroCasa = numeroCasa;
@@ -77,7 +74,11 @@ public class Propietario {
         this.correo = correo;
     }
     
-    
-    
-            
+    public LocalDate getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(LocalDate fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
 }
