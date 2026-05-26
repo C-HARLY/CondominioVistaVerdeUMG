@@ -26,9 +26,10 @@
                   <TableView fx:id="tablaMorosos" prefHeight="191.0" prefWidth="552.0">
 
                      <columns>
-                        <TableColumn fx:id="colNumeroCasa" prefWidth="111.19994813203812" style="-fx-table-header-color: #8BC34A;" text="No. Casa" />
-                        <TableColumn fx:id="colNombre" prefWidth="263.20001220703125" text="Nombre del propietario" />
-                        <TableColumn fx:id="colTelefono" prefWidth="116.79998779296875" text="Teléfono" />
+                        <TableColumn fx:id="colNumeroCasa" prefWidth="61.60003739595413" style="-fx-table-header-color: #8BC34A;" text="No. Casa" />
+                        <TableColumn fx:id="colNombre" prefWidth="179.99999618530273" text="Nombre del propietario" />
+                        <TableColumn fx:id="colTelefono" prefWidth="98.40003967285156" text="Teléfono" />
+                        <TableColumn fx:id="colCorreo" prefWidth="146.39996337890625" text="Correo" />
                      </columns>
 
                   </TableView>

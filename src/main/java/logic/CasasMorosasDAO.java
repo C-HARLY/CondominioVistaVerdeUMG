@@ -23,7 +23,8 @@ public class CasasMorosasDAO {
 SELECT 
     c.numero_casa,
     p.nombre,
-    p.telefono
+    p.telefono,
+    p.correo
 FROM casas c
 
 JOIN propietarios p
@@ -76,6 +77,9 @@ ORDER BY c.numero_casa ASC
 
                 // Obtiene el teléfono del propietario
                 casa.setTelefono(rs.getString("telefono"));
+
+                // Obtiene el correo del propietario
+                casa.setCorreo(rs.getString("correo"));
 
                 // Agrega el objeto a la lista final
                 lista.add(casa);
