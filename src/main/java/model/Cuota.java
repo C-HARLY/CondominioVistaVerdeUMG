@@ -35,6 +35,7 @@ public class Cuota {
     public void setMontoActual(double montoActual) {
         this.montoActual = montoActual;
     }
+
     
     
 }

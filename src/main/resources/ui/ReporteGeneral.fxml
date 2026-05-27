@@ -7,61 +7,180 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
 
-<StackPane style="-fx-background-color: #f4f6f5;" stylesheets="@../styles/reportegeneral.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.ReporteGeneralController">
+<StackPane style="-fx-background-color: #f4f6f5;"
+           stylesheets="@../styles/reportegeneral.css"
+           xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="ui.ReporteGeneralController">
+
     <children>
-        <AnchorPane maxHeight="500" maxWidth="580" prefHeight="520" prefWidth="520" styleClass="card-container">
+
+        <AnchorPane maxHeight="500"
+                    maxWidth="520"
+                    prefHeight="520"
+                    prefWidth="580"
+                    styleClass="card-container">
+
             <children>
-                <VBox spacing="12" AnchorPane.bottomAnchor="28" AnchorPane.leftAnchor="30" AnchorPane.rightAnchor="30" AnchorPane.topAnchor="28">
+
+                <VBox spacing="34"
+                      AnchorPane.bottomAnchor="28"
+                      AnchorPane.leftAnchor="30"
+                      AnchorPane.rightAnchor="30"
+                      AnchorPane.topAnchor="28">
+
                     <children>
-                        
-                        <VBox spacing="10">
+
+                        <HBox alignment="TOP_LEFT">
+
                             <children>
-                                <Label styleClass="title-label" text="📊 Reporte General" />
-                                <Label styleClass="subtitle-label" text="Resumen financiero del condominio" />
+
+                                <VBox spacing="4"
+                                      HBox.hgrow="ALWAYS">
+
+                                    <children>
+
+                                        <Label styleClass="title-label"
+                                               text="📊 Reporte General" />
+
+                                        <Label styleClass="subtitle-label"
+                                               text="Resumen financiero del condominio" />
+
+                                    </children>
+
+                                </VBox>
+
+                                <Button fx:id="btnGenerarPDF"
+                                        mnemonicParsing="false"
+                                        onAction="#generarReportePDF"
+                                        prefHeight="38"
+                                        prefWidth="100"
+                                        styleClass="pdf-button"
+                                        text="Exportar PDF" />
+
                             </children>
-                        </VBox>
 
-                        <HBox maxWidth="520" prefWidth="520" spacing="20" alignment="CENTER_LEFT">
-                            <children>
-                                <VBox spacing="10" alignment="CENTER_LEFT">
-                                    <children>
-                                        <ComboBox fx:id="cmbMes" onAction="#onCmbMesChange" prefHeight="37.0" prefWidth="133.0" styleClass="custom-combo" />
-                                        <Button fx:id="btnGenerarPDF" onAction="#generarReportePDF" mnemonicParsing="false" text="Generar PDF" style="-fx-background-color: #1B5E20; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
-                                    </children>
-                                </VBox>
-
-                                <VBox alignment="CENTER" prefHeight="68.0" prefWidth="150.0" spacing="6" styleClass="summary-card">
-                                    <children>
-                                        <Label styleClass="summary-title" text="Total Esperado" />
-                                        <Label fx:id="lblTotalEsperado" styleClass="summary-value" text="Q0.00" />
-                                    </children>
-                                </VBox>
-
-                                <VBox alignment="CENTER" prefHeight="68.0" prefWidth="150.0" spacing="6" styleClass="summary-card">
-                                    <children>
-                                        <Label styleClass="summary-title" text="Total Recaudado" />
-                                        <Label fx:id="lblTotalRecaudado" styleClass="summary-value-green" text="Q0.00" />
-                                    </children>
-                                </VBox>
-                            </children>
                         </HBox>
 
-                        <TableView fx:id="tblReporte" maxWidth="520" prefHeight="276.0" prefWidth="460.0" styleClass="custom-table">
+                        <HBox alignment="CENTER_LEFT"
+                              maxWidth="520"
+                              prefWidth="520"
+                              spacing="16">
+
+                            <children>
+
+                                <VBox spacing="6"
+                                      alignment="TOP_LEFT">
+
+                                    <children>
+                                          <ComboBox fx:id="cmbMes"
+                                                  onAction="#onCmbMesChange"
+                                                  prefHeight="38"
+                                                  prefWidth="132"
+                                                  styleClass="custom-combo"/>
+                                                  
+                                          <ComboBox fx:id="cmbYear"
+                                                  onAction="#onCmbMesChange"
+                                                  prefHeight="38"
+                                                  prefWidth="132"
+                                                  styleClass="custom-combo"/>
+
+                                    </children>
+
+                                </VBox>
+
+                                <VBox alignment="CENTER"
+                                      prefHeight="68"
+                                      prefWidth="145"
+                                      spacing="5"
+                                      styleClass="summary-card">
+
+                                    <children>
+
+                                        <Label styleClass="summary-title"
+                                               text="Total Esperado" />
+
+                                        <Label fx:id="lblTotalEsperado"
+                                               styleClass="summary-value"
+                                               text="Q0.00" />
+
+                                    </children>
+
+                                </VBox>
+
+                                <VBox alignment="CENTER"
+                                      prefHeight="68"
+                                      prefWidth="145"
+                                      spacing="5"
+                                      styleClass="summary-card">
+
+                                    <children>
+
+                                        <Label styleClass="summary-title"
+                                               text="Total Recaudado" />
+
+                                        <Label fx:id="lblTotalRecaudado"
+                                               styleClass="summary-value-green"
+                                               text="Q0.00" />
+
+                                    </children>
+
+                                </VBox>
+
+                            </children>
+
+                        </HBox>
+
+                        <TableView fx:id="tblReporte"
+                                   maxWidth="520"
+                                   prefHeight="300"
+                                   prefWidth="520"
+                                   styleClass="custom-table">
+
+                                   <VBox.margin>
+                                        <Insets top="-10"/>
+                                   </VBox.margin>
+                            
+                            
                             <columns>
-                                <TableColumn fx:id="colCasa" prefWidth="55" text="Casa" />
-                                <TableColumn fx:id="colPropietario" prefWidth="150" text="Propietario" />
-                                <TableColumn fx:id="colEstado" prefWidth="85" text="Estado" />
-                                <TableColumn fx:id="colMontoMes" prefWidth="95" text="Mes" />
-                                <TableColumn fx:id="colTotal" prefWidth="95" text="Total" />
+
+                                <TableColumn fx:id="colCasa"
+                                             prefWidth="56"
+                                             text="Casa" />
+
+                                <TableColumn fx:id="colPropietario"
+                                             prefWidth="175"
+                                             text="Propietario" />
+
+                                <TableColumn fx:id="colEstado"
+                                             prefWidth="90"
+                                             text="Estado" />
+
+                                <TableColumn fx:id="colMontoMes"
+                                             prefWidth="90"
+                                             text="Monto" />
+
+                                <TableColumn fx:id="colTotal"
+                                             prefWidth="90"
+                                             text="Total" />
+
                             </columns>
+
                         </TableView>
-                        
+
                     </children>
+
                 </VBox>
+
             </children>
+
         </AnchorPane>
+
     </children>
+
 </StackPane>

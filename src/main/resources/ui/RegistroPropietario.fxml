@@ -37,13 +37,23 @@
 
                     <children>
 
-                        <!-- TITULO -->
+                        <!-- HEADER -->
 
-                        <Label text="👤 Registro de Propietario"
-                               styleClass="title-label"/>
+                        <VBox spacing="4"
+                              alignment="CENTER"
+                              maxWidth="Infinity">
 
-                        <Label text="Administra propietarios del condominio"
-                               styleClass="subtitle-label"/>
+                            <children>
+
+                                <Label text="👤 Registro de Propietario"
+                                       styleClass="title-label"/>
+
+                                <Label text="Administra propietarios del condominio"
+                                       styleClass="subtitle-label"/>
+
+                            </children>
+
+                        </VBox>
 
                         <!-- FORMULARIO -->
 

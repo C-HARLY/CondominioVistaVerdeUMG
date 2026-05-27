@@ -26,7 +26,7 @@ import model.ReporteCasaDTO;
 public class ReporteGeneralController implements Initializable {
 
     /* =========================================================
-       COMPONENTES DE LA VISTA (Alineados con el diseño de Axel)
+       COMPONENTES DE LA VISTA 
     ========================================================= */
     @FXML private TableView<ReporteCasaDTO> tblReporte;
     @FXML private TableColumn<ReporteCasaDTO, Integer> colCasa;
@@ -34,20 +34,25 @@ public class ReporteGeneralController implements Initializable {
     @FXML private TableColumn<ReporteCasaDTO, String> colEstado;
     @FXML private TableColumn<ReporteCasaDTO, Double> colMontoMes;
     @FXML private TableColumn<ReporteCasaDTO, Double> colTotal;
-
     @FXML private Label lblTotalEsperado;
     @FXML private Label lblTotalRecaudado;
     
     @FXML private ComboBox<String> cmbMes;
+    @FXML private ComboBox<Integer> cmbYear; 
 
+    //combobox con los meses que usaremos
     private final String[] MESES = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
 
-    /* =========================================================
+   /* =========================================================
        INITIALIZE
     ========================================================= */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Ajuste visual para que la tabla de Axel se vea simétrica
+        // Ajuste visual para que la tabla se vea simétrica y centrada
+        colCasa.setStyle("-fx-alignment: CENTER;");
+        colMontoMes.setStyle("-fx-alignment: CENTER;");
+        colTotal.setStyle("-fx-alignment: CENTER;");
+        
         tblReporte.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         
         configurarColumnas();
@@ -55,7 +60,8 @@ public class ReporteGeneralController implements Initializable {
         // Al cargar, procesa con el mes actual automáticamente
         ejecutarReporte();
     }
-
+    
+    
     private void configurarColumnas() {
         colCasa.setCellValueFactory(new PropertyValueFactory<>("numeroCasa"));
         colPropietario.setCellValueFactory(new PropertyValueFactory<>("propietario"));
@@ -71,6 +77,10 @@ public class ReporteGeneralController implements Initializable {
         // Seleccionamos el mes actual del sistema por defecto
         int mesActualDelSistema = LocalDate.now().getMonthValue(); 
         cmbMes.getSelectionModel().select(mesActualDelSistema - 1); 
+
+        int anioActual = LocalDate.now().getYear();
+        cmbYear.getItems().addAll(anioActual - 1, anioActual, anioActual + 1);
+        cmbYear.getSelectionModel().select(Integer.valueOf(anioActual));
     }
 
     /* =========================================================
@@ -83,21 +93,22 @@ public class ReporteGeneralController implements Initializable {
 
     private void ejecutarReporte() {
         String mesSeleccionado = cmbMes.getSelectionModel().getSelectedItem();
+        Integer anioSeleccionado = cmbYear.getSelectionModel().getSelectedItem(); // 🌟 NUEVO: Obtenemos el año
         
-        if (mesSeleccionado == null) return;
+        if (mesSeleccionado == null || anioSeleccionado == null) return; // Validación extra de seguridad
 
-        System.out.println("El ComboBox detectó el mes: " + mesSeleccionado); 
+        System.out.println("El ComboBox detectó el mes: " + mesSeleccionado + " del año: " + anioSeleccionado); 
 
         if (colMontoMes != null) {
-            colMontoMes.setText("Pagado en " + mesSeleccionado);
+            colMontoMes.setText("Monto");
         }
 
-        int anioActual = LocalDate.now().getYear();
+        logic.CuotaDAO cuotaDao = new logic.CuotaDAO();
+        model.Cuota cuota = cuotaDao.obtenerCuota();
+        double cuotaVigente = (cuota != null) ? cuota.getMontoActual() : 1500.00;
 
         ReporteDAO dao = new ReporteDAO();
-        double cuotaVigente = dao.obtenerCuotaActual(); 
-
-        List<ReporteCasaDTO> datos = dao.obtenerReporteGeneral(mesSeleccionado, anioActual);
+        List<ReporteCasaDTO> datos = dao.obtenerReporteGeneral(mesSeleccionado, anioSeleccionado);
 
         ObservableList<ReporteCasaDTO> listaObservable = FXCollections.observableArrayList(datos);
         tblReporte.setItems(listaObservable);
@@ -105,18 +116,24 @@ public class ReporteGeneralController implements Initializable {
         calcularTotalesFinancieros(datos, cuotaVigente);
     }
 
-    private void calcularTotalesFinancieros(List<ReporteCasaDTO> datos, double cuotaVigente) {
-        double totalEsperado = 30 * cuotaVigente; 
+   private void calcularTotalesFinancieros(List<ReporteCasaDTO> datos, double cuotaVigente) {
         double totalRecaudadoMes = 0.0; 
+        double totalEsperado = 0.0; // 
         
         int contadorCasasPagadas = 0; 
 
         if (datos != null) {
             for (ReporteCasaDTO casa : datos) {
-                String estado = casa.getEstadoMes();
-                if (estado != null && estado.trim().equalsIgnoreCase("Pagado")) {
-                    totalRecaudadoMes += cuotaVigente;
+                if (casa.getPropietario().equalsIgnoreCase("Sin Asignar")) {
+                    continue; 
+                }
+
+                if (casa.getEstadoMes() != null && casa.getEstadoMes().trim().equalsIgnoreCase("Pagado")) {
+                    totalRecaudadoMes += casa.getMontoMes();
+                    totalEsperado += casa.getMontoMes();
                     contadorCasasPagadas++;
+                } else {
+                    totalEsperado += cuotaVigente;
                 }
             }
         }
@@ -136,56 +153,43 @@ public class ReporteGeneralController implements Initializable {
     @FXML
     private void generarReportePDF(ActionEvent event) {
         String mesSeleccionado = cmbMes.getSelectionModel().getSelectedItem();
+        Integer anioSeleccionado = cmbYear.getSelectionModel().getSelectedItem();
 
-        if (mesSeleccionado == null || mesSeleccionado.trim().isEmpty()) {
-            System.out.println("⚠️ ALERTA: Selecciona un mes primero.");
+        if (mesSeleccionado == null || mesSeleccionado.trim().isEmpty() || anioSeleccionado == null) {
+            System.out.println("ALERTA: Selecciona un mes y año primero.");
             return; 
         }
 
         try {
-            System.out.println("Generando PDF para el mes: " + mesSeleccionado);
+            System.out.println("Generando PDF para: " + mesSeleccionado + " " + anioSeleccionado);
 
             java.util.Map<String, Object> parametros = new java.util.HashMap<>();
             parametros.put("MesSeleccionado", mesSeleccionado);
+            // Si en el futuro necesitas pasarle el año a tu reporte PDF, ya lo tienes listo para meterlo aquí.
 
             java.io.InputStream reporteStream = getClass().getResourceAsStream("/reportes/ReporteVistaVerde.jasper");
             
             if (reporteStream == null) {
-                System.out.println("❌ ERROR: No se encontró el archivo .jasper en la carpeta de resources.");
+                System.out.println(" ERROR: No se encontró el archivo .jasper en la carpeta de resources.");
                 return;
             }
 
-            java.sql.Connection conexion = db.Conexion.conectar(); 
+            try (java.sql.Connection conexion = db.Conexion.conectar()) {
+                
+                if (conexion == null) {
+                    System.out.println(" ERROR: No se pudo establecer conexión con Neon.");
+                    return;
+                }
 
-            if (conexion == null) {
-                System.out.println(" ERROR: No se pudo establecer conexión con Neon.");
-                return;
+                net.sf.jasperreports.engine.JasperPrint jasperPrint = net.sf.jasperreports.engine.JasperFillManager.fillReport(reporteStream, parametros, conexion);
+                net.sf.jasperreports.view.JasperViewer visor = new net.sf.jasperreports.view.JasperViewer(jasperPrint, false);
+                visor.setTitle("Vista Verde - Estado de Cuenta (" + mesSeleccionado + " " + anioSeleccionado + ")");
+                visor.setVisible(true);
+                
             }
-
-            net.sf.jasperreports.engine.JasperPrint jasperPrint = net.sf.jasperreports.engine.JasperFillManager.fillReport(reporteStream, parametros, conexion);
-            net.sf.jasperreports.view.JasperViewer visor = new net.sf.jasperreports.view.JasperViewer(jasperPrint, false);
-            visor.setTitle("Vista Verde - Estado de Cuenta (" + mesSeleccionado + ")");
-            visor.setVisible(true);
 
         } catch (Exception e) {
-            System.out.println(" ERROR FATAL al generar el PDF:");
-            e.printStackTrace();
-        }
-    }
-
-    /* =========================================================
-       NAVEGACIÓN (Diseño de Axel)
-    ========================================================= */
-    @FXML
-    private void volverAlMenu(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/ui/MenuPrincipal.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            System.out.println("Error al cargar el Menú Principal:");
+            System.out.println(" ERROR  al generar el PDF:");
             e.printStackTrace();
         }
     }
