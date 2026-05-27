@@ -1,53 +1,63 @@
-/*
-Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
-Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
-*/
-
-/* Estilo para los ComboBox */
-.input {
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-border-color: #d1d5db;
+.card-container {
     -fx-background-color: white;
-    -fx-padding: 6 10 6 10;
-    -fx-font-size: 13px;
-    -fx-pref-height: 38;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 20, 0, 0, 4);
 }
 
-/* Título principal */
 .title-label {
-    -fx-font-size: 22px;
+    -fx-font-size: 26px;
     -fx-font-weight: bold;
     -fx-text-fill: #1f2937;
 }
 
-/* Subtítulo */
 .subtitle-label {
     -fx-font-size: 13px;
     -fx-text-fill: #6b7280;
 }
 
-/* Etiquetas del formulario */
-.form-label {
-    -fx-font-size: 13px;
-    -fx-font-weight: bold;
+.custom-table {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #e5e7eb;
+    -fx-background-insets: 0;
+}
+
+.custom-table .column-header-background {
+    -fx-background-color: #f3f4f6;
+    -fx-background-radius: 12 12 0 0;
+}
+
+.custom-table .column-header {
+    -fx-background-color: transparent;
+    -fx-padding: 10;
+}
+
+.custom-table .column-header .label {
     -fx-text-fill: #1f2937;
-}
-
-/* Botón principal */
-.primary-button {
-    -fx-background-color: #8bc34a;
-    -fx-background-radius: 10;
-    -fx-text-fill: white;
-    -fx-font-size: 13px;
+    -fx-font-size: 11px;
     -fx-font-weight: bold;
-    -fx-pref-height: 38;
-    -fx-cursor: hand;
 }
 
-/* Efecto al pasar el mouse sobre el botón */
-.primary-button:hover {
-    -fx-background-color: #7cb342;
-    
-    
+.custom-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f3f4f6 transparent;
+}
+
+.custom-table .table-row-cell:hover {
+    -fx-background-color: #f9fafb;
+}
+
+.custom-table .table-cell {
+    -fx-padding: 10;
+    -fx-font-size: 13px;
+}
+
+.custom-combo {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #d1d5db;
+    -fx-padding: 4 8 4 8;
+    -fx-font-size: 13px;
 }
