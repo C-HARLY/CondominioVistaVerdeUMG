@@ -2,9 +2,17 @@ package model;
 
 public class CasaMorosa {
 
+    // Almacena el número de la casa morosa
     private String numeroCasa;
+
+    // Almacena el nombre del propietario
     private String nombre;
+
+    // Almacena el teléfono del propietario
     private String telefono;
+
+    // Almacena el correo del propietario
+    private String correo;
 
     public CasaMorosa() {
     }
@@ -31,5 +39,13 @@ public class CasaMorosa {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
 }
