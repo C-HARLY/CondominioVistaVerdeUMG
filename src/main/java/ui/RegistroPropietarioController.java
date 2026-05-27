@@ -17,12 +17,12 @@ import javafx.stage.Stage;
 import logic.CasaDAO;
 import logic.PropietarioDAO;
 import model.Propietario;
-import logic.SweetAlert; // 🌟 IMPORTACIÓN CLAVE
+import logic.SweetAlert; //  IMPORTACIÓN CLAVE
 
 /**
  * FXML Controller class
  *
- * @author carlo
+ * @author eluzai
  */
 public class RegistroPropietarioController implements Initializable {
 
@@ -37,6 +37,7 @@ public class RegistroPropietarioController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         cargarCasasDesdeDB();
+        
     }   
     
     private void cargarCasasDesdeDB(){
@@ -59,15 +60,32 @@ public class RegistroPropietarioController implements Initializable {
         String nombre = txtNombre.getText();
         String tel = txtTelefono.getText();
         String mail = txtCorreo.getText();
-        String casaSeleccionada = cmbCasas.getValue(); // Trae "Casa "
+        String casaSeleccionada = cmbCasas.getValue(); 
 
-        // 2. Validar que no haya vacíos
+        //Validar Nombre del propietario//
         if (nombre.isEmpty() || tel.isEmpty() || casaSeleccionada == null) {
-            SweetAlert.showWarning("Campos Incompletos", "Por favor, llena todos los campos obligatorios para registrar al inquilino.");
+            SweetAlert.showWarning("Campos Incompletos", "Por favor, llena todos los campos obligatorios para registrar al Propietario.");
             return;
         }
-
-        // 3. Extraer solo el número de la casa 
+        
+        // Validar nombre (solo letras y espacios)//
+        if (!nombre.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$")) {
+             SweetAlert.showWarning("Nombre inválido","El nombre solo puede contener letras.");
+            return;
+        }
+ 
+        // Validar que el Numero de telefono corresponda a Guatemala//
+        if (!tel.matches("^\\d{8}$")) {
+            SweetAlert.showWarning("Teléfono inválido","El teléfono debe contener exactamente 8 dígitos.");
+            return;
+        }
+          
+        // Validar correo
+        if (!mail.matches("^[A-Za-z0-9._%+-]+@(gmail\\.com|hotmail\\.com|outlook\\.com|.+\\.edu)$")) {
+        SweetAlert.showWarning("Su Correo es inválido","Ingresa un correo válido para su Respistro.");
+           return;
+        }
+        // Extraer solo el número de la casa 
         int numCasa = Integer.parseInt(casaSeleccionada.replace("Casa ", ""));
 
         // 4. Ejecutar el registro
