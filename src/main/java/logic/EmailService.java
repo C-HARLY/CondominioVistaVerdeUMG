@@ -9,15 +9,24 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import java.util.Properties;
 
+/*
+ * Servicio para enviar correos electrónicos de forma automática.
+ * Se conecta a la cuenta de Gmail del condominio para mandar los recibos.
+ */
 public class EmailService {
 
-    public static void enviarRecibo(String destinatario, double monto, String mes, int anio, int numCasa) {
-        // 1. Credenciales de Gmail (Portabilidad absoluta)
+    /*
+     * Arma y envía el recibo de pago al correo del residente.
+     * Al usar este método desde el Controlador, hay que mandarle todos estos datos:
+     * destinatario (correo), nombrePropietario (ej. Juan Perez), monto, mes, año y número de casa.
+     */
+    public static void enviarRecibo(String destinatario, String nombrePropietario, double monto, String mes, int anio, int numCasa) {
+        
+        // 1. Datos de la cuenta que envía el correo
         final String remitente = "administracion.vistaverde@gmail.com"; 
-        // Tu clave de aplicación de Google sin espacios
         final String contrasena = "jqlhrqhjgmwqcgsk"; 
 
-        // 2. Configuración del servidor SMTP de Google
+        // 2. Configuraciones de seguridad para que Google nos deje entrar
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -34,10 +43,13 @@ public class EmailService {
         try {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(remitente, "Condominio Vista Verde"));
+            // A quién le llega el correo
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+            // El título del correo
             message.setSubject("Recibo de Pago - Casa " + numCasa);
             
-            // 🌟 El cuerpo del mensaje "Pro" se queda intacto
+            // 3. El diseño visual del correo
+            // Agregamos el %s en el saludo para que ahí se ponga el nombre del propietario
             String cuerpo = """
                 <!DOCTYPE html>
                 <html>
@@ -62,7 +74,7 @@ public class EmailService {
                             <h2>🏢 Vista Verde</h2>
                         </div>
                         <div class="content">
-                            <p>Hola, residente de la <b>Casa %d</b>.</p>
+                            <p>Hola, <b>%s</b> (Casa %d).</p>
                             <p>Hemos registrado tu pago de mantenimiento exitosamente. Aquí tienes los detalles de tu transacción:</p>
                             
                             <div class="monto-box">
@@ -93,16 +105,17 @@ public class EmailService {
                     </div>
                 </body>
                 </html>
-                """.formatted(numCasa, monto, mes, anio);
+                """.formatted(nombrePropietario, numCasa, monto, mes, anio);
 
+            // Armamos el correo para que reconozca tildes y ñ
             message.setContent(cuerpo, "text/html; charset=utf-8");
 
+            // Lo enviamos
             Transport.send(message);
-            System.out.println("¡Éxito! Correo transaccional enviado por Gmail a: " + destinatario);
+            System.out.println("Correo enviado con éxito a: " + destinatario);
 
         } catch (Exception e) {
-            System.err.println("Error al enviar Correo: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Ocurrió un error al intentar enviar el correo: " + e.getMessage());
         }
     }
 }

@@ -258,6 +258,19 @@ public class EstadoCuentaController implements Initializable {
             parametros.put("P_FECHA_INICIO_STR", fechaInicio.toString());
             parametros.put("P_FECHA_FIN_STR", fechaFin.toString());
 
+            // ====================================================
+            // AQUI AGREGAMOS LA LECTURA DEL LOGO EN MEMORIA
+            // ====================================================
+            // OJO: Asegúrate de que tu imagen se llame exactamente "logo.png" y esté en la carpeta "images"
+            java.io.InputStream logoStream = getClass().getResourceAsStream("/images/logo.png");
+            
+            if (logoStream == null) {
+                System.out.println("⚠️ ADVERTENCIA: No se encontró logo.png en la carpeta /images/");
+            } else {
+                parametros.put("logoEmpresa", logoStream); 
+            }
+            // ====================================================
+
             // 4. Cargar el reporte
             java.io.InputStream reporteStream = getClass().getResourceAsStream("/reportes/EstadoCuentaIndividual.jasper");
             
@@ -284,5 +297,5 @@ public class EstadoCuentaController implements Initializable {
             System.out.println(" ERROR FATAL al generar el PDF:");
             e.printStackTrace();
         }
-    }   
+    }
 }
