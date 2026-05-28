@@ -131,18 +131,12 @@ public class ReporteGeneralController implements Initializable {
     private void configurarFormatoMoneda() {
 
         colMontoMes.setCellFactory(col -> new TableCell<>() {
-
             @Override
             protected void updateItem(Double monto, boolean empty) {
-
                 super.updateItem(monto, empty);
-
                 if (empty || monto == null) {
-
                     setText(null);
-
                 } else {
-
                     setText(
                         "Q" + String.format("%,.0f", monto)
                     );
@@ -151,18 +145,12 @@ public class ReporteGeneralController implements Initializable {
         });
 
         colTotal.setCellFactory(col -> new TableCell<>() {
-
             @Override
             protected void updateItem(Double total, boolean empty) {
-
                 super.updateItem(total, empty);
-
                 if (empty || total == null) {
-
                     setText(null);
-
                 } else {
-
                     setText(
                         "Q" + String.format("%,.0f", total)
                     );
@@ -300,8 +288,7 @@ public class ReporteGeneralController implements Initializable {
     /* =========================================================
        GENERAR PDF
     ========================================================= */
-
-    @FXML
+@FXML
     private void generarReportePDF(ActionEvent event) {
 
         String mesSeleccionado =
@@ -329,6 +316,17 @@ public class ReporteGeneralController implements Initializable {
                     "MesSeleccionado",
                     mesSeleccionado
             );
+
+            // ====================================================
+            // AQUI AGREGAMOS LA LECTURA DEL LOGO EN MEMORIA
+            // ====================================================
+            java.io.InputStream logoStream = getClass().getResourceAsStream("/images/logo.png");
+            if (logoStream != null) {
+                parametros.put("logoEmpresa", logoStream); 
+            } else {
+                System.out.println("⚠️ ADVERTENCIA: No se encontró logo.png en la carpeta /images/");
+            }
+            // ====================================================
 
             java.io.InputStream reporteStream =
                     getClass().getResourceAsStream(
