@@ -1,39 +1,33 @@
 package model;
 import java.time.LocalDate; 
 
-/**
- *
- * @author carlo
- */
-public class Propietario {
+public class Propietario extends Persona {
+    
+    // ¡Mira qué limpio queda! Solo atributos exclusivos del Propietario
     private int id;
-    private String nombre;
     private int numeroCasa;
-    private String telefono;
-    private String correo;
     private LocalDate fechaRegistro; 
     
-    public Propietario(){ //constructor vacio 
-        
+    public Propietario(){ 
+        super(); // Llama al constructor vacío de Persona
     }
     
-    //constructor completo original
+    // Constructor completo original adaptado con POO
     public Propietario(int id, String nombre, int numeroCasa, String telefono, String correo ){
+        super(nombre, telefono, correo); // Le pasa los datos a la clase Padre
         this.id = id;
-        this.nombre = nombre;
         this.numeroCasa = numeroCasa;
-        this.telefono = telefono;
-        this.correo = correo;
     }
     
-    // Construcctor para Registrar original
+    // Constructor para Registrar original adaptado con POO
     public Propietario(String nombre, int numeroCasa, String telefono, String correo) {
-        this.nombre = nombre;
+        super(nombre, telefono, correo); // Le pasa los datos a la clase Padre
         this.numeroCasa = numeroCasa;
-        this.telefono = telefono;
-        this.correo = correo;
     }
      
+    // GETTERS Y SETTERS EXCLUSIVOS DE PROPIETARIO
+    // (Ya no necesitas poner los getNombre o getCorreo aquí, ¡los hereda automáticamente!)
+    
     public int getId() {
         return id;
     }
@@ -42,36 +36,12 @@ public class Propietario {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public int getNumeroCasa() {
         return numeroCasa;
     }
 
     public void setNumeroCasa(int numeroCasa) {
         this.numeroCasa = numeroCasa;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
     }
     
     public LocalDate getFechaRegistro() {

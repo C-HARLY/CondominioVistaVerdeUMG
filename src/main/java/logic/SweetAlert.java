@@ -6,61 +6,96 @@ import javafx.stage.Window;
 import javafx.stage.Stage;
 
 /**
+ * Clase utilitaria para la gestión estandarizada de cuadros de diálogo (Alertas) en JavaFX.
+ * 
+ * a lo largo de la aplicación. Centraliza la inyección de estilos CSS, la remoción 
+ * de decoraciones del sistema operativo (OS) y el cálculo de posicionamiento en pantalla, 
+ * garantizando una experiencia de usuario (UX) uniforme en todo el sistema.
  *
- * @author carlo
  */
 public class SweetAlert {
-    // Método para alertas verdes/exitosas
+    
+    /**
+     * Despliega un modal informativo de éxito.
+     * Utilizado para confirmar transacciones completadas (ej. Pago registrado, Propietario guardado).
+     *
+     * @param titulo  El encabezado principal de la alerta.
+     * @param mensaje El texto descriptivo con el detalle de la operación exitosa.
+     */
     public static void showSuccess(String titulo, String mensaje) {
         crearAlerta(Alert.AlertType.INFORMATION, titulo, mensaje);
     }
 
-    // Método para alertas rojas/errores
+    /**
+     * Despliega un modal crítico de error.
+     * Utilizado para notificar excepciones, fallos de red o violaciones a las reglas de negocio 
+     * (ej. Casa ya ocupada, Base de datos desconectada).
+     *
+     * @param titulo  El encabezado principal del error.
+     * @param mensaje El detalle técnico o funcional de la falla.
+     */
     public static void showError(String titulo, String mensaje) {
         crearAlerta(Alert.AlertType.ERROR, titulo, mensaje);
     }
 
-    // Método para alertas amarillas/advertencias
+    /**
+     * Despliega un modal preventivo de advertencia.
+     * Utilizado para situaciones no críticas que requieren la atención del usuario.
+     *
+     * @param titulo  El encabezado principal de la advertencia.
+     * @param mensaje El texto descriptivo de la situación.
+     */
     public static void showWarning(String titulo, String mensaje) {
         crearAlerta(Alert.AlertType.WARNING, titulo, mensaje);
     }
 
-    // ⚙️ EL MOTOR PRIVADO: Aquí ocurre la magia
+    /**
+     * Motor interno de renderizado de alertas.
+     * Construye, estiliza y bloquea el hilo principal (Thread) de la interfaz gráfica 
+     * hasta que el usuario interaccione con el modal.
+     * 
+     * Se utiliza un listener sobre el evento {@code setOnShown} 
+     * para forzar el centrado de la ventana. Esto mitiga un comportamiento nativo de JavaFX 
+     * donde las dimensiones finales de un nodo modificado por CSS no se calculan correctamente 
+     * antes de ser mostrado en pantalla.
+     * 
+     * @param tipo    El enumerador nativo de JavaFX que define el icono base de la alerta.
+     * @param titulo  El texto de la cabecera.
+     * @param mensaje El contenido del cuerpo.
+     */
+    
+    
     private static void crearAlerta(Alert.AlertType tipo, String titulo, String mensaje) {
         Alert alerta = new Alert(tipo);
         alerta.setTitle(titulo);
         
-        // 1. Esto elimina la horrible franja gris de arriba
+        // Limpieza visual: Remueve el header nativo por defecto para diseños más limpios
         alerta.setHeaderText(null); 
-        
-        // 2. Ponemos tu mensaje
         alerta.setContentText(mensaje);
         
-        // 3. Esto quita los botones de minimizar/maximizar y cerrar de Windows
+        // Se aplica un estilo utilitario para ocultar los controles nativos de ventana (Min/Max/Close de Windows/Mac)
         alerta.initStyle(StageStyle.UTILITY); 
         
-        // 4. Conectamos el CSS para que se vea moderno
+        // Inyección dinámica de hojas de estilo (CSS)
         try {
             alerta.getDialogPane().getStylesheets().add(
                 Alert.class.getResource("/css/alertas.css").toExternalForm()
             );
-            //Inyectamos la clase de tu CSS
             alerta.getDialogPane().getStyleClass().add("condo-alert"); 
         } catch (Exception e) {
-            System.out.println("Nota: No se encontró el archivo CSS de alertas, usando estilo por defecto.");
+            System.err.println(" Advertencia de UI (SweetAlert): No se pudo inyectar alertas.css. Renderizando con estilo por defecto.");
         }
         
-        //forzamos que salga en el centro de la pantalla
+        // Corrección de posicionamiento post-renderizado
         Window window = alerta.getDialogPane().getScene().getWindow();
         if (window instanceof Stage) {
             Stage stage = (Stage) window;
-            // Para que el centro se calcule bien después de aplicar el CSS
             stage.setOnShown(event -> {
                 stage.centerOnScreen();
             });
         }
 
-        // 5. Mostramos la alerta y bloqueamos la pantalla hasta que el usuario le de Aceptar
+        // Bloquea la interacción con la ventana padre hasta que esta alerta sea descartada
         alerta.showAndWait();
     }
 }
