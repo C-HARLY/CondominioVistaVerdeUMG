@@ -252,36 +252,21 @@
     -fx-border-color: #8bc34a;
 }
 
-/* =========================================================
-   FILTRO
-========================================================= */
+/* =========================
+   BOTON EXPORTAR PDF
+========================= */
 
-.pdf-button {
-
-    -fx-background-color: #f4fff0;
-    -fx-text-fill: #2e7d32;
-
+.export-button {
+    -fx-background-color: #f0f9eb;
+    -fx-text-fill: #1b7f2a;
     -fx-font-size: 12px;
-    -fx-font-weight: 700;
-
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-
-    -fx-border-color: #cfe7c7;
-    -fx-border-width: 1;
-
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #b7e1a1;
     -fx-cursor: hand;
 }
 
-.pdf-button:hover {
-
-    -fx-background-color: #e8f5e9;
-}
-
-.filter-label {
-
-    -fx-font-size: 11px;
-    -fx-font-weight: bold;
-
-    -fx-text-fill: #94a3b8;
+.export-button:hover {
+    -fx-background-color: #e4f5da;
 }

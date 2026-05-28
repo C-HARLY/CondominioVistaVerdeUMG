@@ -5,18 +5,20 @@
 package ui;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.util.Optional;
 import java.util.ResourceBundle;
+
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+
 import logic.CuotaDAO;
 import model.Cuota;
-import javafx.event.ActionEvent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.DatePicker;
-import java.time.LocalDate;
-import javafx.scene.control.ButtonType;
-import java.util.Optional;
 
 public class ConfiguracionCuotaController implements Initializable {
 
@@ -25,9 +27,9 @@ public class ConfiguracionCuotaController implements Initializable {
 
     @FXML
     private TextField txtNuevaCuota;
-    
+
     @FXML
-private DatePicker dpFecha;
+    private DatePicker dpFecha;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -38,56 +40,82 @@ private DatePicker dpFecha;
 
         if (cuota != null) {
 
-            txtCuotaActual.setText(String.valueOf(cuota.getMontoActual()));
+            txtCuotaActual.setText(
+                "Q" + String.format("%,.0f", cuota.getMontoActual())
+            );
 
             txtCuotaActual.setEditable(false);
-            
-            
         }
+
+        // Fecha actual por defecto
+        dpFecha.setValue(LocalDate.now());
     }
-     @FXML
+
+    @FXML
     private void guardarCuota(ActionEvent event) {
-        
+
         try {
 
             LocalDate fechaSeleccionada = dpFecha.getValue();
 
-if (!fechaSeleccionada.equals(LocalDate.now())) {
+            if (fechaSeleccionada == null ||
+                !fechaSeleccionada.equals(LocalDate.now())) {
 
-    Alert alert = new Alert(Alert.AlertType.WARNING);
+                Alert alert = new Alert(Alert.AlertType.WARNING);
 
-    alert.setContentText("La fecha no es válida. Debe seleccionar la fecha actual.");
+                alert.setTitle("Fecha inválida");
+                alert.setHeaderText(null);
+                alert.setContentText(
+                    "La fecha no es válida. Debe seleccionar la fecha actual."
+                );
 
-    alert.showAndWait();
+                alert.showAndWait();
 
-    return;
-    
-    
-}
-           
-            int nuevaCuota = Integer.parseInt(txtNuevaCuota.getText());
+                return;
+            }
+
+            // Limpiamos Q y comas por si el usuario las escribe
+            String texto = txtNuevaCuota.getText()
+                    .replace("Q", "")
+                    .replace(",", "")
+                    .trim();
+
+            int nuevaCuota = Integer.parseInt(texto);
 
             CuotaDAO dao = new CuotaDAO();
 
-            boolean actualizado = dao.actualizarMontoMantenimiento(nuevaCuota);
+            boolean actualizado =
+                    dao.actualizarMontoMantenimiento(nuevaCuota);
 
             if (actualizado) {
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
-                alert.setContentText("Cuota actualizada correctamente");
+                alert.setTitle("Actualización exitosa");
+                alert.setHeaderText(null);
+                alert.setContentText(
+                    "Cuota actualizada correctamente"
+                );
 
                 alert.showAndWait();
 
-                txtCuotaActual.setText(String.valueOf(nuevaCuota));
+                txtCuotaActual.setText(
+                    "Q" + String.format("%,.0f", nuevaCuota)
+                );
 
-                txtNuevaCuota.clear();
+                txtNuevaCuota.setText(
+                    "Q" + String.format("%,.0f", nuevaCuota)
+                );
 
             } else {
 
                 Alert alert = new Alert(Alert.AlertType.ERROR);
 
-                alert.setContentText("No se pudo actualizar");
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText(
+                    "No se pudo actualizar"
+                );
 
                 alert.showAndWait();
             }
@@ -96,38 +124,48 @@ if (!fechaSeleccionada.equals(LocalDate.now())) {
 
             Alert alert = new Alert(Alert.AlertType.ERROR);
 
-            alert.setContentText("Ingrese un número válido");
+            alert.setTitle("Dato inválido");
+            alert.setHeaderText(null);
+            alert.setContentText(
+                "Ingrese un número válido"
+            );
 
             alert.showAndWait();
         }
     }
+
     @FXML
-private void cancelarCuota(ActionEvent event) {
+    private void cancelarCuota(ActionEvent event) {
 
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
-    alert.setTitle("Confirmación");
+        alert.setTitle("Confirmación");
 
-    alert.setHeaderText(null);
+        alert.setHeaderText(null);
 
-    alert.setContentText("¿Está seguro que desea cancelar la actualización de la cuota?");
+        alert.setContentText(
+            "¿Está seguro que desea cancelar la actualización de la cuota?"
+        );
 
-    Optional<ButtonType> resultado = alert.showAndWait();
+        Optional<ButtonType> resultado = alert.showAndWait();
 
-    if (resultado.isPresent() && resultado.get() == ButtonType.OK) {
+        if (resultado.isPresent() &&
+            resultado.get() == ButtonType.OK) {
 
-        CuotaDAO dao = new CuotaDAO();
+            CuotaDAO dao = new CuotaDAO();
 
-Cuota cuota = dao.obtenerCuota();
+            Cuota cuota = dao.obtenerCuota();
 
-if (cuota != null) {
+            if (cuota != null) {
 
-    txtCuotaActual.setText(String.valueOf(cuota.getMontoActual()));
-}
+                txtCuotaActual.setText(
+                    "Q" + String.format("%,.0f", cuota.getMontoActual())
+                );
+            }
 
-txtNuevaCuota.clear();
+            txtNuevaCuota.clear();
 
-dpFecha.setValue(null);
+            dpFecha.setValue(LocalDate.now());
+        }
     }
-}
 }

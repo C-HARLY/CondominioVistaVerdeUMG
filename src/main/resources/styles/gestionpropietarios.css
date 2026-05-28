@@ -15,49 +15,6 @@
     -fx-text-fill: #64748b;
 }
 
-.form-label {
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #374151;
-}
-
-/* =========================
-   BOTON EXPORTAR
-========================= */
-
-.export-button {
-    -fx-background-color: #f0f9eb;
-    -fx-text-fill: #1b7f2a;
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-    -fx-background-radius: 12;
-    -fx-border-radius: 12;
-    -fx-border-color: #b7e1a1;
-    -fx-cursor: hand;
-}
-
-.export-button:hover {
-    -fx-background-color: #e4f5da;
-}
-
-/* =========================
-   COMBOBOX
-========================= */
-
-.custom-combo {
-    -fx-background-color: white;
-    -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-border-color: #d1d5db;
-    -fx-font-size: 13px;
-    -fx-padding: 4 8 4 8;
-}
-
-.custom-combo:focused {
-    -fx-border-color: #84cc16;
-    -fx-background-color: white;
-}
-
 /* =========================
    TABLA
 ========================= */
@@ -69,8 +26,6 @@
     -fx-border-color: #e5e7eb;
     -fx-background-insets: 0;
 }
-
-/* HEADER */
 
 .custom-table .column-header-background {
     -fx-background-color: #f3f4f6;
@@ -84,14 +39,12 @@
 
 .custom-table .column-header .label {
     -fx-text-fill: #111827;
-    -fx-font-size: 11px;
+    -fx-font-size: 12px;
     -fx-font-weight: bold;
 }
 
-/* FILAS */
-
 .custom-table .table-row-cell {
-    -fx-cell-size: 38px;
+    -fx-cell-size: 36px;
     -fx-background-color: white;
     -fx-border-color: transparent transparent #f3f4f6 transparent;
 }
@@ -104,17 +57,73 @@
     -fx-background-color: #f3f4f6;
 }
 
-/* CELDAS */
-
 .custom-table .table-cell {
     -fx-padding: 6 10 6 10;
-    -fx-font-size: 11px;
-    -fx-alignment: CENTER_LEFT;
+    -fx-font-size: 12px;
 }
-
-/* FOCUS */
 
 .custom-table:focused {
     -fx-background-insets: 0;
     -fx-border-color: #e5e7eb;
+}
+
+/* =========================
+   BOTONES
+========================= */
+
+.edit-button {
+    -fx-background-color: #e8f1ff;
+    -fx-text-fill: #2b78e4;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #b8d2ff;
+    -fx-cursor: hand;
+}
+
+.edit-button:hover {
+    -fx-background-color: #dbeafe;
+}
+
+.delete-button {
+    -fx-background-color: #fdecec;
+    -fx-text-fill: #dc2626;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #f5bcbc;
+    -fx-cursor: hand;
+}
+
+.delete-button:hover {
+    -fx-background-color: #fee2e2;
+}
+
+/* =========================
+   SELECCIÓN TABLA
+========================= */
+
+.custom-table .table-row-cell:selected {
+    -fx-background-color: #f3f4f6;
+}
+
+.custom-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: #111827;
+}
+
+/* QUITAR BORDES AZULES */
+
+.custom-table:focused {
+    -fx-background-insets: 0;
+    -fx-border-color: #e5e7eb;
+}
+
+.custom-table .table-row-cell:filled:selected:focused {
+    -fx-background-color: #f3f4f6;
+}
+
+.custom-table .table-cell:focused {
+    -fx-border-color: transparent;
 }

@@ -22,6 +22,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
+
 public class EstadoCuentaController implements Initializable {
 
     @FXML private ComboBox<Integer> cmbCasas;
@@ -34,6 +35,25 @@ public class EstadoCuentaController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+         // FECHA INICIO
+    dpInicio.setValue(
+        LocalDate.of(
+            LocalDate.now().getYear(),
+            1,
+            1
+        )
+    );
+
+    // FECHA FIN
+    dpFin.setValue(
+        LocalDate.of(
+            LocalDate.now().getYear(),
+            12,
+            31
+        )
+    );
+        
         cargarCasasOcupadas();
         configurarFiltros();
     }    

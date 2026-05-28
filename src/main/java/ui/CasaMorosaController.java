@@ -60,6 +60,9 @@ public class CasaMorosaController implements Initializable {
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
         colCorreo.setCellValueFactory(new PropertyValueFactory<>("correo"));
+        
+        colNumeroCasa.setStyle("-fx-alignment: CENTER;");
+        colTelefono.setStyle("-fx-alignment: CENTER;");
 
         // Ejecuta la carga de datos cuando cambia el mes seleccionado
         comboMeses.setOnAction(e -> cargarMorosos());

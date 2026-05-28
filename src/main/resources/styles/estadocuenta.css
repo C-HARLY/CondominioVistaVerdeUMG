@@ -197,3 +197,22 @@
 
     -fx-font-size: 24px;
 }
+
+/* =========================
+   BOTON EXPORTAR PDF
+========================= */
+
+.export-button {
+    -fx-background-color: #f0f9eb;
+    -fx-text-fill: #1b7f2a;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #b7e1a1;
+    -fx-cursor: hand;
+}
+
+.export-button:hover {
+    -fx-background-color: #e4f5da;
+}
