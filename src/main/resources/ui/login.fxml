@@ -21,18 +21,19 @@
 
         <!-- CONTENEDOR CENTRAL -->
 
-        <VBox alignment="CENTER"
+        <VBox alignment="TOP_CENTER"
+              spacing="0"
               AnchorPane.topAnchor="0"
               AnchorPane.bottomAnchor="0"
               AnchorPane.leftAnchor="0"
               AnchorPane.rightAnchor="0">
 
-            <!-- CARD LOGIN -->
+             <!-- CARD LOGIN -->
 
             <VBox alignment="CENTER"
                   spacing="18"
-                  maxWidth="350"
-                  prefWidth="350"
+                  maxWidth="365"
+                  prefWidth="520"
                   styleClass="login-card">
 
                 <!-- LOGO -->
@@ -42,7 +43,7 @@
                            smooth="true">
 
                     <image>
-                        <Image url="@logo.png"/>
+                        <Image url="@../images/logo.png"/>
                     </image>
 
                 </ImageView>

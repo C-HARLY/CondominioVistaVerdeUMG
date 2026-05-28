@@ -5,15 +5,28 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="950.0" style="-fx-background-color: #f4f6f5;" stylesheets="@../styles/menu.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ui.MenuPrincipalController">
+<BorderPane prefHeight="600.0"
+            prefWidth="950.0"
+            style="-fx-background-color: #f4f6f5;"
+            stylesheets="@../styles/menu.css"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ui.MenuPrincipalController">
 
     <!-- ================= SIDEBAR ================= -->
 
     <left>
 
-        <VBox prefWidth="250" spacing="18" style="-fx-background-color: white;                      -fx-padding: 25;                      -fx-background-radius: 0 20 20 0;                      -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 3, 0);">
+        <VBox prefWidth="250"
+              spacing="18"
+              style="-fx-background-color: white;
+                     -fx-padding: 25;
+                     -fx-background-radius: 0 20 20 0;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 15, 0, 3, 0);">
 
             <children>
 
@@ -23,7 +36,10 @@
 
                     <children>
 
-                        <Label style="-fx-font-size: 22px;                                       -fx-font-weight: bold;                                       -fx-text-fill: #000000;" text="Panel Principal" />
+                        <Label text="Panel Principal"
+                               style="-fx-font-size: 22px;
+                                      -fx-font-weight: bold;
+                                      -fx-text-fill: #000000;" />
 
                     </children>
 
@@ -33,45 +49,94 @@
 
                 <!-- ================= GESTIÓN ================= -->
 
-                <Label style="-fx-text-fill: #9ca3af;                               -fx-font-size: 11px;                               -fx-font-weight: bold;" text="GESTIÓN ADMINISTRATIVA" />
+                <Label text="GESTIÓN ADMINISTRATIVA"
+                       style="-fx-text-fill: #9ca3af;
+                              -fx-font-size: 11px;
+                              -fx-font-weight: bold;" />
 
                 <!-- PROPIETARIOS -->
 
-                <Button fx:id="btnPropietarios" maxWidth="Infinity" onAction="#abrirPropietario" prefHeight="45" styleClass="menu-button" text="👤  Propietarios" />
+                <Button fx:id="btnPropietarios"
+                        text="👤  Propietarios"
+                        maxWidth="Infinity"
+                        prefHeight="45"
+                        styleClass="menu-button"
+                        onAction="#abrirPropietario" />
+
+                <!-- GESTIÓN PROPIETARIOS -->
+
+                <Button fx:id="btnGestionPropietarios"
+                        text="👥  Gestión propietarios"
+                        maxWidth="Infinity"
+                        prefHeight="45"
+                        styleClass="menu-button"
+                        onAction="#abrirGestionPropietarios" />
 
                 <!-- PAGOS -->
 
-                <Button fx:id="btnPagos" maxWidth="Infinity" onAction="#abrirPagos" prefHeight="45" styleClass="menu-button" text="💳  Pagos" />
+                <Button fx:id="btnPagos"
+                        text="💳  Pagos"
+                        maxWidth="Infinity"
+                        prefHeight="45"
+                        styleClass="menu-button"
+                        onAction="#abrirPagos" />
 
                 <!-- CONFIGURACIÓN -->
 
-                <Button fx:id="btnConfiguracion" maxWidth="Infinity" onAction="#abrirConfiguracionCuota" prefHeight="45" styleClass="menu-button" text="⚙  Configuración de cuota" />
+                <Button fx:id="btnConfiguracion"
+                        text="⚙  Configuración de cuota"
+                        maxWidth="Infinity"
+                        prefHeight="45"
+                        styleClass="menu-button"
+                        onAction="#abrirConfiguracionCuota" />
 
                 <Separator />
 
                 <!-- ================= REPORTES ================= -->
 
-                <Label style="-fx-text-fill: #9ca3af;                               -fx-font-size: 11px;                               -fx-font-weight: bold;" text="REPORTES Y CONTROL" />
+                <Label text="REPORTES Y CONTROL"
+                       style="-fx-text-fill: #9ca3af;
+                              -fx-font-size: 11px;
+                              -fx-font-weight: bold;" />
 
                 <!-- ESTADO DE CUENTA -->
 
-                <Button fx:id="btnEstadoCuenta" maxWidth="Infinity" onAction="#abrirEstadoCuenta" prefHeight="45" styleClass="menu-button" text="📄  Estado de cuenta" />
+                <Button fx:id="btnEstadoCuenta"
+                        text="📄  Estado de cuenta"
+                        maxWidth="Infinity"
+                        prefHeight="45"
+                        styleClass="menu-button"
+                        onAction="#abrirEstadoCuenta" />
 
                 <!-- REPORTE GENERAL -->
 
-                <Button fx:id="btnReporte" maxWidth="Infinity" onAction="#abrirReporteGeneral" prefHeight="45" styleClass="menu-button" text="📊  Reporte general" />
+                <Button fx:id="btnReporte"
+                        text="📊  Reporte general"
+                        maxWidth="Infinity"
+                        prefHeight="45"
+                        styleClass="menu-button"
+                        onAction="#abrirReporteGeneral" />
 
                 <!-- MOROSOS -->
 
-                <Button fx:id="btnMorosos" maxWidth="Infinity" onAction="#abrirCasasMorosas" prefHeight="45" styleClass="menu-button" text="🚨  Casas morosas" />
+                <Button fx:id="btnMorosos"
+                        text="🚨  Casas morosas"
+                        maxWidth="Infinity"
+                        prefHeight="45"
+                        styleClass="menu-button"
+                        onAction="#abrirCasasMorosas" />
 
                 <!-- ESPACIADOR -->
 
-                <VBox prefHeight="200" />
+                <Region VBox.vgrow="ALWAYS" />
 
                 <!-- CERRAR SESIÓN -->
 
-                <Button maxWidth="Infinity" onMouseClicked="#cerrarSesion" prefHeight="45" styleClass="logout-button" text="🚪  Cerrar sesión" />
+                <Button text="🚪  Cerrar sesión"
+                        maxWidth="Infinity"
+                        prefHeight="45"
+                        styleClass="logout-button"
+                        onMouseClicked="#cerrarSesion" />
 
             </children>
 
@@ -83,7 +148,9 @@
 
     <center>
 
-        <AnchorPane fx:id="contentArea" style="-fx-background-color: #f4f6f5;" BorderPane.alignment="CENTER" />
+        <AnchorPane fx:id="contentArea"
+                    style="-fx-background-color: #f4f6f5;"
+                    BorderPane.alignment="CENTER" />
 
     </center>
 

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package ui;
 
 import java.io.IOException;
@@ -9,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -27,17 +24,29 @@ import javafx.stage.Stage;
 
 public class MenuPrincipalController implements Initializable {
 
+    // =========================================================
+    // COMPONENTES
+    // =========================================================
+
     @FXML
     private AnchorPane contentArea;
 
     @FXML
     private Label lblFecha;
 
+    // BOTONES SIDEBAR
+
     @FXML
     private Button btnPropietarios;
 
     @FXML
+    private Button btnGestionPropietarios;
+
+    @FXML
     private Button btnPagos;
+
+    @FXML
+    private Button btnConfiguracion;
 
     @FXML
     private Button btnEstadoCuenta;
@@ -48,9 +57,6 @@ public class MenuPrincipalController implements Initializable {
     @FXML
     private Button btnMorosos;
 
-    @FXML
-    private Button btnConfiguracion;
-
     // =========================================================
     // INITIALIZE
     // =========================================================
@@ -59,8 +65,6 @@ public class MenuPrincipalController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         cargarVista("/ui/Dashboard.fxml");
-
-      
     }
 
     // =========================================================
@@ -71,7 +75,8 @@ public class MenuPrincipalController implements Initializable {
 
         try {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(rutaFXML));
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource(rutaFXML));
 
             Parent vista = loader.load();
 
@@ -91,28 +96,38 @@ public class MenuPrincipalController implements Initializable {
     }
 
     // =========================================================
-    // ACTIVAR BOTONES SIDEBAR
+    // ACTIVAR BOTÓN SIDEBAR
     // =========================================================
 
     private void activarBoton(Button botonActivo) {
 
-        btnPropietarios.getStyleClass().remove("menu-button-active");
+        btnPropietarios.getStyleClass()
+                .remove("menu-button-active");
 
-        btnPagos.getStyleClass().remove("menu-button-active");
+        btnGestionPropietarios.getStyleClass()
+                .remove("menu-button-active");
 
-        btnConfiguracion.getStyleClass().remove("menu-button-active");
+        btnPagos.getStyleClass()
+                .remove("menu-button-active");
 
-        btnEstadoCuenta.getStyleClass().remove("menu-button-active");
+        btnConfiguracion.getStyleClass()
+                .remove("menu-button-active");
 
-        btnReporte.getStyleClass().remove("menu-button-active");
+        btnEstadoCuenta.getStyleClass()
+                .remove("menu-button-active");
 
-        btnMorosos.getStyleClass().remove("menu-button-active");
+        btnReporte.getStyleClass()
+                .remove("menu-button-active");
 
-        botonActivo.getStyleClass().add("menu-button-active");
+        btnMorosos.getStyleClass()
+                .remove("menu-button-active");
+
+        botonActivo.getStyleClass()
+                .add("menu-button-active");
     }
 
     // =========================================================
-    // PROPIETARIOS
+    // REGISTRO PROPIETARIO
     // =========================================================
 
     @FXML
@@ -121,6 +136,18 @@ public class MenuPrincipalController implements Initializable {
         activarBoton(btnPropietarios);
 
         cargarVista("/ui/RegistroPropietario.fxml");
+    }
+
+    // =========================================================
+    // GESTIÓN PROPIETARIOS
+    // =========================================================
+
+    @FXML
+    private void abrirGestionPropietarios(ActionEvent event) {
+
+        activarBoton(btnGestionPropietarios);
+
+        cargarVista("/ui/GestionPropietarios.fxml");
     }
 
     // =========================================================
@@ -136,7 +163,7 @@ public class MenuPrincipalController implements Initializable {
     }
 
     // =========================================================
-    // CONFIGURACION CUOTA
+    // CONFIGURACIÓN CUOTA
     // =========================================================
 
     @FXML
@@ -184,7 +211,7 @@ public class MenuPrincipalController implements Initializable {
     }
 
     // =========================================================
-    // CERRAR SESION
+    // CERRAR SESIÓN
     // =========================================================
 
     @FXML
@@ -192,14 +219,18 @@ public class MenuPrincipalController implements Initializable {
 
         try {
 
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/fxml/Login.fxml")
-            );
+            FXMLLoader loader =
+                    new FXMLLoader(
+                            getClass().getResource("/ui/login.fxml")
+                    );
 
             Parent root = loader.load();
 
-            Stage stage = (Stage) ((javafx.scene.Node)
-                    event.getSource()).getScene().getWindow();
+            Stage stage =
+                    (Stage) ((javafx.scene.Node)
+                            event.getSource())
+                            .getScene()
+                            .getWindow();
 
             Scene scene = new Scene(root);
 
@@ -216,7 +247,8 @@ public class MenuPrincipalController implements Initializable {
         } catch (IOException e) {
 
             System.err.println(
-                    "Error al regresar al Login: " + e.getMessage()
+                    "Error al regresar al Login: "
+                    + e.getMessage()
             );
 
             e.printStackTrace();
