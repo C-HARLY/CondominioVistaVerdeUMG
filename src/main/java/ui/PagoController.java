@@ -125,7 +125,7 @@ public class PagoController implements Initializable {
      * ESTE ES EL BOTÓN PRINCIPAL.
      * Se ejecuta cuando el usuario le da clic a "Registrar Pago".
      */
-    @FXML
+     @FXML
     private void registrarPago(ActionEvent event) {
         
         // 1. Extraemos todo lo que el usuario escribió o seleccionó en la pantalla
@@ -231,7 +231,6 @@ public class PagoController implements Initializable {
             SweetAlert.showError("Error de Registro", "La transacción no pudo completarse. Pago Duplicado");
         }
     } 
-    
     /*
      * Pequeño método de ayuda para convertir la palabra "Enero" en el número 1, "Febrero" en 2, etc.
      */
