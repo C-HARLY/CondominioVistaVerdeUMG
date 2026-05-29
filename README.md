@@ -60,11 +60,11 @@ Para ejecutar este proyecto en cualquier entorno local, sigue estos pasos:
 
 | Pantalla 1 | Pantalla 2 | Pantalla 3 | Pantalla 4 |
 | :---: | :---: | :---: | :---: |
-| ![Login](images/1 login.png) | ![Propietario](images/2 propietario.png) | ![ConfiguracionPropietario](images/3 gestionProp.png) | ![Pagos](images/4 pagos.png) |
+| ![Login](src/main/resources/images//1login.png) | ![Propietario](src/main/resources/images//2propietario.png) | ![ConfiguracionPropietario](src/main/resources/images/3gestionProp.png) | ![Pagos](src/main/resources/images/4pagos.png) |
 
 | Pantalla 5 | Pantalla 6 | Pantalla 7 | Pantalla 8 |
 | :---: | :---: | :---: | :---: |
-| ![Cuota](images/5 cuotaconfig.png) | ![EstadoCuenta](images/6 estadoCuenta.png) | ![ReporteGeneral](images/7 reporteGeneral.png) | ![CasasMorosas](images/8 casas morosas.png) |
+| ![Cuota](src/main/resources/images/5cuotaconfig.png) | ![EstadoCuenta](src/main/resources/images/6estadoCuenta.png) | ![ReporteGeneral](src/main/resources/images/7reporteGeneral.png) | ![CasasMorosas](src/main/resources/images/8casasmorosas.png) |
 
 ---
 
