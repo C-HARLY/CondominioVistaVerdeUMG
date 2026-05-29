@@ -49,7 +49,7 @@ public class PagoController implements Initializable {
         
         if (cuotaVigente != null) {
             // Quitamos los decimales para que se vea como número entero
-            txtMonto.setText(String.format("%.0f", cuotaVigente.getMontoActual()));        
+            txtMonto.setText(String.format("Q%,.0f", cuotaVigente.getMontoActual()));        
         } else {
             // Si hay un fallo de conexión, lo dejamos en 0 y mostramos un error
             txtMonto.setText("0");
@@ -125,7 +125,7 @@ public class PagoController implements Initializable {
      * ESTE ES EL BOTÓN PRINCIPAL.
      * Se ejecuta cuando el usuario le da clic a "Registrar Pago".
      */
-    @FXML
+     @FXML
     private void registrarPago(ActionEvent event) {
         
         // 1. Extraemos todo lo que el usuario escribió o seleccionó en la pantalla
@@ -142,9 +142,12 @@ public class PagoController implements Initializable {
         
         // 3. Preparamos los datos numéricos para poder guardarlos
         int numeroCasa = Integer.parseInt(casaSeleccionada.replace("Casa ", ""));
-        double monto = Double.parseDouble(montoTexto.replace(",", "."));
-        int mesSeleccionadoNum = obtenerNumeroMes(mes);
 
+        // Limpiamos el texto: quitamos la Q, espacios y comas antes de convertir
+        String montoLimpio = montoTexto.replace("Q", "").replace(",", "").trim();
+        double monto = Double.parseDouble(montoLimpio); 
+        int mesSeleccionadoNum = obtenerNumeroMes(mes);
+        
         // 4. VALIDACIÓN DE FECHA: Revisamos cuándo entró a vivir el dueño
         logic.CasaDAO casaDao = new logic.CasaDAO();
         model.Propietario propietarioActual = casaDao.obtenerPropietarioPorCasa(numeroCasa);
@@ -228,7 +231,6 @@ public class PagoController implements Initializable {
             SweetAlert.showError("Error de Registro", "La transacción no pudo completarse. Pago Duplicado");
         }
     } 
-    
     /*
      * Pequeño método de ayuda para convertir la palabra "Enero" en el número 1, "Febrero" en 2, etc.
      */
