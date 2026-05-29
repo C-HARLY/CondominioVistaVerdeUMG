@@ -49,7 +49,7 @@ public class PagoController implements Initializable {
         
         if (cuotaVigente != null) {
             // Quitamos los decimales para que se vea como número entero
-            txtMonto.setText(String.format("%.0f", cuotaVigente.getMontoActual()));        
+            txtMonto.setText(String.format("Q%,.0f", cuotaVigente.getMontoActual()));        
         } else {
             // Si hay un fallo de conexión, lo dejamos en 0 y mostramos un error
             txtMonto.setText("0");
