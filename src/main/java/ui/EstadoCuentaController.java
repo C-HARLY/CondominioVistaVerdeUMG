@@ -108,17 +108,14 @@ public class EstadoCuentaController implements Initializable {
    
     @FXML
     private void buscarEstadoCuenta() {
-        // Esta validación asegura que el usuario no escriba texto en el combo si no está el FXML
         if(cmbCasas == null || dpInicio == null || dpFin == null) return;
         
         Integer casaSeleccionada = cmbCasas.getValue();
         LocalDate fechaInicio = dpInicio.getValue();
         LocalDate fechaFin = dpFin.getValue();
         
-        // Validamos que los tres campos tengan datos
         if (casaSeleccionada != null && fechaInicio != null && fechaFin != null) {
             
-            // Validación lógica: La fecha inicio no puede ser después de la fecha fin
             if(fechaInicio.isAfter(fechaFin)){
                 System.out.println("La fecha de inicio no puede ser mayor a la fecha de fin");
                 return;
@@ -132,13 +129,13 @@ public class EstadoCuentaController implements Initializable {
             List<String> mesesPendientesList = new ArrayList<>();
             double sumaTotal = 0.0;
 
-            String sqlInfo = "SELECT p.nombre, p.fecha_registro FROM propietarios p INNER JOIN casas c ON p.id_casa = c.id WHERE c.numero_casa = ?";
+            // CONSULTA PARA OBTENER ID, NOMBRE Y FECHA
+            String sqlInfo = "SELECT p.id, p.nombre, p.fecha_registro FROM propietarios p INNER JOIN casas c ON p.id_casa = c.id WHERE c.numero_casa = ?";
             
-            // EL TRUCO DEL RANGO SIN TOCAR LA BASE DE DATOS:
+            // CONSULTA FILTRADA POR ID_PROPIETARIO (¡EL CAMBIO CLAVE!)
             String sqlPagos = "SELECT pa.mes, pa.anio, pa.monto " +
                               "FROM pagos pa " +
-                              "INNER JOIN casas c ON pa.id_casa = c.id " +
-                              "WHERE c.numero_casa = ? " +
+                              "WHERE pa.id_propietario = ? " + // Filtramos por dueño, no solo por casa
                               "AND (pa.anio * 100 + " +
                               "    CASE pa.mes " +
                               "        WHEN 'Enero' THEN 1 WHEN 'Febrero' THEN 2 WHEN 'Marzo' THEN 3 " +
@@ -149,11 +146,14 @@ public class EstadoCuentaController implements Initializable {
 
             try (Connection con = Conexion.conectar()) {
                 
-                // --- EJECUTAR CONSULTA DE INFO (Nombre y Fecha) ---
+                int idPropietarioActual = -1; // Para guardar el ID que usaremos en la segunda consulta
+
+                // 1. Obtener Info y ID del Propietario
                 try (PreparedStatement psInfo = con.prepareStatement(sqlInfo)) {
                     psInfo.setInt(1, casaSeleccionada);
                     try (ResultSet rsInfo = psInfo.executeQuery()) {
                         if (rsInfo.next()) {
+                            idPropietarioActual = rsInfo.getInt("id");
                             lblNombrePropietario.setText(rsInfo.getString("nombre"));
                             lblNombrePropietario.setStyle("-fx-text-fill: #000000; -fx-font-weight: bold;");
                             
@@ -166,44 +166,41 @@ public class EstadoCuentaController implements Initializable {
                     }
                 }
 
-                // --- EJECUTAR CONSULTA DE PAGOS EN EL RANGO ---
-                try (PreparedStatement psPagos = con.prepareStatement(sqlPagos)) {
-                    psPagos.setInt(1, casaSeleccionada);
-                    
-                    // Convertimos las fechas a nuestro formato numérico (Ej: 202601)
-                    int rangoInicio = (fechaInicio.getYear() * 100) + fechaInicio.getMonthValue();
-                    int rangoFin = (fechaFin.getYear() * 100) + fechaFin.getMonthValue();
-                    
-                    psPagos.setInt(2, rangoInicio);
-                    psPagos.setInt(3, rangoFin);
-                    
-                    try (ResultSet rsPagos = psPagos.executeQuery()) {
-                        while (rsPagos.next()) {
-                            String mesQuePago = rsPagos.getString("mes");
-                            int anioPago = rsPagos.getInt("anio");
-                            double montoPagado = rsPagos.getDouble("monto");
-                            
-                            String etiquetaPago = mesQuePago + " " + anioPago;
-                            mesesPagados.add(etiquetaPago + " (Q" + String.format("%,.0f", montoPagado) + ")");
-                            sumaTotal += montoPagado;
-                            
-                            mesesPendientesList.remove(etiquetaPago);
+                // 2. Obtener Pagos del Propietario (si encontramos uno)
+                if (idPropietarioActual != -1) {
+                    try (PreparedStatement psPagos = con.prepareStatement(sqlPagos)) {
+                        psPagos.setInt(1, idPropietarioActual); // Filtro por dueño
+                        
+                        int rangoInicio = (fechaInicio.getYear() * 100) + fechaInicio.getMonthValue();
+                        int rangoFin = (fechaFin.getYear() * 100) + fechaFin.getMonthValue();
+                        
+                        psPagos.setInt(2, rangoInicio);
+                        psPagos.setInt(3, rangoFin);
+                        
+                        try (ResultSet rsPagos = psPagos.executeQuery()) {
+                            while (rsPagos.next()) {
+                                String mesQuePago = rsPagos.getString("mes");
+                                int anioPago = rsPagos.getInt("anio");
+                                double montoPagado = rsPagos.getDouble("monto");
+                                
+                                String etiquetaPago = mesQuePago + " " + anioPago;
+                                mesesPagados.add(etiquetaPago + " (Q" + String.format("%,.0f", montoPagado) + ")");
+                                sumaTotal += montoPagado;
+                                
+                                mesesPendientesList.remove(etiquetaPago);
+                            }
                         }
                     }
                 }
                 
-                // PINTAR LOS RESULTADOS
+                // PINTAR RESULTADOS
                 lvMesesPagados.setItems(mesesPagados);
-                ObservableList<String> mesesPendientes = FXCollections.observableArrayList(mesesPendientesList);
-                lvMesesPendientes.setItems(mesesPendientes);
-                
+                lvMesesPendientes.setItems(FXCollections.observableArrayList(mesesPendientesList));
                 lblTotalPagado.setText("Q" + String.format("%,.0f", sumaTotal));
                 
             } catch (SQLException e) {
-                System.err.println("Error procesando el estado de cuenta: " + e.getMessage());
+                System.err.println("Error procesando estado de cuenta: " + e.getMessage());
             }
-        } else {
-            System.out.println("Esperando selección de casa y fechas.");
         }
     }
     

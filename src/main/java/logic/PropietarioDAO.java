@@ -177,18 +177,19 @@ public class PropietarioDAO {
 
     /**
      * Revoca los derechos de un residente y libera la propiedad asociada.
-     * 
-     * Funciona bajo un contexto transaccional atómico que garantiza que si el sistema 
-     * logra eliminar al propietario, la casa será retornada de manera obligatoria al 
-     * estado 'Disponible'.
-     * 
+     * * [ACTUALIZACIÓN PROFESIONAL]: En lugar de hacer un DELETE (que rompería la integridad 
+     * de los pagos históricos), se hace una desvinculación (UPDATE id_casa = NULL).
+     * Así la casa queda libre, pero el dueño y sus recibos permanecen en contabilidad.
      *
      * @param numCasa El identificador lógico de la vivienda que quedará vacante.
-     * @return true si la eliminación y actualización en cascada fueron exitosas; false si hubo un fallo.
+     * @return true si la desvinculación y actualización en cascada fueron exitosas; false si hubo un fallo.
      */
     public boolean removerPropietario(int numCasa) {
-        String sqlEliminarPropietarios = """
-            DELETE FROM propietarios
+        
+        // CAMBIO MAGISTRAL: En lugar de DELETE, usamos UPDATE para poner la casa en NULL.
+        String sqlDesvincularPropietario = """
+            UPDATE propietarios
+            SET id_casa = NULL
             WHERE id_casa = (SELECT id FROM casas WHERE numero_casa = ?)
             """;
 
@@ -201,15 +202,18 @@ public class PropietarioDAO {
         try (Connection conn = Conexion.conectar()) {
             conn.setAutoCommit(false);
 
-            try (PreparedStatement psEliminar = conn.prepareStatement(sqlEliminarPropietarios);
+            try (PreparedStatement psDesvincular = conn.prepareStatement(sqlDesvincularPropietario);
                  PreparedStatement psCasa = conn.prepareStatement(sqlActualizarCasa)) {
 
-                psEliminar.setInt(1, numCasa);
-                psEliminar.executeUpdate();
+                // 1. Le quitamos la casa al dueño (pero su nombre e historial quedan a salvo)
+                psDesvincular.setInt(1, numCasa);
+                psDesvincular.executeUpdate();
 
+                // 2. Ponemos el rótulo de "Disponible" a la casa
                 psCasa.setInt(1, numCasa);
                 psCasa.executeUpdate();
 
+                // Consolidamos ambas transacciones
                 conn.commit();
                 return true;
 

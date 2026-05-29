@@ -125,7 +125,7 @@ public class PagoController implements Initializable {
      * ESTE ES EL BOTÓN PRINCIPAL.
      * Se ejecuta cuando el usuario le da clic a "Registrar Pago".
      */
-     @FXML
+    @FXML
     private void registrarPago(ActionEvent event) {
         
         // 1. Extraemos todo lo que el usuario escribió o seleccionó en la pantalla
@@ -148,58 +148,86 @@ public class PagoController implements Initializable {
         double monto = Double.parseDouble(montoLimpio); 
         int mesSeleccionadoNum = obtenerNumeroMes(mes);
         
-        // 4. VALIDACIÓN DE FECHA: Revisamos cuándo entró a vivir el dueño
+        // 4. VALIDACIÓN DE PROPIETARIO: Verificamos quién es el dueño y cuándo entró
         logic.CasaDAO casaDao = new logic.CasaDAO();
         model.Propietario propietarioActual = casaDao.obtenerPropietarioPorCasa(numeroCasa);
         
-        java.time.LocalDate fechaRegistroInquilino = null;
-        if (propietarioActual != null) {
-            fechaRegistroInquilino = propietarioActual.getFechaRegistro();
+        // PROTECCIÓN EXTRA: Si por alguna razón la casa no tiene dueño, detenemos el cobro
+        if (propietarioActual == null) {
+            SweetAlert.showError("Error de Asignación", "Esta casa no tiene un propietario asignado actualmente.");
+            return;
         }
 
-        if (fechaRegistroInquilino != null) {
-            int mesRegistro = fechaRegistroInquilino.getMonthValue();
-            int anioRegistro = fechaRegistroInquilino.getYear();
+        java.time.LocalDate fechaRegistroInquilino = propietarioActual.getFechaRegistro();
+        int mesRegistro = fechaRegistroInquilino.getMonthValue();
+        int anioRegistro = fechaRegistroInquilino.getYear();
 
-            // Si intentan pagar un mes que es ANTES de que el dueño llegara, lanzamos error
-            if (anio < anioRegistro || (anio == anioRegistro && mesSeleccionadoNum < mesRegistro)) {
-                SweetAlert.showError("Periodo Inválido", "No se pueden procesar cobros previos a la fecha de ingreso del inquilino (" + fechaRegistroInquilino + ").");
-                return; 
-            }
+        // Si intentan pagar un mes que es ANTES de que el dueño llegara, lanzamos error
+        if (anio < anioRegistro || (anio == anioRegistro && mesSeleccionadoNum < mesRegistro)) {
+            SweetAlert.showError("Periodo Inválido", "No se pueden procesar cobros previos a la fecha de ingreso del inquilino (" + fechaRegistroInquilino + ").");
+            return; 
+        }
             
-            // 5. VALIDACIÓN DE SECUENCIA: Evitamos que dejen meses sin pagar en medio
-            List<String> mesesNombres = java.util.Arrays.asList("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+        // -------------------------------------------------------------------------
+        // 5. VALIDACIONES DE HISTORIAL DEL DUEÑO ACTUAL 
+        // -------------------------------------------------------------------------
+        logic.PagoDAO pagoDaoAux = new logic.PagoDAO();
+            
+        // CAMBIO 1: Ahora le pasamos el ID del propietario en lugar de la fecha
+        List<model.Pago> pagosDelDueñoActual = pagoDaoAux.obtenerPagosValidos(numeroCasa, propietarioActual.getId());
 
-            int indexMesActual = mesesNombres.indexOf(mes); 
-            int mesAnteriorIndex = indexMesActual - 1;
-            int anioAnterior = anio;
-
-            // Si están pagando enero, el mes anterior es diciembre del año pasado
-            if (mesAnteriorIndex < 0) {
-                mesAnteriorIndex = 11; 
-                anioAnterior--; 
+        // 5.1 PREVENCIÓN DE DUPLICADOS
+        // Revisamos si el dueño ya pagó el mes que está seleccionando en pantalla
+        for (model.Pago p : pagosDelDueñoActual) {
+            if (p.getMes().equalsIgnoreCase(mes) && p.getYear() == anio) {
+                SweetAlert.showError("Pago Duplicado", "El propietario actual ya tiene registrado el pago de " + mes + " " + anio + ".");
+                return; // Detenemos el registro
             }
+        }
 
-            String nombreMesAnterior = mesesNombres.get(mesAnteriorIndex);
-            int valorMesAnteriorNumerico = mesAnteriorIndex + 1;
+        // 5.2 VALIDACIÓN DE SECUENCIA: Evitamos que dejen meses sin pagar en medio
+        List<String> mesesNombres = java.util.Arrays.asList("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
 
-            java.time.LocalDate fechaMesAnterior = java.time.LocalDate.of(anioAnterior, valorMesAnteriorNumerico, 1);
-            java.time.LocalDate fechaInicioCobro = fechaRegistroInquilino.withDayOfMonth(1);
+        int indexMesActual = mesesNombres.indexOf(mes); 
+        int mesAnteriorIndex = indexMesActual - 1;
+        int anioAnterior = anio;
 
-            // Si el mes anterior cae después de que se mudó, revisamos si ya lo pagó
-            if (!fechaMesAnterior.isBefore(fechaInicioCobro)) {
-                logic.PagoDAO pagoDaoAux = new logic.PagoDAO();
-                boolean mesAnteriorEstaPagado = pagoDaoAux.verificarPagoExiste(numeroCasa, nombreMesAnterior, anioAnterior);
-                
-                if (!mesAnteriorEstaPagado) {
-                    SweetAlert.showError("Validación de Historial", "No puedes pagar " + mes + " " + anio + " porque está pendiente el mes de " + nombreMesAnterior + " " + anioAnterior + ".");
-                    return; 
+        // Si están pagando enero, el mes anterior es diciembre del año pasado
+        if (mesAnteriorIndex < 0) {
+            mesAnteriorIndex = 11; 
+            anioAnterior--; 
+        }
+
+        String nombreMesAnterior = mesesNombres.get(mesAnteriorIndex);
+        int valorMesAnteriorNumerico = mesAnteriorIndex + 1;
+
+        java.time.LocalDate fechaMesAnterior = java.time.LocalDate.of(anioAnterior, valorMesAnteriorNumerico, 1);
+        java.time.LocalDate fechaInicioCobro = fechaRegistroInquilino.withDayOfMonth(1);
+
+        // Si el mes anterior cae después de que se mudó, revisamos si ya lo pagó
+        if (!fechaMesAnterior.isBefore(fechaInicioCobro)) {
+            boolean mesAnteriorEstaPagado = false;
+
+            // Buscamos si en SU historial ya está pagado el mes anterior
+            for (model.Pago p : pagosDelDueñoActual) {
+                if (p.getMes().equalsIgnoreCase(nombreMesAnterior) && p.getYear() == anioAnterior) {
+                    mesAnteriorEstaPagado = true;
+                    break;
                 }
             }
+                
+            if (!mesAnteriorEstaPagado) {
+                SweetAlert.showError("Validación de Secuencia", "No puedes pagar " + mes + " " + anio + " porque está pendiente el mes de " + nombreMesAnterior + " " + anioAnterior + ".");
+                return; 
+            }
         }
-
-        // 6. Si no hubo ningún problema, empaquetamos el pago y lo mandamos a la base de datos
-        model.Pago pagoParaGuardar = new model.Pago(0, numeroCasa, mes, anio, monto);
+        // -------------------------------------------------------------------------
+        // FIN DE LAS VALIDACIONES 
+        // -------------------------------------------------------------------------
+        
+        // CAMBIO 2: Ahora el objeto Pago recibe el ID del propietario en su constructor (el tercer parámetro)
+        model.Pago pagoParaGuardar = new model.Pago(0, numeroCasa, propietarioActual.getId(), mes, anio, monto);
+        
         logic.PagoDAO dao = new logic.PagoDAO();
         boolean exito = dao.registrarPago(pagoParaGuardar);
         
@@ -214,10 +242,10 @@ public class PagoController implements Initializable {
             }
 
             // Validamos que el dueño sí tenga un correo registrado para enviarle el recibo
-            if (propietarioActual != null && propietarioActual.getCorreo() != null && !propietarioActual.getCorreo().trim().isEmpty()) {
+            if (propietarioActual.getCorreo() != null && !propietarioActual.getCorreo().trim().isEmpty()) {
                 String correoDestino = propietarioActual.getCorreo();
                 
-                // AQUÍ ESTÁ EL CAMBIO: Le pasamos el nombre del propietario a nuestro servicio de correo
+                // Le pasamos el nombre del propietario a nuestro servicio de correo
                 logic.EmailService.enviarRecibo(correoDestino, propietarioActual.getNombre(), monto, mes, anio, numeroCasa);
                 
                 SweetAlert.showSuccess("¡Transacción Exitosa!", "El pago se registró y el recibo fue enviado a " + correoDestino);
@@ -227,10 +255,11 @@ public class PagoController implements Initializable {
             }
 
         } else {
-            // Si la base de datos rechazó el pago (posiblemente porque intentaron pagar el mismo mes dos veces)
-            SweetAlert.showError("Error de Registro", "La transacción no pudo completarse. Pago Duplicado");
+            // Si llega aquí, es porque hubo un error de red o de base de datos
+            SweetAlert.showError("Error de Registro", "La transacción no pudo completarse en la Base de Datos.");
         }
-    } 
+    }
+    
     /*
      * Pequeño método de ayuda para convertir la palabra "Enero" en el número 1, "Febrero" en 2, etc.
      */

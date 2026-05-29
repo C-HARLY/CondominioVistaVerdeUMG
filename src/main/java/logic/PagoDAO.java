@@ -5,40 +5,34 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import model.Pago;
 
 /**
  * Data Access Object (DAO) transaccional encargado del procesamiento de cobros.
- * 
- * Gestiona el registro y la validación de los pagos de cuotas de mantenimiento,
- * asegurando la integridad financiera del condominio y previniendo anomalías 
- * comunes como un pago duplicado en un mismo período.
- 
+ * Actualizado para amarrar los pagos al Propietario (Inquilino) y no solo a la Casa.
  */
 public class PagoDAO {
+
     /**
      * Procesa y registra formalmente una transacción de pago en la base de datos.
-     * El método emplea una subconsulta SQL dinámica 
-     * {@code (SELECT id FROM casas...)} para resolver la llave foránea (FK). 
-     * Esto permite que la capa de la Vista (JavaFX) trabaje exclusivamente con 
-     * el identificador de negocio (número de casa), mientras que el DAO se encarga 
-     * de la resolución estructural hacia la base de datos.
-     * 
-     * @param nuevoPago Objeto que encapsula todos los detalles de la transacción (monto, período, etc.).
-     * @return true si el pago se registró con éxito en el libro contable; false si ocurrió un error.
+     * AHORA INCLUYE EL ID DEL PROPIETARIO PARA SEPARAR HISTORIALES.
      */
     public boolean registrarPago(Pago nuevoPago) {
         
-        String sql = "INSERT INTO pagos (id_casa, mes, anio, monto) "
-                   + "VALUES ((SELECT id FROM casas WHERE numero_casa = ?), ?, ?, ?)";
+        // El SQL ahora inserta también el id_propietario
+        String sql = "INSERT INTO pagos (id_casa, id_propietario, mes, anio, monto) "
+                   + "VALUES ((SELECT id FROM casas WHERE numero_casa = ?), ?, ?, ?, ?)";
 
         try (Connection conn = Conexion.conectar();
              PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setInt(1, nuevoPago.getNumeroCasa());
-            pst.setString(2, nuevoPago.getMes());
-            pst.setInt(3, nuevoPago.getYear());
-            pst.setDouble(4, nuevoPago.getMonto());
+            pst.setInt(2, nuevoPago.getIdPropietario()); // Aquí viaja el ID del dueño actual
+            pst.setString(3, nuevoPago.getMes());
+            pst.setInt(4, nuevoPago.getYear());
+            pst.setDouble(5, nuevoPago.getMonto());
 
             int filasAfectadas = pst.executeUpdate();
             return filasAfectadas > 0;
@@ -50,41 +44,47 @@ public class PagoDAO {
     }
     
     /**
-     * Motor de validación preventiva contra cobros duplicados.
-     * 
-     * Antes de autorizar una nueva transacción, este método consulta el historial 
-     * para garantizar que no exista un recibo emitido para la misma casa en el 
-     * mismo mes y año. Hace sinergia directa con la restricción {@code UNIQUE} 
-     * configurada en el diseño relacional de la tabla 'pagos'.
-     * 
-     * 
-     * Se utiliza {@code SELECT 1} en lugar de {@code SELECT *} 
-     * para minimizar el consumo de ancho de banda y memoria de la JVM.
-     * 
-     * @param idCasa El identificador único estructural de la vivienda.
-     * @param mes El mes del período de facturación a validar.
-     * @param anio El año del período de facturación a validar.
-     * @return true si el sistema detecta que el período ya fue cancelado previamente; false si está libre de pago.
+     * NUEVO MÉTODO DEFINITIVO: Trae solo los pagos de una casa que le pertenecen
+     * EXCLUSIVAMENTE al dueño actual. Ignora por completo los pagos de dueños anteriores.
+     * * @param numeroCasa El número de la casa.
+     * @param idPropietario El ID de la persona que vive ahí actualmente.
      */
-    public boolean verificarPagoExiste(int idCasa, String mes, int anio) {
-        boolean existe = false;
-        String sql = "SELECT 1 FROM pagos WHERE id_casa = ? AND mes = ? AND anio = ?";
+    public List<Pago> obtenerPagosValidos(int numeroCasa, int idPropietario) {
+        List<Pago> listaPagosValidos = new ArrayList<>();
+        
+        // Consulta SQL limpia: Dame los pagos de esta casa, pero SOLO los de este dueño
+        String sql = "SELECT p.* FROM pagos p " +
+                     "JOIN casas c ON p.id_casa = c.id " +
+                     "WHERE c.numero_casa = ? AND p.id_propietario = ?";
 
-        try (Connection conn = db.Conexion.conectar();
+        try (Connection conn = Conexion.conectar();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-             
-            ps.setInt(1, idCasa);
-            ps.setString(2, mes);
-            ps.setInt(3, anio);
-
+            
+            ps.setInt(1, numeroCasa);
+            ps.setInt(2, idPropietario); // Filtro invencible
+            
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    existe = true; 
+                while (rs.next()) {
+                    // Reconstruimos el objeto Pago usando el nuevo constructor de 6 parámetros
+                    Pago p = new Pago(
+                        rs.getInt("id"),
+                        numeroCasa, 
+                        rs.getInt("id_propietario"),
+                        rs.getString("mes"),
+                        rs.getInt("anio"),
+                        rs.getDouble("monto")
+                    );
+                    
+                    listaPagosValidos.add(p);
                 }
             }
-        } catch (Exception e) {
-            System.err.println(" Error de validación al verificar historial de pagos en PagoDAO: " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Error al obtener el historial de pagos del propietario: " + e.getMessage());
         }
-        return existe;
+        
+        return listaPagosValidos;
     }
+    
+    // (Opcional) Puedes borrar verificarPagoExiste si ya no lo usas en ningún lado,
+    // ya que ahora todo lo validamos en el controlador usando obtenerPagosValidos.
 }
