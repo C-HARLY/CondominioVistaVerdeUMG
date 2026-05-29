@@ -142,9 +142,12 @@ public class PagoController implements Initializable {
         
         // 3. Preparamos los datos numéricos para poder guardarlos
         int numeroCasa = Integer.parseInt(casaSeleccionada.replace("Casa ", ""));
-        double monto = Double.parseDouble(montoTexto.replace(",", "."));
-        int mesSeleccionadoNum = obtenerNumeroMes(mes);
 
+        // Limpiamos el texto: quitamos la Q, espacios y comas antes de convertir
+        String montoLimpio = montoTexto.replace("Q", "").replace(",", "").trim();
+        double monto = Double.parseDouble(montoLimpio); 
+        int mesSeleccionadoNum = obtenerNumeroMes(mes);
+        
         // 4. VALIDACIÓN DE FECHA: Revisamos cuándo entró a vivir el dueño
         logic.CasaDAO casaDao = new logic.CasaDAO();
         model.Propietario propietarioActual = casaDao.obtenerPropietarioPorCasa(numeroCasa);
