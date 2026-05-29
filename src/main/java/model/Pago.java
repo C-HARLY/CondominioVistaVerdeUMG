@@ -1,32 +1,30 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package model;
 
 /**
- *
+ * Modelo que representa la transacción de un pago de mantenimiento.
  * @author carlo
  */
 public class Pago {
     private int id;
     private int numeroCasa;
+    private int idPropietario; 
     private String mes;
     private int year;
     private double monto;
     
-    //constructor vacio
+    // Constructor vacío (Muy útil para cuando traes datos de la BD paso a paso)
     public Pago(){
         
     }
     
-    public Pago(int id, int numeroCasa, String mes, int year, double monto){
-    this.id = id;
-    this.numeroCasa = numeroCasa;
-    this.mes = mes;
-    this.year = year;
-    this.monto = monto;
-        
+    // Constructor actualizado con el idPropietario
+    public Pago(int id, int numeroCasa, int idPropietario, String mes, int year, double monto){
+        this.id = id;
+        this.numeroCasa = numeroCasa;
+        this.idPropietario = idPropietario;
+        this.mes = mes;
+        this.year = year;
+        this.monto = monto;
     }
 
     public int getId() {
@@ -43,6 +41,15 @@ public class Pago {
 
     public void setNumeroCasa(int numeroCasa) {
         this.numeroCasa = numeroCasa;
+    }
+
+    // --- NUEVOS GETTER Y SETTER ---
+    public int getIdPropietario() {
+        return idPropietario;
+    }
+
+    public void setIdPropietario(int idPropietario) {
+        this.idPropietario = idPropietario;
     }
 
     public String getMes() {
@@ -68,6 +75,4 @@ public class Pago {
     public void setMonto(double monto) {
         this.monto = monto;
     }
-    
-        
 }
