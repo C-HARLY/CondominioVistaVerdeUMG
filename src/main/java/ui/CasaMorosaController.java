@@ -61,6 +61,10 @@ public class CasaMorosaController implements Initializable {
         colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
         colCorreo.setCellValueFactory(new PropertyValueFactory<>("correo"));
         
+        tablaMorosos.setPlaceholder(
+        new Label("No existen casas morosas para el período seleccionado.")
+        );
+        
         colNumeroCasa.setStyle("-fx-alignment: CENTER;");
         colTelefono.setStyle("-fx-alignment: CENTER;");
 
@@ -102,19 +106,5 @@ public class CasaMorosaController implements Initializable {
         // Asigna los datos obtenidos a la tabla
         tablaMorosos.setItems(lista);
 
-        // Muestra una alerta si no existen casas morosas
-        if (lista.isEmpty()) {
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-
-            alert.setTitle("Casas Morosas");
-            alert.setHeaderText("Sin pagos pendientes");
-
-            alert.setContentText(
-                "Al día de hoy, todas las casas se encuentran al día con sus pagos."
-            );
-
-            alert.showAndWait();
-        }
-    }
+         }
 }

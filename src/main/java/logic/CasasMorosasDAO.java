@@ -35,64 +35,119 @@ public class CasasMorosasDAO {
      * de los propietarios deudores. Retorna una lista vacía si no hay morosos.
      */
     public List<CasaMorosa> obtenerCasasMorosas(String mes, int anio) {
-        List<CasaMorosa> lista = new ArrayList<>();
 
-        /* * Se utilizan Text Blocks para mantener la legibilidad de la consulta SQL 
-         * y facilitar su mantenimiento sin concatenaciones riesgosas.
-         */
-        String sql = """
-            SELECT 
-                c.numero_casa,
-                p.nombre,
-                p.telefono,
-                p.correo
-            FROM casas c
-            JOIN propietarios p
-                ON c.id = p.id_casa
-            WHERE c.estado = 'Ocupada'
-            AND NOT EXISTS (
-                SELECT 1
-                FROM pagos pa
-                WHERE pa.id_casa = c.id
-                  AND pa.mes = ?
-                  AND pa.anio = ?
+    List<CasaMorosa> lista = new ArrayList<>();
+
+    int numeroMes = switch (mes) {
+        case "Enero" -> 1;
+        case "Febrero" -> 2;
+        case "Marzo" -> 3;
+        case "Abril" -> 4;
+        case "Mayo" -> 5;
+        case "Junio" -> 6;
+        case "Julio" -> 7;
+        case "Agosto" -> 8;
+        case "Septiembre" -> 9;
+        case "Octubre" -> 10;
+        case "Noviembre" -> 11;
+        case "Diciembre" -> 12;
+        default -> 1;
+    };
+
+    String sql = """
+        SELECT 
+            c.numero_casa,
+            p.nombre,
+            p.telefono,
+            p.correo
+        FROM casas c
+        JOIN propietarios p
+            ON c.id = p.id_casa
+        WHERE c.estado = 'Ocupada'
+
+        AND (
+            EXTRACT(YEAR FROM p.fecha_registro) < ?
+            OR (
+                EXTRACT(YEAR FROM p.fecha_registro) = ?
+                AND EXTRACT(MONTH FROM p.fecha_registro) <= ?
             )
-            ORDER BY c.numero_casa ASC
-            """;
+        )
 
-        // Se mantiene el patrón seguro de cierre de recursos anidados con el pool
-        try (Connection conn = Conexion.conectar()) {
-            
-            if (conn != null) {
-                try (PreparedStatement ps = conn.prepareStatement(sql)) {
-                    ps.setString(1, mes);
-                    ps.setInt(2, anio);
-                    
-                    try (ResultSet rs = ps.executeQuery()) {
-                        while (rs.next()) {
-                            CasaMorosa casa = new CasaMorosa();
-                            casa.setNumeroCasa(rs.getString("numero_casa"));
-                            
-                            // Saneamiento y limpieza de datos provenientes de la BD
-                            String nombre = rs.getString("nombre");
-                            if (nombre == null) nombre = "";
-                            
-                            casa.setNombre(nombre.trim());
-                            casa.setTelefono(rs.getString("telefono"));
-                            casa.setCorreo(rs.getString("correo")); 
+        AND NOT EXISTS (
+            SELECT 1
+            FROM pagos pa
+            WHERE pa.id_casa = c.id
+              AND pa.mes = ?
+              AND pa.anio = ?
+        )
 
-                            lista.add(casa);
+        ORDER BY c.numero_casa ASC
+        """;
+
+    try (Connection conn = Conexion.conectar()) {
+
+        if (conn != null) {
+
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+                ps.setInt(1, anio);
+                ps.setInt(2, anio);
+                ps.setInt(3, numeroMes);
+
+                ps.setString(4, mes);
+                ps.setInt(5, anio);
+
+                try (ResultSet rs = ps.executeQuery()) {
+
+                    while (rs.next()) {
+
+                        CasaMorosa casa = new CasaMorosa();
+
+                        casa.setNumeroCasa(
+                                rs.getString("numero_casa")
+                        );
+
+                        String nombre =
+                                rs.getString("nombre");
+
+                        if (nombre == null) {
+                            nombre = "";
                         }
+
+                        casa.setNombre(
+                                nombre.trim()
+                        );
+
+                        casa.setTelefono(
+                                rs.getString("telefono")
+                        );
+
+                        casa.setCorreo(
+                                rs.getString("correo")
+                        );
+
+                        lista.add(casa);
                     }
                 }
-            } else {
-                System.err.println(" ERROR  (CasasMorosasDAO): No se pudo obtener conexión del pool (Timeout).");
             }
 
-        } catch (Exception e) {
-            System.err.println(" Excepción SQL en CasasMorosasDAO al consultar deudores: " + e.getMessage());
+        } else {
+
+            System.err.println(
+                    "ERROR (CasasMorosasDAO): No se pudo obtener conexión del pool."
+            );
         }
 
-        return lista;
+    } catch (Exception e) {
+
+        System.err.println(
+                "Excepción SQL en CasasMorosasDAO: "
+                + e.getMessage()
+        );
+
+        e.printStackTrace();
     }
+
+    return lista;
+}
 }
