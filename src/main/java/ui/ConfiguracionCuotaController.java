@@ -36,20 +36,22 @@ public void initialize(URL url, ResourceBundle rb) {
     // Configuración de fecha: Bloqueada y automática
     dpFecha.setValue(LocalDate.now());
     dpFecha.setEditable(false);
-    dpFecha.setDisable(true); // El usuario no la toca
+    dpFecha.setDisable(true); // BLOQUEA LA FECHA PORQUE ES AUTOMATICO
 
     cargarDatosCuota(); // Método privado para reutilizar
 }
 
+//METODO QUE CARGA LA CUOTA
 private void cargarDatosCuota() {
     CuotaDAO dao = new CuotaDAO();
     Cuota cuota = dao.obtenerCuota();
     if (cuota != null) {
-        txtCuotaActual.setText("Q" + String.format("%,.0f", cuota.getMontoActual()));
+        txtCuotaActual.setText("Q" + String.format("%,.0f", cuota.getMontoActual())); //Aqui indicamos la moneda y el formato ej: Q1,500
         txtCuotaActual.setEditable(false);
     }
 }
 
+//METODO QUE GUARDA LA CUOTA
 @FXML
 private void guardarCuota(ActionEvent event) {
     try {

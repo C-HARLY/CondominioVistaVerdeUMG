@@ -52,7 +52,7 @@ public class PropietarioDAO {
             // Se deshabilita el auto-commit para agrupar las sentencias en una única transacción
             conn.setAutoCommit(false);
 
-            // 1. Validar la disponibilidad estructural de la casa
+            // 1. Validar la disponibilidad  de la casa
             try (PreparedStatement psValidar = conn.prepareStatement(sqlValidacion)) {
                 psValidar.setInt(1, prop.getNumeroCasa());
                 ResultSet rs = psValidar.executeQuery();
@@ -100,8 +100,6 @@ public class PropietarioDAO {
      * Recupera el directorio completo de los residentes que actualmente habitan el condominio.
      * Se realiza un filtrado excluyendo cualquier casa con estado 'Disponible'.
      *
-     * @return Una lista de objetos {@link Propietario} sanitizada y lista para 
-     * ser consumida por las tablas de la interfaz gráfica.
      */
     public List<Propietario> obtenerTodos() {
         List<Propietario> lista = new ArrayList<>();
@@ -177,8 +175,8 @@ public class PropietarioDAO {
 
     /**
      * Revoca los derechos de un residente y libera la propiedad asociada.
-     * * [ACTUALIZACIÓN PROFESIONAL]: En lugar de hacer un DELETE (que rompería la integridad 
-     * de los pagos históricos), se hace una desvinculación (UPDATE id_casa = NULL).
+     * * [ACTUALIZACIÓN ]: En lugar de hacer un DELETE (que rompería la  
+     *    los pagos históricos), se hace una desvinculación (UPDATE id_casa = NULL).
      * Así la casa queda libre, pero el dueño y sus recibos permanecen en contabilidad.
      *
      * @param numCasa El identificador lógico de la vivienda que quedará vacante.
@@ -186,7 +184,7 @@ public class PropietarioDAO {
      */
     public boolean removerPropietario(int numCasa) {
         
-        // CAMBIO MAGISTRAL: En lugar de DELETE, usamos UPDATE para poner la casa en NULL.
+        //  En lugar de DELETE, usamos UPDATE para poner la casa en NULL.
         String sqlDesvincularPropietario = """
             UPDATE propietarios
             SET id_casa = NULL
@@ -209,7 +207,7 @@ public class PropietarioDAO {
                 psDesvincular.setInt(1, numCasa);
                 psDesvincular.executeUpdate();
 
-                // 2. Ponemos el rótulo de "Disponible" a la casa
+                // 2. cambiamos estado a "Disponible" a la casa
                 psCasa.setInt(1, numCasa);
                 psCasa.executeUpdate();
 

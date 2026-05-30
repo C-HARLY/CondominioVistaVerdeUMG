@@ -15,7 +15,6 @@ public class ReporteCasaDTO {
     private double montoMes;
     private double totalAnual;
 
-    // ✨ AQUÍ ESTÁ LA MAGIA: Ya están los 5 parámetros dentro de los paréntesis
     public ReporteCasaDTO(int numeroCasa, String propietario, String estadoMes, double montoMes, double totalAnual) {
         this.numeroCasa = numeroCasa;
         this.propietario = propietario;

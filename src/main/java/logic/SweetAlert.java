@@ -69,7 +69,7 @@ public class SweetAlert {
         Alert alerta = new Alert(tipo);
         alerta.setTitle(titulo);
         
-        // Limpieza visual: Remueve el header nativo por defecto para diseños más limpios
+        // Limpieza visual: 
         alerta.setHeaderText(null); 
         alerta.setContentText(mensaje);
         

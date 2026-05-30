@@ -18,18 +18,25 @@ import logic.CasaDAO;
 import logic.SweetAlert;
 import model.Propietario; 
 
+/**
+ * Controlador de la interfaz de Registro de Pagos.
+ * Orquesta la logica de transacciones financieras del condominio, aplicando 
+ * validaciones estrictas de secuencia, prevencion de duplicados y verificacion 
+ * de asignacion de propietarios antes de persistir los datos.
+ */
 public class PagoController implements Initializable {
 
-    // Estas son las cajitas y listas desplegables que vemos en la pantalla
+    // Nodos de la interfaz grafica inyectados por FXML
     @FXML private ComboBox<String> cmbCasas;
     @FXML private ComboBox<String> cmbMes;
     @FXML private ComboBox<Integer> cmbYear;
     @FXML private TextField txtMonto; 
     @FXML private TextField txtNombrePropietario; 
 
-    /*
-     * Este método se ejecuta automáticamente apenas abrimos la ventana de Pagos.
-     * Sirve para dejar todo listo y cargado antes de que el usuario empiece a hacer clics.
+    /**
+     * Metodo de ciclo de vida de JavaFX.
+     * Inicializa el estado base del formulario de pagos, cargando dependencias
+     * y configurando los listeners reactivos antes de la interaccion del usuario.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -39,28 +46,32 @@ public class PagoController implements Initializable {
         configurarListenerCasas(); 
     }
 
-    /*
-     * Va a la base de datos a buscar a cómo está la cuota de mantenimiento hoy.
-     * Lo pone en la cajita de texto y la bloquea para que el usuario no pueda cambiar el precio.
+    /**
+     * Recupera la cuota de mantenimiento vigente desde la base de datos y
+     * bloquea el campo de texto para garantizar la integridad del cobro 
+     * y evitar alteraciones manuales no autorizadas.
      */
     private void configurarMonto() {
         logic.CuotaDAO dao = new logic.CuotaDAO();
         model.Cuota cuotaVigente = dao.obtenerCuota();
         
         if (cuotaVigente != null) {
-            // Quitamos los decimales para que se vea como número entero
+            // Formateo visual eliminando decimales para representacion de moneda local
             txtMonto.setText(String.format("Q%,.0f", cuotaVigente.getMontoActual()));        
         } else {
-            // Si hay un fallo de conexión, lo dejamos en 0 y mostramos un error
+            // Fallback de seguridad en caso de perdida de conexion
             txtMonto.setText("0");
-            logic.SweetAlert.showError("Error de Conexión", "No se pudo obtener la cuota actual de la base de datos.");
+            logic.SweetAlert.showError("Error de Conexion", "No se pudo obtener la cuota actual del sistema central.");
         }
         
+        // Restriccion de mutabilidad en la interfaz
         txtMonto.setEditable(false); 
     }
    
-    /*
-     * Llena la lista desplegable de los meses y pone el año actual en la lista de años.
+    /**
+     * Inicializa los selectores de periodos de cobro.
+     * Carga el catalogo estatico de meses y asigna el año en curso dinamicamente
+     * para facilitar la captura de datos.
      */
     private void llenarCombosEstaticos() {
         cmbMes.getItems().addAll("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
@@ -72,9 +83,10 @@ public class PagoController implements Initializable {
         cmbYear.getSelectionModel().selectFirst();
     }
 
-    /*
-     * Busca qué casas tienen dueño actualmente y las mete en la lista desplegable.
-     * Así evitamos cobrarle mantenimiento a una casa que está vacía.
+    /**
+     * Consulta la capa de acceso a datos para poblar el selector unicamente 
+     * con inmuebles que poseen un propietario activo. 
+     * Esta restriccion previene operaciones de cobro huerfanas.
      */
     private void cargarCasasOcupadas() {
         CasaDAO dao = new CasaDAO();
@@ -82,7 +94,7 @@ public class PagoController implements Initializable {
 
         cmbCasas.getItems().clear();
         if (ocupadas.isEmpty()) {
-            cmbCasas.setPromptText("No hay casas ocupadas");
+            cmbCasas.setPromptText("No hay unidades ocupadas");
         } else {
             for (Integer num : ocupadas) {
                 cmbCasas.getItems().add("Casa " + num);
@@ -90,20 +102,20 @@ public class PagoController implements Initializable {
         }
     }
     
-    /*
-     * Este "Listener" se queda vigilando la lista desplegable de casas.
-     * Cuando el usuario elige una casa diferente, este método busca el nombre
-     * del dueño y lo rellena automáticamente en la pantalla.
+    /**
+     * Implementa un patron observador sobre el selector de casas.
+     * Al detectar un cambio de estado, realiza una busqueda delegada para 
+     * auto-completar la informacion del propietario asociado, mejorando la UX.
      */
     private void configurarListenerCasas() {
         cmbCasas.valueProperty().addListener((observable, oldValue, newValue) -> {
-            // Si el usuario sí eligió una casa válida...
+            
+            // Verificacion de seleccion valida
             if (newValue != null && !newValue.startsWith("No hay")) {
                 
-                // Quitamos la palabra "Casa " para quedarnos solo con el número
+                // Saneamiento de string para extraccion del identificador numerico
                 int numeroCasa = Integer.parseInt(newValue.replace("Casa ", ""));
                 
-                // Buscamos quién es el dueño
                 CasaDAO casaDao = new CasaDAO();
                 Propietario prop = casaDao.obtenerPropietarioPorCasa(numeroCasa);
                 
@@ -113,7 +125,7 @@ public class PagoController implements Initializable {
                     txtNombrePropietario.setText("Sin Asignar");
                 }
             } else {
-                // Si desmarcan la casa, limpiamos la cajita del nombre
+                // Limpieza de estado en caso de deseleccion
                 if (txtNombrePropietario != null) {
                     txtNombrePropietario.setText("");
                 }
@@ -121,40 +133,41 @@ public class PagoController implements Initializable {
         });
     }
     
-    /*
-     * ESTE ES EL BOTÓN PRINCIPAL.
-     * Se ejecuta cuando el usuario le da clic a "Registrar Pago".
+    /**
+     * Punto de entrada principal para el registro transaccional de un pago.
+     * Ejecuta una cadena de validaciones de reglas de negocio antes de delegar
+     * la persistencia al DAO y emitir la notificacion por correo.
+     * * @param event Evento disparado por la accion del usuario en la UI.
      */
     @FXML
     private void registrarPago(ActionEvent event) {
         
-        // 1. Extraemos todo lo que el usuario escribió o seleccionó en la pantalla
+        // 1. Extraccion de estado de los componentes de la vista
         String casaSeleccionada = cmbCasas.getValue();
         String mes = cmbMes.getValue();
         Integer anio = cmbYear.getValue();
         String montoTexto = txtMonto.getText();
 
-        // 2. Si dejó algún espacio en blanco, lo regañamos y detenemos el proceso
+        // 2. Validacion de completitud de formulario
         if (casaSeleccionada == null || mes == null || anio == null || montoTexto.isEmpty()) {
-            SweetAlert.showWarning("Campos Incompletos", "Por favor, selecciona todos los datos requeridos en el formulario.");
+            SweetAlert.showWarning("Campos Incompletos", "Es necesario completar todos los parametros requeridos para procesar el pago.");
             return; 
         }
         
-        // 3. Preparamos los datos numéricos para poder guardarlos
+        // 3. Transformacion y saneamiento de datos para procesamiento logico
         int numeroCasa = Integer.parseInt(casaSeleccionada.replace("Casa ", ""));
 
-        // Limpiamos el texto: quitamos la Q, espacios y comas antes de convertir
+        // Limpieza de caracteres de formato monetario para parseo a double
         String montoLimpio = montoTexto.replace("Q", "").replace(",", "").trim();
         double monto = Double.parseDouble(montoLimpio); 
         int mesSeleccionadoNum = obtenerNumeroMes(mes);
         
-        // 4. VALIDACIÓN DE PROPIETARIO: Verificamos quién es el dueño y cuándo entró
+        // 4. Validacion de Integridad Relacional: Existencia de propietario y fecha de ingreso
         logic.CasaDAO casaDao = new logic.CasaDAO();
         model.Propietario propietarioActual = casaDao.obtenerPropietarioPorCasa(numeroCasa);
         
-        // PROTECCIÓN EXTRA: Si por alguna razón la casa no tiene dueño, detenemos el cobro
         if (propietarioActual == null) {
-            SweetAlert.showError("Error de Asignación", "Esta casa no tiene un propietario asignado actualmente.");
+            SweetAlert.showError("Inconsistencia de Datos", "Imposible procesar: La unidad seleccionada no posee un titular activo.");
             return;
         }
 
@@ -162,37 +175,32 @@ public class PagoController implements Initializable {
         int mesRegistro = fechaRegistroInquilino.getMonthValue();
         int anioRegistro = fechaRegistroInquilino.getYear();
 
-        // Si intentan pagar un mes que es ANTES de que el dueño llegara, lanzamos error
+        // Regla de Negocio: Restriccion de cobros retroactivos previos al alta del inquilino
         if (anio < anioRegistro || (anio == anioRegistro && mesSeleccionadoNum < mesRegistro)) {
-            SweetAlert.showError("Periodo Inválido", "No se pueden procesar cobros previos a la fecha de ingreso del inquilino (" + fechaRegistroInquilino + ").");
+            SweetAlert.showError("Periodo Invalido", "Restriccion del sistema: No se permiten cobros correspondientes a periodos anteriores a la fecha de registro del titular (" + fechaRegistroInquilino + ").");
             return; 
         }
             
-        // -------------------------------------------------------------------------
-        // 5. VALIDACIONES DE HISTORIAL DEL DUEÑO ACTUAL 
-        // -------------------------------------------------------------------------
+        // 5. Evaluacion de Reglas de Negocio sobre Historial Transaccional
         logic.PagoDAO pagoDaoAux = new logic.PagoDAO();
-            
-        // CAMBIO 1: Ahora le pasamos el ID del propietario en lugar de la fecha
         List<model.Pago> pagosDelDueñoActual = pagoDaoAux.obtenerPagosValidos(numeroCasa, propietarioActual.getId());
 
-        // 5.1 PREVENCIÓN DE DUPLICADOS
-        // Revisamos si el dueño ya pagó el mes que está seleccionando en pantalla
+        // 5.1 Algoritmo de prevencion de duplicidad de cobros
         for (model.Pago p : pagosDelDueñoActual) {
             if (p.getMes().equalsIgnoreCase(mes) && p.getYear() == anio) {
-                SweetAlert.showError("Pago Duplicado", "El propietario actual ya tiene registrado el pago de " + mes + " " + anio + ".");
-                return; // Detenemos el registro
+                SweetAlert.showError("Transaccion Duplicada", "El titular actual ya posee un registro de solvencia para el periodo " + mes + " " + anio + ".");
+                return; 
             }
         }
 
-        // 5.2 VALIDACIÓN DE SECUENCIA: Evitamos que dejen meses sin pagar en medio
+        // 5.2 Algoritmo de validacion secuencial (Prevencion de saltos en meses de pago)
         List<String> mesesNombres = java.util.Arrays.asList("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
 
         int indexMesActual = mesesNombres.indexOf(mes); 
         int mesAnteriorIndex = indexMesActual - 1;
         int anioAnterior = anio;
 
-        // Si están pagando enero, el mes anterior es diciembre del año pasado
+        // Calculo del periodo inmediato anterior considerando el cambio de año (Rollback a Diciembre)
         if (mesAnteriorIndex < 0) {
             mesAnteriorIndex = 11; 
             anioAnterior--; 
@@ -204,11 +212,10 @@ public class PagoController implements Initializable {
         java.time.LocalDate fechaMesAnterior = java.time.LocalDate.of(anioAnterior, valorMesAnteriorNumerico, 1);
         java.time.LocalDate fechaInicioCobro = fechaRegistroInquilino.withDayOfMonth(1);
 
-        // Si el mes anterior cae después de que se mudó, revisamos si ya lo pagó
+        // Verificamos solvencia del mes anterior, unicamente si dicho mes recae dentro de su periodo de actividad
         if (!fechaMesAnterior.isBefore(fechaInicioCobro)) {
             boolean mesAnteriorEstaPagado = false;
 
-            // Buscamos si en SU historial ya está pagado el mes anterior
             for (model.Pago p : pagosDelDueñoActual) {
                 if (p.getMes().equalsIgnoreCase(nombreMesAnterior) && p.getYear() == anioAnterior) {
                     mesAnteriorEstaPagado = true;
@@ -217,22 +224,20 @@ public class PagoController implements Initializable {
             }
                 
             if (!mesAnteriorEstaPagado) {
-                SweetAlert.showError("Validación de Secuencia", "No puedes pagar " + mes + " " + anio + " porque está pendiente el mes de " + nombreMesAnterior + " " + anioAnterior + ".");
+                SweetAlert.showError("Infraccion de Secuencia", "Operacion denegada: Existe un saldo pendiente correspondiente al periodo de " + nombreMesAnterior + " " + anioAnterior + ".");
                 return; 
             }
         }
-        // -------------------------------------------------------------------------
-        // FIN DE LAS VALIDACIONES 
-        // -------------------------------------------------------------------------
         
-        // CAMBIO 2: Ahora el objeto Pago recibe el ID del propietario en su constructor (el tercer parámetro)
+        // 6. Construccion del modelo y delegacion de la persistencia
         model.Pago pagoParaGuardar = new model.Pago(0, numeroCasa, propietarioActual.getId(), mes, anio, monto);
         
         logic.PagoDAO dao = new logic.PagoDAO();
         boolean exito = dao.registrarPago(pagoParaGuardar);
         
-        // 7. Si se guardó correctamente, limpiamos la pantalla y enviamos el recibo
+        // 7. Manejo de respuesta de transaccion y notificaciones asincronas
         if (exito) {
+            // Limpieza de estado de la vista
             cmbCasas.getSelectionModel().clearSelection();
             cmbMes.getSelectionModel().clearSelection();
             cmbYear.getSelectionModel().selectFirst();
@@ -241,27 +246,26 @@ public class PagoController implements Initializable {
                 txtNombrePropietario.setText(""); 
             }
 
-            // Validamos que el dueño sí tenga un correo registrado para enviarle el recibo
+            // Integracion con servicio de mensajeria externa (SMTP)
             if (propietarioActual.getCorreo() != null && !propietarioActual.getCorreo().trim().isEmpty()) {
                 String correoDestino = propietarioActual.getCorreo();
                 
-                // Le pasamos el nombre del propietario a nuestro servicio de correo
                 logic.EmailService.enviarRecibo(correoDestino, propietarioActual.getNombre(), monto, mes, anio, numeroCasa);
                 
-                SweetAlert.showSuccess("¡Transacción Exitosa!", "El pago se registró y el recibo fue enviado a " + correoDestino);
+                SweetAlert.showSuccess("Transaccion Procesada", "El pago ha sido registrado en el sistema y el comprobante digital fue despachado a " + correoDestino);
             } else {
-                // Si no tiene correo, lo guardamos pero le avisamos al cajero
-                SweetAlert.showWarning("Pago Registrado", "El pago se guardó correctamente, pero el propietario no tiene un correo registrado para enviarle el recibo.");
+                SweetAlert.showWarning("Registro Parcial", "Transaccion en base de datos exitosa. Sin embargo, no se pudo despachar el comprobante debido a la ausencia de un correo electronico valido.");
             }
 
         } else {
-            // Si llega aquí, es porque hubo un error de red o de base de datos
-            SweetAlert.showError("Error de Registro", "La transacción no pudo completarse en la Base de Datos.");
+            SweetAlert.showError("Fallo de Persistencia", "Se produjo una interrupcion al intentar confirmar la transaccion en el servidor de base de datos.");
         }
     }
     
-    /*
-     * Pequeño método de ayuda para convertir la palabra "Enero" en el número 1, "Febrero" en 2, etc.
+    /**
+     * Metodo utilitario para resolver la equivalencia numerica de un mes textual.
+     * * @param mesTexto Nombre del mes en formato String.
+     * @return Representacion entera del mes (1-12).
      */
     private int obtenerNumeroMes(String mesTexto){
         java.util.List<String> meses = java.util.Arrays.asList(

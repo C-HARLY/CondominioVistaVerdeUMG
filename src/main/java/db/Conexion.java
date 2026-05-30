@@ -39,7 +39,7 @@ public class Conexion {
             config.setPassword(PASS);
             
             // Optimizaciones de red para mitigar latencia 
-            config.setMaximumPoolSize(5); 
+            config.setMaximumPoolSize(5);  //hilos que dejamos abiertos
             config.setMinimumIdle(1);      
             config.setConnectionTimeout(10000); 
             
@@ -56,9 +56,7 @@ public class Conexion {
      * 
      * IMPORTANTE: La capa DAO que invoque este método asume la responsabilidad 
      * estricta de cerrar la conexión (ej. usando try-with-resources) para 
-     * devolverla al pool. Si no se libera, el sistema sufrirá un "Connection Leak".
-     * 
-     *
+     * devolverla al pool.
      * @return Un objeto {@link Connection} establecido, o null si se agota el tiempo de espera.
      */
     public static Connection conectar() {

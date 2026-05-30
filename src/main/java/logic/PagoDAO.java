@@ -17,7 +17,6 @@ public class PagoDAO {
 
     /**
      * Procesa y registra formalmente una transacción de pago en la base de datos.
-     * AHORA INCLUYE EL ID DEL PROPIETARIO PARA SEPARAR HISTORIALES.
      */
     public boolean registrarPago(Pago nuevoPago) {
         
@@ -29,7 +28,7 @@ public class PagoDAO {
              PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setInt(1, nuevoPago.getNumeroCasa());
-            pst.setInt(2, nuevoPago.getIdPropietario()); // Aquí viaja el ID del dueño actual
+            pst.setInt(2, nuevoPago.getIdPropietario()); // ID DEL DUEÑO PARA SEPARAR LOS PAGOS POR ID DEL PROPIETARIO
             pst.setString(3, nuevoPago.getMes());
             pst.setInt(4, nuevoPago.getYear());
             pst.setDouble(5, nuevoPago.getMonto());
@@ -61,7 +60,7 @@ public class PagoDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setInt(1, numeroCasa);
-            ps.setInt(2, idPropietario); // Filtro invencible
+            ps.setInt(2, idPropietario); 
             
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -85,6 +84,4 @@ public class PagoDAO {
         return listaPagosValidos;
     }
     
-    // (Opcional) Puedes borrar verificarPagoExiste si ya no lo usas en ningún lado,
-    // ya que ahora todo lo validamos en el controlador usando obtenerPagosValidos.
 }
