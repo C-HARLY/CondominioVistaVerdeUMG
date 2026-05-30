@@ -18,7 +18,6 @@ public class ReporteDAO {
 
     /**
      * Construye el reporte general financiero del condominio para un período específico.
-     * * Esta consulta utiliza técnicas avanzadas de agregación:
      * * {@code LEFT JOIN} y {@code COALESCE} para incluir viviendas desocupadas sin generar valores nulos en la interfaz.
      * Subconsultas correlacionadas ({@code CASE WHEN EXISTS}) para determinar el estado de solvencia sin duplicar registros.
      * Agregación dinámica para calcular el acumulado anual por vivienda.

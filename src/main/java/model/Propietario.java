@@ -3,7 +3,6 @@ import java.time.LocalDate;
 
 public class Propietario extends Persona {
     
-    // ¡Mira qué limpio queda! Solo atributos exclusivos del Propietario
     private int id;
     private int numeroCasa;
     private LocalDate fechaRegistro; 
@@ -26,7 +25,6 @@ public class Propietario extends Persona {
     }
      
     // GETTERS Y SETTERS EXCLUSIVOS DE PROPIETARIO
-    // (Ya no necesitas poner los getNombre o getCorreo aquí, ¡los hereda automáticamente!)
     
     public int getId() {
         return id;

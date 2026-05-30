@@ -92,11 +92,6 @@
                                                         prefHeight="38"
                                                         styleClass="save-button"/>
                                                 
-                                                <Button text="Cancelar"
-                                                        onAction="#cancelarCuota"
-                                                        prefWidth="95"
-                                                        prefHeight="38"
-                                                        styleClass="cancel-button"/>
                                             </children>
                                         </HBox>
 

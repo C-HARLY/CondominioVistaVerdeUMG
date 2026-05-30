@@ -22,7 +22,11 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
-
+/**
+ * Controlador de la interfaz de Estado de Cuenta.
+ * Gestiona la visualizacion de pagos realizados y meses pendientes por propietario,
+ * asi como la generacion del reporte en formato PDF.
+ */
 public class EstadoCuentaController implements Initializable {
 
     @FXML private ComboBox<Integer> cmbCasas;
@@ -36,34 +40,38 @@ public class EstadoCuentaController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-         // FECHA INICIO
-    dpInicio.setValue(
-        LocalDate.of(
-            LocalDate.now().getYear(),
-            1,
-            1
-        )
-    );
+        // Configuracion de fechas por defecto al inicio y fin del año en curso
+        dpInicio.setValue(
+            LocalDate.of(
+                LocalDate.now().getYear(),
+                1,
+                1
+            )
+        );
 
-    // FECHA FIN
-    dpFin.setValue(
-        LocalDate.of(
-            LocalDate.now().getYear(),
-            12,
-            31
-        )
-    );
+        dpFin.setValue(
+            LocalDate.of(
+                LocalDate.now().getYear(),
+                12,
+                31
+            )
+        );
         
         cargarCasasOcupadas();
         configurarFiltros();
     }    
     
+    /**
+     * Establece las restricciones de la interfaz y los eventos de escucha.
+     * Esto permite que la informacion se actualice de forma reactiva cada vez que
+     * el usuario cambia un parametro, mejorando la experiencia de usuario (UX).
+     */
     private void configurarFiltros() {
-        // Bloqueamos la edición manual de texto en los calendarios (solo clic)
+        // Se desactiva la edicion manual para evitar errores de parseo de fechas ingresadas por teclado
         if (dpInicio != null) dpInicio.setEditable(false);
         if (dpFin != null) dpFin.setEditable(false);
         
-        // Listeners: Si cambia la casa, o alguna fecha, actualiza la pantalla automáticamente
+        // Asignacion de listeners reactivos
         if(cmbCasas != null) {
             cmbCasas.valueProperty().addListener((obs, oldVal, newVal) -> buscarEstadoCuenta());
         }
@@ -75,17 +83,19 @@ public class EstadoCuentaController implements Initializable {
         }
     }
 
+    /**
+     * Consulta la base de datos para obtener unicamente las casas que tienen un propietario asignado.
+     * Esto optimiza la interfaz al no mostrar opciones invalidas al usuario.
+     */
     private void cargarCasasOcupadas() {
         String sql = "SELECT c.numero_casa FROM casas c "
                    + "INNER JOIN propietarios p ON c.id = p.id_casa "
                    + "ORDER BY c.numero_casa";
                    
-        // 1. Primero abrimos SOLO la conexión
+        // Implementacion de try-with-resources para garantizar el cierre de la conexion
         try (Connection con = Conexion.conectar()) {
             
-            // 2. Validamos que Hikari sí nos haya dado una conexión (que no sea null)
             if (con != null) {
-                // 3. Ahora sí, hacemos el statement seguros de que no explotará
                 try (PreparedStatement ps = con.prepareStatement(sql);
                      ResultSet rs = ps.executeQuery()) {
                      
@@ -98,14 +108,19 @@ public class EstadoCuentaController implements Initializable {
                     }
                 }
             } else {
-                System.err.println("⚠️ No se pudo obtener conexión (Timeout o base de datos inalcanzable).");
+                System.err.println("Error: No se pudo obtener conexion del pool.");
             }
             
         } catch (SQLException e) {
-            System.err.println("Error al cargar las casas ocupadas: " + e.getMessage());
+            System.err.println("Excepcion al cargar el listado de casas: " + e.getMessage());
         }
     }
    
+    /**
+     * Metodo principal de procesamiento logico.
+     * Calcula los meses pagados y pendientes cruzando el rango de fechas seleccionado
+     * con la fecha de registro original del propietario.
+     */
     @FXML
     private void buscarEstadoCuenta() {
         if(cmbCasas == null || dpInicio == null || dpFin == null) return;
@@ -116,11 +131,13 @@ public class EstadoCuentaController implements Initializable {
         
         if (casaSeleccionada != null && fechaInicio != null && fechaFin != null) {
             
+            // Validacion basica de integridad de datos
             if(fechaInicio.isAfter(fechaFin)){
-                System.out.println("La fecha de inicio no puede ser mayor a la fecha de fin");
+                System.out.println("Advertencia: El rango de fechas es invalido.");
                 return;
             }
             
+            // Limpieza de estados anteriores en la UI
             lvMesesPagados.getItems().clear();
             lvMesesPendientes.getItems().clear();
             lblTotalPagado.setText("Q0.00");
@@ -129,13 +146,13 @@ public class EstadoCuentaController implements Initializable {
             List<String> mesesPendientesList = new ArrayList<>();
             double sumaTotal = 0.0;
 
-            // CONSULTA PARA OBTENER ID, NOMBRE Y FECHA
             String sqlInfo = "SELECT p.id, p.nombre, p.fecha_registro FROM propietarios p INNER JOIN casas c ON p.id_casa = c.id WHERE c.numero_casa = ?";
             
-            // CONSULTA FILTRADA POR ID_PROPIETARIO (¡EL CAMBIO CLAVE!)
+            // La consulta transforma los nombres de los meses a valores numericos 
+            // para permitir la evaluacion del rango mediante BETWEEN.
             String sqlPagos = "SELECT pa.mes, pa.anio, pa.monto " +
                               "FROM pagos pa " +
-                              "WHERE pa.id_propietario = ? " + // Filtramos por dueño, no solo por casa
+                              "WHERE pa.id_propietario = ? " + 
                               "AND (pa.anio * 100 + " +
                               "    CASE pa.mes " +
                               "        WHEN 'Enero' THEN 1 WHEN 'Febrero' THEN 2 WHEN 'Marzo' THEN 3 " +
@@ -146,9 +163,9 @@ public class EstadoCuentaController implements Initializable {
 
             try (Connection con = Conexion.conectar()) {
                 
-                int idPropietarioActual = -1; // Para guardar el ID que usaremos en la segunda consulta
+                int idPropietarioActual = -1;
 
-                // 1. Obtener Info y ID del Propietario
+                // Fase 1: Obtencion de metadatos del propietario
                 try (PreparedStatement psInfo = con.prepareStatement(sqlInfo)) {
                     psInfo.setInt(1, casaSeleccionada);
                     try (ResultSet rsInfo = psInfo.executeQuery()) {
@@ -157,6 +174,7 @@ public class EstadoCuentaController implements Initializable {
                             lblNombrePropietario.setText(rsInfo.getString("nombre"));
                             lblNombrePropietario.setStyle("-fx-text-fill: #000000; -fx-font-weight: bold;");
                             
+                            // Se determinan todos los meses cobrables basados en su fecha de registro
                             java.sql.Date fechaSql = rsInfo.getDate("fecha_registro");
                             if(fechaSql != null) {
                                 LocalDate fechaRegistro = fechaSql.toLocalDate();
@@ -166,11 +184,12 @@ public class EstadoCuentaController implements Initializable {
                     }
                 }
 
-                // 2. Obtener Pagos del Propietario (si encontramos uno)
+                // Fase 2: Mapeo de pagos realizados
                 if (idPropietarioActual != -1) {
                     try (PreparedStatement psPagos = con.prepareStatement(sqlPagos)) {
-                        psPagos.setInt(1, idPropietarioActual); // Filtro por dueño
+                        psPagos.setInt(1, idPropietarioActual);
                         
+                        // Generacion de formato YYYYMM para comparacion numerica
                         int rangoInicio = (fechaInicio.getYear() * 100) + fechaInicio.getMonthValue();
                         int rangoFin = (fechaFin.getYear() * 100) + fechaFin.getMonthValue();
                         
@@ -187,33 +206,36 @@ public class EstadoCuentaController implements Initializable {
                                 mesesPagados.add(etiquetaPago + " (Q" + String.format("%,.0f", montoPagado) + ")");
                                 sumaTotal += montoPagado;
                                 
+                                // Si el mes esta pagado, se descarta de la lista de pendientes
                                 mesesPendientesList.remove(etiquetaPago);
                             }
                         }
                     }
                 }
                 
-                // PINTAR RESULTADOS
+                // Actualizacion final de la interfaz
                 lvMesesPagados.setItems(mesesPagados);
                 lvMesesPendientes.setItems(FXCollections.observableArrayList(mesesPendientesList));
                 lblTotalPagado.setText("Q" + String.format("%,.0f", sumaTotal));
                 
             } catch (SQLException e) {
-                System.err.println("Error procesando estado de cuenta: " + e.getMessage());
+                System.err.println("Excepcion al procesar el estado de cuenta: " + e.getMessage());
             }
         }
     }
     
-    // MÉTODO AUXILIAR ADAPTADO AL RANGO DE FECHAS
+    /**
+     * Algoritmo auxiliar para calcular la coleccion de meses que el propietario
+     * realmente debe pagar, omitiendo el tiempo previo a su mudanza.
+     */
     private List<String> calcularMesesValidosEnRango(LocalDate fechaInicioRango, LocalDate fechaFinRango, LocalDate fechaRegistro) {
         List<String> mesesValidos = new ArrayList<>();
         List<String> nombresMeses = Arrays.asList("", "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
 
-        // Decidimos desde cuándo empezar a cobrar
-        // Si el inquilino llegó DESPUÉS de la fecha de inicio del filtro, empezamos a cobrar desde que llegó
+        // Evaluacion de logica de negocio: El cobro inicia a partir del registro o del rango solicitado,
+        // lo que ocurra despues.
         LocalDate fechaInicioCobro = fechaInicioRango.isBefore(fechaRegistro) ? fechaRegistro : fechaInicioRango;
 
-        // Iteramos mes a mes desde el inicio del cobro hasta la fecha fin del rango
         LocalDate fechaActual = fechaInicioCobro.withDayOfMonth(1); 
         LocalDate fechaLimite = fechaFinRango.withDayOfMonth(fechaFinRango.lengthOfMonth()); 
 
@@ -226,11 +248,14 @@ public class EstadoCuentaController implements Initializable {
         return mesesValidos;
     }
    
+    /**
+     * Interaccion con JasperReports para la emision del documento fisico/digital.
+     * Pasa los parametros de contexto de la UI y delega la consulta al motor de reportes.
+     */
     @FXML
     private void generarReportePDF(ActionEvent event) {
-        // 1. Validar que tengamos todo seleccionado
         if(cmbCasas.getValue() == null || dpInicio.getValue() == null || dpFin.getValue() == null) {
-            System.out.println(" ALERTA: Selecciona la casa y el rango de fechas primero.");
+            System.out.println("Validacion fallida: Parametros de busqueda incompletos.");
             return; 
         }
 
@@ -239,51 +264,40 @@ public class EstadoCuentaController implements Initializable {
             LocalDate fechaInicio = dpInicio.getValue();
             LocalDate fechaFin = dpFin.getValue();
 
-            // 2. Convertir fechas a nuestro formato matemático (Ej: Mayo 2026 -> 202605)
+            // Transformacion a formato numerico YYYYMM para el SQL interno de Jasper
             int rangoInicio = (fechaInicio.getYear() * 100) + fechaInicio.getMonthValue();
             int rangoFin = (fechaFin.getYear() * 100) + fechaFin.getMonthValue();
 
-            System.out.println("Generando Estado de Cuenta PDF para la casa: " + casaSeleccionada);
-
-            // 3. Empaquetar los parámetros para Jasper
             java.util.Map<String, Object> parametros = new java.util.HashMap<>();
             parametros.put("P_NUMERO_CASA", casaSeleccionada);
             parametros.put("P_RANGO_INICIO", rangoInicio);
             parametros.put("P_RANGO_FIN", rangoFin);
-            
-            // Textos bonitos para que los pongas en el diseño del PDF
             parametros.put("P_FECHA_INICIO_STR", fechaInicio.toString());
             parametros.put("P_FECHA_FIN_STR", fechaFin.toString());
 
-            // ====================================================
-            // AQUI AGREGAMOS LA LECTURA DEL LOGO EN MEMORIA
-            // ====================================================
-            // OJO: Asegúrate de que tu imagen se llame exactamente "logo.png" y esté en la carpeta "images"
+            // Inyeccion de recursos estaticos al reporte
             java.io.InputStream logoStream = getClass().getResourceAsStream("/images/logo.png");
             
             if (logoStream == null) {
-                System.out.println("⚠️ ADVERTENCIA: No se encontró logo.png en la carpeta /images/");
+                System.out.println("Advertencia: No se detecto el recurso logo.png en el classpath.");
             } else {
                 parametros.put("logoEmpresa", logoStream); 
             }
-            // ====================================================
 
-            // 4. Cargar el reporte
             java.io.InputStream reporteStream = getClass().getResourceAsStream("/reportes/EstadoCuentaIndividual.jasper");
             
             if (reporteStream == null) {
-                System.out.println("❌ ERROR: No se encontró el archivo EstadoCuentaIndividual.jasper en resources/reportes");
+                System.err.println("Error critico: Archivo fuente de reporte (.jasper) no localizado.");
                 return;
             }
 
-            // AQUI ESTA LA CORRECCIÓN: El try asegura que la conexión regrese al pool de Hikari
+            // Uso de try-with-resources asegura que Jasper libere la conexion tras renderizar
             try (java.sql.Connection conexion = db.Conexion.conectar()) {
                 if (conexion == null) {
-                    System.out.println(" ERROR: No se pudo conectar a Neon DB.");
+                    System.err.println("Error de infraestructura: Imposible conectar al cluster de base de datos.");
                     return;
                 }
 
-                // 5. Generar y mostrar
                 net.sf.jasperreports.engine.JasperPrint jasperPrint = net.sf.jasperreports.engine.JasperFillManager.fillReport(reporteStream, parametros, conexion);
                 net.sf.jasperreports.view.JasperViewer visor = new net.sf.jasperreports.view.JasperViewer(jasperPrint, false);
                 visor.setTitle("Estado de Cuenta - Casa " + casaSeleccionada);
@@ -291,7 +305,7 @@ public class EstadoCuentaController implements Initializable {
             } 
 
         } catch (Exception e) {
-            System.out.println(" ERROR FATAL al generar el PDF:");
+            System.err.println("Excepcion en el motor de renderizado de JasperReports:");
             e.printStackTrace();
         }
     }

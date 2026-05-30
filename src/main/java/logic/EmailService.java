@@ -49,7 +49,6 @@ public class EmailService {
             message.setSubject("Recibo de Pago - Casa " + numCasa);
             
             // 3. El diseño visual del correo
-            // Agregamos el %s en el saludo para que ahí se ponga el nombre del propietario
                 String cuerpo = """
                     <!DOCTYPE html>
                     <html>

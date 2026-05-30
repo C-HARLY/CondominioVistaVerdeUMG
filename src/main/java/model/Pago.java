@@ -1,9 +1,6 @@
 package model;
 
-/**
- * Modelo que representa la transacción de un pago de mantenimiento.
- * @author carlo
- */
+
 public class Pago {
     private int id;
     private int numeroCasa;
@@ -12,12 +9,10 @@ public class Pago {
     private int year;
     private double monto;
     
-    // Constructor vacío (Muy útil para cuando traes datos de la BD paso a paso)
     public Pago(){
         
     }
     
-    // Constructor actualizado con el idPropietario
     public Pago(int id, int numeroCasa, int idPropietario, String mes, int year, double monto){
         this.id = id;
         this.numeroCasa = numeroCasa;
@@ -43,7 +38,6 @@ public class Pago {
         this.numeroCasa = numeroCasa;
     }
 
-    // --- NUEVOS GETTER Y SETTER ---
     public int getIdPropietario() {
         return idPropietario;
     }
